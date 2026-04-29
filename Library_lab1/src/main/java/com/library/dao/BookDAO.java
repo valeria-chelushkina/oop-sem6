@@ -25,10 +25,10 @@ public class BookDAO {
                         .title(rs.getString("title"))
                         .isbn(rs.getString("isbn"))
                         .publisher(rs.getString("publisher"))
-                        .publicationYear(rs.getInt("publicationYear"))
-                        .coverURL(rs.getString("coverURL"))
+                        .publicationYear(rs.getInt("publication_year"))
+                        .coverURL(rs.getString("cover_url"))
                         .language(rs.getString("language"))
-                        .pagesCount(rs.getInt("pagesCount"))
+                        .pagesCount(rs.getInt("pages_count"))
                         .genre(rs.getString("genre"))
                         .description(rs.getString("description"))
                         .build());
