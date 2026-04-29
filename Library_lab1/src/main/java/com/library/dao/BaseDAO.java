@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,26 @@ public abstract class BaseDAO {
             return affectedRows;
         } catch (SQLException e) {
             logger.error("Update failed", e);
+            throw e;
+        }
+    }
+
+    protected Long insertAndReturnId(String sql, List<Object> params, String logMessage) throws SQLException {
+        logger.info(logMessage);
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            bindParams(stmt, params);
+            stmt.executeUpdate();
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    Long id = keys.getLong(1);
+                    logger.info("Created record with id={}", id);
+                    return id;
+                }
+                throw new SQLException("Insert succeeded but no generated id was returned.");
+            }
+        } catch (SQLException e) {
+            logger.error("Insert failed", e);
             throw e;
         }
     }
