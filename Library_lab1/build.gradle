@@ -16,7 +16,6 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // jdbc
-    // Source: https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation("org.postgresql:postgresql:42.7.10")
     implementation("com.zaxxer:HikariCP:6.3.0")
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
@@ -24,6 +23,13 @@ dependencies {
     // PostgreSQL JDBC Driver
     compileOnly 'org.projectlombok:lombok:1.18.38'
     annotationProcessor 'org.projectlombok:lombok:1.18.38'
+
+    // log4j2
+    implementation("org.apache.logging.log4j:log4j-api:2.25.3")
+    implementation("org.apache.logging.log4j:log4j-core:2.25.3")
+
+    //json
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 }
 
 test {

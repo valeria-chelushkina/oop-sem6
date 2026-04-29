@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BookItems {
+public class BookItem {
     private Long id;
     private Long bookId;
     private String inventoryCode;
