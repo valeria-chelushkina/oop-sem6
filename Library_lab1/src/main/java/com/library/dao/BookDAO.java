@@ -231,7 +231,7 @@ public class BookDAO extends BaseDAO {
         }
     }
 
-    public List<Book> findById(String id) throws SQLException {
+    public List<Book> findById(Long id) throws SQLException {
         String sql = "SELECT * FROM books WHERE id = ?";
         String loggerMessage = "Fetching book by id.";
         return query(sql, List.of(id), this::mapResultSetToBook, loggerMessage);

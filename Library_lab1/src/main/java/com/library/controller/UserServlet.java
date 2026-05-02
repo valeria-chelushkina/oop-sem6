@@ -2,10 +2,10 @@ package com.library.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.library.dto.BookDTO;
-import com.library.dto.CreateBookRequest;
-import com.library.service.BookService;
-import com.library.service.BookServiceImpl;
+import com.library.dto.CreateUserRequest;
+import com.library.dto.UserDTO;
+import com.library.service.UserService;
+import com.library.service.UserServiceImpl;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,60 +17,64 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/api/books")
-public class BookServlet extends HttpServlet {
-    private final BookService bookService = new BookServiceImpl();
+@WebServlet("/api/users")
+public class UserServlet extends HttpServlet {
+    private final UserService userService = new UserServiceImpl();
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             String id = req.getParameter("id");
-            String title = req.getParameter("title");
-            String author = req.getParameter("author");
-            String genre = req.getParameter("genre");
-
             if (id != null && !id.isBlank()) {
-                BookDTO book = bookService.findById(Long.valueOf(id));
-                if (book == null) {
-                    writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Book not found.");
+                UserDTO user = userService.findById(Long.valueOf(id));
+                if (user == null) {
+                    writeError(resp, HttpServletResponse.SC_NOT_FOUND, "User not found.");
                     return;
                 }
-                writeJson(resp, HttpServletResponse.SC_OK, book);
+                writeJson(resp, HttpServletResponse.SC_OK, user);
                 return;
             }
-
-            List<BookDTO> books;
-            if (title != null && !title.isBlank()) {
-                books = bookService.findByTitle(title);
-            } else if (author != null && !author.isBlank()) {
-                books = bookService.findByAuthor(author);
-            } else if (genre != null && !genre.isBlank()) {
-                books = bookService.findByGenre(genre);
-            } else {
-                books = bookService.findAll();
-            }
-            writeJson(resp, HttpServletResponse.SC_OK, books);
-        } catch (IllegalArgumentException e) {
-            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid query parameter format.");
+            List<UserDTO> users = userService.findAll();
+            writeJson(resp, HttpServletResponse.SC_OK, users);
         } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
+        } catch (NumberFormatException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid id format.");
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            CreateBookRequest request = objectMapper.readValue(req.getInputStream(), CreateBookRequest.class);
-            Long createdId = bookService.createWithAuthors(request);
+            CreateUserRequest request = objectMapper.readValue(req.getInputStream(), CreateUserRequest.class);
+            Long createdId = userService.create(request);
             Map<String, Object> payload = new LinkedHashMap<>();
             payload.put("id", createdId);
-            payload.put("message", "Book created successfully.");
+            payload.put("message", "User created successfully.");
             writeJson(resp, HttpServletResponse.SC_CREATED, payload);
         } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            UserDTO request = objectMapper.readValue(req.getInputStream(), UserDTO.class);
+            int affected = userService.update(request);
+            if (affected == 0) {
+                writeError(resp, HttpServletResponse.SC_NOT_FOUND, "User not found.");
+                return;
+            }
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("updated", affected);
+            payload.put("message", "User updated successfully.");
+            writeJson(resp, HttpServletResponse.SC_OK, payload);
+        } catch (SQLException e) {
+            writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
         } catch (IllegalArgumentException e) {
-            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid request body.");
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -82,9 +86,9 @@ public class BookServlet extends HttpServlet {
             return;
         }
         try {
-            int affected = bookService.deleteById(Long.valueOf(id));
+            int affected = userService.deleteById(Long.valueOf(id));
             if (affected == 0) {
-                writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Book not found.");
+                writeError(resp, HttpServletResponse.SC_NOT_FOUND, "User not found.");
                 return;
             }
             Map<String, Object> payload = new LinkedHashMap<>();
@@ -105,8 +109,8 @@ public class BookServlet extends HttpServlet {
     }
 
     private void writeError(HttpServletResponse resp, int status, String message) throws IOException {
-        Map<String, String> error = new LinkedHashMap<>();
-        error.put("error", message);
-        writeJson(resp, status, error);
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("error", message);
+        writeJson(resp, status, payload);
     }
 }

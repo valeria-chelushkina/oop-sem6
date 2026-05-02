@@ -2,10 +2,10 @@ package com.library.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.library.dto.BookDTO;
-import com.library.dto.CreateBookRequest;
-import com.library.service.BookService;
-import com.library.service.BookServiceImpl;
+import com.library.dto.BookItemDTO;
+import com.library.dto.CreateBookItemRequest;
+import com.library.service.BookItemService;
+import com.library.service.BookItemServiceImpl;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,60 +17,74 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/api/books")
-public class BookServlet extends HttpServlet {
-    private final BookService bookService = new BookServiceImpl();
+@WebServlet("/api/book-items")
+public class BookItemServlet extends HttpServlet {
+    private final BookItemService bookItemService = new BookItemServiceImpl();
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             String id = req.getParameter("id");
-            String title = req.getParameter("title");
-            String author = req.getParameter("author");
-            String genre = req.getParameter("genre");
+            String availableCount = req.getParameter("availableCount");
 
-            if (id != null && !id.isBlank()) {
-                BookDTO book = bookService.findById(Long.valueOf(id));
-                if (book == null) {
-                    writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Book not found.");
-                    return;
-                }
-                writeJson(resp, HttpServletResponse.SC_OK, book);
+            if ("true".equalsIgnoreCase(availableCount)) {
+                Map<String, Object> payload = new LinkedHashMap<>();
+                payload.put("availableCount", bookItemService.countAvailable());
+                writeJson(resp, HttpServletResponse.SC_OK, payload);
                 return;
             }
 
-            List<BookDTO> books;
-            if (title != null && !title.isBlank()) {
-                books = bookService.findByTitle(title);
-            } else if (author != null && !author.isBlank()) {
-                books = bookService.findByAuthor(author);
-            } else if (genre != null && !genre.isBlank()) {
-                books = bookService.findByGenre(genre);
-            } else {
-                books = bookService.findAll();
+            if (id != null && !id.isBlank()) {
+                BookItemDTO bookItem = bookItemService.findById(Long.valueOf(id));
+                if (bookItem == null) {
+                    writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Book item not found.");
+                    return;
+                }
+                writeJson(resp, HttpServletResponse.SC_OK, bookItem);
+                return;
             }
-            writeJson(resp, HttpServletResponse.SC_OK, books);
-        } catch (IllegalArgumentException e) {
-            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid query parameter format.");
+
+            List<BookItemDTO> items = bookItemService.findAll();
+            writeJson(resp, HttpServletResponse.SC_OK, items);
         } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
+        } catch (NumberFormatException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid id format.");
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            CreateBookRequest request = objectMapper.readValue(req.getInputStream(), CreateBookRequest.class);
-            Long createdId = bookService.createWithAuthors(request);
+            CreateBookItemRequest request = objectMapper.readValue(req.getInputStream(), CreateBookItemRequest.class);
+            Long createdId = bookItemService.create(request);
             Map<String, Object> payload = new LinkedHashMap<>();
             payload.put("id", createdId);
-            payload.put("message", "Book created successfully.");
+            payload.put("message", "Book item created successfully.");
             writeJson(resp, HttpServletResponse.SC_CREATED, payload);
         } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            BookItemDTO request = objectMapper.readValue(req.getInputStream(), BookItemDTO.class);
+            int affected = bookItemService.update(request);
+            if (affected == 0) {
+                writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Book item not found.");
+                return;
+            }
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("updated", affected);
+            payload.put("message", "Book item updated successfully.");
+            writeJson(resp, HttpServletResponse.SC_OK, payload);
+        } catch (SQLException e) {
+            writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
         } catch (IllegalArgumentException e) {
-            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid request body.");
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -82,9 +96,9 @@ public class BookServlet extends HttpServlet {
             return;
         }
         try {
-            int affected = bookService.deleteById(Long.valueOf(id));
+            int affected = bookItemService.deleteById(Long.valueOf(id));
             if (affected == 0) {
-                writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Book not found.");
+                writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Book item not found.");
                 return;
             }
             Map<String, Object> payload = new LinkedHashMap<>();
@@ -105,8 +119,8 @@ public class BookServlet extends HttpServlet {
     }
 
     private void writeError(HttpServletResponse resp, int status, String message) throws IOException {
-        Map<String, String> error = new LinkedHashMap<>();
-        error.put("error", message);
-        writeJson(resp, status, error);
+        Map<String, String> payload = new LinkedHashMap<>();
+        payload.put("error", message);
+        writeJson(resp, status, payload);
     }
 }
