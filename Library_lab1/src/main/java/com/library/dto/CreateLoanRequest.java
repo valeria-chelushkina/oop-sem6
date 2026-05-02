@@ -1,4 +1,4 @@
-package com.library.entity;
+package com.library.dto;
 
 import com.library.entity.enums.LoanStatus;
 import com.library.entity.enums.LoanType;
@@ -12,10 +12,9 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class Loan {
-    private Long id;
+@AllArgsConstructor
+public class CreateLoanRequest {
     private Long bookItemId;
     private Long readerId;
     private Long librarianId;

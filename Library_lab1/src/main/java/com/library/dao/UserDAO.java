@@ -1,6 +1,7 @@
 package com.library.dao;
 
 import com.library.entity.User;
+import com.library.entity.enums.UserRole;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -16,7 +17,7 @@ public class UserDAO extends BaseDAO {
                 .taxId(rs.getString("tax_id"))
                 .email(rs.getString("email"))
                 .passwordHash(rs.getString("password_hash"))
-                .role(rs.getString("role"))
+                .role(UserRole.valueOf(rs.getString("role")))
                 .registrationDate(rs.getTimestamp("registration_date").toLocalDateTime())
                 .build();
     }
@@ -39,7 +40,7 @@ public class UserDAO extends BaseDAO {
                         user.getTaxId(),
                         user.getEmail(),
                         user.getPasswordHash(),
-                        user.getRole(),
+                        user.getRole() != null ? user.getRole().name() : null,
                         user.getRegistrationDate()
                 ),
                 loggerMessage
@@ -58,7 +59,7 @@ public class UserDAO extends BaseDAO {
                         user.getTaxId(),
                         user.getEmail(),
                         user.getPasswordHash(),
-                        user.getRole(),
+                        user.getRole() != null ? user.getRole().name() : null,
                         user.getRegistrationDate(),
                         user.getId()
                 ),

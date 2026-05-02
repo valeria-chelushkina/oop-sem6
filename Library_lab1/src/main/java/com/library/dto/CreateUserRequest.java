@@ -1,4 +1,4 @@
-package com.library.entity;
+package com.library.dto;
 
 import com.library.entity.enums.UserRole;
 import lombok.AllArgsConstructor;
@@ -10,10 +10,9 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class User {
-    private Long id;
+@AllArgsConstructor
+public class CreateUserRequest {
     private String firstName;
     private String lastName;
     private String taxId;

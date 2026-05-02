@@ -1,4 +1,4 @@
-package com.library.entity;
+package com.library.dto;
 
 import com.library.entity.enums.BookItemStatus;
 import lombok.AllArgsConstructor;
@@ -8,10 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class BookItem {
-    private Long id;
+@AllArgsConstructor
+public class CreateBookItemRequest {
     private Long bookId;
     private String inventoryCode;
     private BookItemStatus status;

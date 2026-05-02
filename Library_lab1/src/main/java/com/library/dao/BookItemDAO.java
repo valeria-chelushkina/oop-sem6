@@ -1,6 +1,7 @@
 package com.library.dao;
 
 import com.library.entity.BookItem;
+import com.library.entity.enums.BookItemStatus;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -13,7 +14,7 @@ public class BookItemDAO extends BaseDAO {
                 .id(rs.getLong("id"))
                 .bookId(rs.getLong("book_id"))
                 .inventoryCode(rs.getString("inventory_code"))
-                .status(rs.getString("status"))
+                .status(BookItemStatus.valueOf(rs.getString("status")))
                 .build();
     }
 
@@ -31,7 +32,11 @@ public class BookItemDAO extends BaseDAO {
     public Long create(BookItem bookItem) throws SQLException {
         String sql = "INSERT INTO book_items (book_id, inventory_code, status) VALUES (?, ?, ?)";
         String loggerMessage = "Creating new book item.";
-        return insertAndReturnId(sql, Arrays.asList(bookItem.getBookId(), bookItem.getInventoryCode(), bookItem.getStatus()), loggerMessage);
+        return insertAndReturnId(
+                sql,
+                Arrays.asList(bookItem.getBookId(), bookItem.getInventoryCode(), bookItem.getStatus() != null ? bookItem.getStatus().name() : null),
+                loggerMessage
+        );
     }
 
     public int update(BookItem bookItem) throws SQLException {
@@ -39,7 +44,12 @@ public class BookItemDAO extends BaseDAO {
         String loggerMessage = "Updating book item by id.";
         return update(
                 sql,
-                Arrays.asList(bookItem.getBookId(), bookItem.getInventoryCode(), bookItem.getStatus(), bookItem.getId()),
+                Arrays.asList(
+                        bookItem.getBookId(),
+                        bookItem.getInventoryCode(),
+                        bookItem.getStatus() != null ? bookItem.getStatus().name() : null,
+                        bookItem.getId()
+                ),
                 loggerMessage
         );
     }

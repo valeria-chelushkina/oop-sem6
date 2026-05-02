@@ -1,6 +1,8 @@
 package com.library.dao;
 
 import com.library.entity.Loan;
+import com.library.entity.enums.LoanStatus;
+import com.library.entity.enums.LoanType;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,8 +24,8 @@ public class LoanDAO extends BaseDAO {
                 .loanDate(loanDateTs != null ? loanDateTs.toLocalDateTime() : null)
                 .dueDate(dueDateSql != null ? dueDateSql.toLocalDate() : null)
                 .returnDate(returnDateTs != null ? returnDateTs.toLocalDateTime() : null)
-                .loanType(rs.getString("loan_type"))
-                .status(rs.getString("status"))
+                .loanType(LoanType.valueOf(rs.getString("loan_type")))
+                .status(LoanStatus.valueOf(rs.getString("status")))
                 .build();
     }
 
@@ -33,11 +35,11 @@ public class LoanDAO extends BaseDAO {
         return query(sql, Collections.emptyList(), this::mapResultSetToLoan, loggerMessage);
     }
 
-    public int createOrder(Long bookItemId, Long readerId, String loanType, Date dueDate) throws SQLException {
+    public int createOrder(Long bookItemId, Long readerId, LoanType loanType, Date dueDate) throws SQLException {
         String sql = "INSERT INTO loans (book_item_id, reader_id, loan_date, due_date, loan_type, status) " +
                 "VALUES (?, ?, NOW(), ?, ?, 'ORDERED')";
         String loggerMessage = "Creating new ORDERED loan.";
-        return update(sql, Arrays.asList(bookItemId, readerId, dueDate, loanType), loggerMessage);
+        return update(sql, Arrays.asList(bookItemId, readerId, dueDate, loanType != null ? loanType.name() : null), loggerMessage);
     }
 
     public int issueLoan(Long id, Long librarianId) throws SQLException {
@@ -80,8 +82,8 @@ public class LoanDAO extends BaseDAO {
                         loanDate,
                         dueDate,
                         returnDate,
-                        loan.getLoanType(),
-                        loan.getStatus()
+                        loan.getLoanType() != null ? loan.getLoanType().name() : null,
+                        loan.getStatus() != null ? loan.getStatus().name() : null
                 ),
                 loggerMessage
         );
@@ -103,8 +105,8 @@ public class LoanDAO extends BaseDAO {
                         loanDate,
                         dueDate,
                         returnDate,
-                        loan.getLoanType(),
-                        loan.getStatus(),
+                        loan.getLoanType() != null ? loan.getLoanType().name() : null,
+                        loan.getStatus() != null ? loan.getStatus().name() : null,
                         loan.getId()
                 ),
                 loggerMessage
