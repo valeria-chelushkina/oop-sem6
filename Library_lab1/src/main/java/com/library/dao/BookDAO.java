@@ -10,7 +10,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BookDAO extends BaseDAO {
     private Book mapResultSetToBook(ResultSet rs) throws SQLException {
@@ -28,31 +30,104 @@ public class BookDAO extends BaseDAO {
                 .build();
     }
 
+    private List<Book> queryBooksWithAuthors(String sql, List<Object> params, String loggerMessage) throws SQLException {
+        logger.info(loggerMessage);
+        Map<Long, Book> booksById = new LinkedHashMap<>();
+        try (Connection conn = DatabaseManager.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Long bookId = rs.getLong("id");
+                    Book book = booksById.get(bookId);
+                    if (book == null) {
+                        book = mapResultSetToBook(rs);
+                        book.setAuthors(new ArrayList<>());
+                        booksById.put(bookId, book);
+                    }
+
+                    Object authorIdObj = rs.getObject("author_id");
+                    Long authorId = authorIdObj == null ? null : ((Number) authorIdObj).longValue();
+                    if (authorId != null) {
+                        boolean alreadyAdded = book.getAuthors().stream()
+                                .anyMatch(a -> a.getId() != null && a.getId().equals(authorId));
+                        if (!alreadyAdded) {
+                            book.getAuthors().add(Author.builder()
+                                    .id(authorId)
+                                    .penName(rs.getString("pen_name"))
+                                    .biography(rs.getString("biography"))
+                                    .build());
+                        }
+                    }
+                }
+            }
+            List<Book> books = new ArrayList<>(booksById.values());
+            logger.info("Fetched {} book records", books.size());
+            return books;
+        } catch (SQLException e) {
+            logger.error("Failed to fetch books with authors from database", e);
+            throw e;
+        }
+    }
+
     public List<Book> findAll() throws SQLException {
-        String sql = "SELECT * FROM books";
+        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
+                "FROM books b " +
+                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
+                "LEFT JOIN authors a ON ba.author_id = a.id";
         String loggerMessage = "Fetching all books from the catalogue.";
-        return query(sql, Collections.emptyList(), this::mapResultSetToBook, loggerMessage);
+        return queryBooksWithAuthors(sql, Collections.emptyList(), loggerMessage);
     }
 
     public List<Book> findByTitle(String title) throws SQLException {
-        String sql = "SELECT * FROM books WHERE LOWER(title) LIKE LOWER(?)";
+        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
+                "FROM books b " +
+                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
+                "LEFT JOIN authors a ON ba.author_id = a.id " +
+                "WHERE LOWER(b.title) LIKE LOWER(?)";
         String loggerMessage = "Fetching books by title.";
-        return query(sql, List.of("%" + title + "%"), this::mapResultSetToBook, loggerMessage);
+        return queryBooksWithAuthors(sql, List.of("%" + title + "%"), loggerMessage);
     }
 
     public List<Book> findByAuthor(String author) throws SQLException {
-        String sql = "SELECT DISTINCT b.* FROM books b " +
+        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography FROM books b " +
                 "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
                 "LEFT JOIN authors a ON ba.author_id = a.id " +
                 "WHERE LOWER(a.pen_name) LIKE LOWER(?)";
         String loggerMessage = "Fetching books by author.";
-        return query(sql, List.of("%" + author + "%"), this::mapResultSetToBook, loggerMessage);
+        return queryBooksWithAuthors(sql, List.of("%" + author + "%"), loggerMessage);
+    }
+
+    public List<Book> findByTitleOrAuthor(String query) throws SQLException{
+        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography FROM books b " +
+                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
+                "LEFT JOIN authors a ON ba.author_id = a.id " +
+                "WHERE LOWER(a.pen_name) LIKE LOWER(?) OR LOWER(b.title) LIKE LOWER(?)";
+        String loggerMessage = "Fetching books by author or title.";
+        return queryBooksWithAuthors(sql, List.of("%" + query + "%"), loggerMessage);
     }
 
     public List<Book> findByGenre(String genre) throws SQLException {
-        String sql = "SELECT * FROM books WHERE LOWER(genre) = LOWER(?)";
+        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
+                "FROM books b " +
+                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
+                "LEFT JOIN authors a ON ba.author_id = a.id " +
+                "WHERE LOWER(b.genre) = LOWER(?)";
         String loggerMessage = "Fetching books by genre.";
-        return query(sql, List.of(genre), this::mapResultSetToBook, loggerMessage);
+        return queryBooksWithAuthors(sql, List.of(genre), loggerMessage);
+    }
+
+    public List<Book> findByLanguage(String language) throws SQLException {
+        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
+                "FROM books b " +
+                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
+                "LEFT JOIN authors a ON ba.author_id = a.id " +
+                "WHERE LOWER(b.language) = LOWER(?)";
+        String loggerMessage = "Fetching books by language.";
+        return queryBooksWithAuthors(sql, List.of(language), loggerMessage);
     }
 
     public Long create(Book book) throws SQLException {
@@ -232,9 +307,13 @@ public class BookDAO extends BaseDAO {
     }
 
     public List<Book> findById(Long id) throws SQLException {
-        String sql = "SELECT * FROM books WHERE id = ?";
+        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
+                "FROM books b " +
+                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
+                "LEFT JOIN authors a ON ba.author_id = a.id " +
+                "WHERE b.id = ?";
         String loggerMessage = "Fetching book by id.";
-        return query(sql, List.of(id), this::mapResultSetToBook, loggerMessage);
+        return queryBooksWithAuthors(sql, List.of(id), loggerMessage);
     }
 
     public int deleteById(Long id) throws SQLException {

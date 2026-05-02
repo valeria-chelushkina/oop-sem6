@@ -63,6 +63,20 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<BookDTO> findByLanguage(String language) throws SQLException{
+        return bookDAO.findByLanguage(language).stream()
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookDTO> findByTitleOrAuthor (String query) throws SQLException {
+        return bookDAO.findByTitleOrAuthor(query).stream()
+                .map(bookMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Long create(BookDTO bookDTO) throws SQLException {
         Book book = bookMapper.toEntity(bookDTO);
         return bookDAO.createWithAuthors(book);

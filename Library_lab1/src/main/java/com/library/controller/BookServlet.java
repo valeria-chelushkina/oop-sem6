@@ -29,6 +29,8 @@ public class BookServlet extends HttpServlet {
             String title = req.getParameter("title");
             String author = req.getParameter("author");
             String genre = req.getParameter("genre");
+            String language = req.getParameter("language");
+            String query = req.getParameter("query")
 
             if (id != null && !id.isBlank()) {
                 BookDTO book = bookService.findById(Long.valueOf(id));
@@ -41,13 +43,14 @@ public class BookServlet extends HttpServlet {
             }
 
             List<BookDTO> books;
-            if (title != null && !title.isBlank()) {
-                books = bookService.findByTitle(title);
-            } else if (author != null && !author.isBlank()) {
-                books = bookService.findByAuthor(author);
+            if (query != null && !query.isBlank()) {
+                books = bookService.findByTitleOrAuthor(query);
             } else if (genre != null && !genre.isBlank()) {
                 books = bookService.findByGenre(genre);
-            } else {
+            } else if (language!=null&& !language.isBlank()) {
+                books=bookService.findByLanguage(language);
+            }
+            else {
                 books = bookService.findAll();
             }
             writeJson(resp, HttpServletResponse.SC_OK, books);
