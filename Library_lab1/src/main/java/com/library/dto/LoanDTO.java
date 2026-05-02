@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoanDto {
+public class LoanDTO {
     private Long id;
     private Long bookItemId;
     private Long readerId;

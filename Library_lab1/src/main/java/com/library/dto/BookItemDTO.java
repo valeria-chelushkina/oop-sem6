@@ -1,5 +1,6 @@
 package com.library.dto;
 
+import com.library.entity.enums.BookItemStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthorDto {
+public class BookItemDTO {
     private Long id;
-    private String penName;
-    private String biography;
+    private Long bookId;
+    private String inventoryCode;
+    private BookItemStatus status;
 }
