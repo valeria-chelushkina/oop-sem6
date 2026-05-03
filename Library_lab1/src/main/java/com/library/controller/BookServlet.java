@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +27,6 @@ public class BookServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             String id = req.getParameter("id");
-            String title = req.getParameter("title");
-            String author = req.getParameter("author");
-            String genre = req.getParameter("genre");
-            String language = req.getParameter("language");
             String query = req.getParameter("query");
 
             if (id != null && !id.isBlank()) {
@@ -42,17 +39,11 @@ public class BookServlet extends HttpServlet {
                 return;
             }
 
-            List<BookDTO> books;
-            if (query != null && !query.isBlank()) {
-                books = bookService.findByTitleOrAuthor(query);
-            } else if (genre != null && !genre.isBlank()) {
-                books = bookService.findByGenre(genre);
-            } else if (language!=null&& !language.isBlank()) {
-                books=bookService.findByLanguage(language);
-            }
-            else {
-                books = bookService.findAll();
-            }
+            List<BookDTO> books = bookService.searchBooks(
+                    query,
+                    collectRepeatedParams(req, "genre"),
+                    collectRepeatedParams(req, "language")
+            );
             writeJson(resp, HttpServletResponse.SC_OK, books);
         } catch (IllegalArgumentException e) {
             writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid query parameter format.");
@@ -98,6 +89,21 @@ public class BookServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid id format.");
         }
+    }
+
+    /** Параметри виду {@code ?genre=a&genre=b} для OR у межах однієї групи. */
+    private static List<String> collectRepeatedParams(HttpServletRequest req, String name) {
+        String[] raw = req.getParameterValues(name);
+        if (raw == null) {
+            return List.of();
+        }
+        List<String> out = new ArrayList<>();
+        for (String v : raw) {
+            if (v != null && !v.isBlank()) {
+                out.add(v.trim());
+            }
+        }
+        return out;
     }
 
     private void writeJson(HttpServletResponse resp, int status, Object body) throws IOException {

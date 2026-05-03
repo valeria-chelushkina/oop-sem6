@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+    />
+    <title>Library</title>
+</head>
+<body>
+
+<div id="loader">
+    <h2>Library is loading... 📚</h2>
+</div>
+
+<header>
+    <div>
+        <a href="http://localhost:8081"
+        ><img
+                class="icon"
+                src="https://ctfcf--s.chowtaifook.com/wp-content/themes/ctfcf-theme/images/title/en/library.png"
+                alt="library-icon"
+                title="library-icon"
+        /></a>
+    </div>
+    <form class="search-bar-input" id="search-form" method="get" action="">
+        <input
+                type="search"
+                id="search-bar"
+                name="query"
+                placeholder="Search..."
+                autocomplete="off"
+        />
+        <button type="submit" class="search-btn">🔎︎</button>
+    </form>
+    <div class="user-sign-in">
+        <!-- will add login-registration later -->
+        <button>Sign in</button>
+    </div>
+</header>
+
+<div class="main-page">
+    <div class="right-block">
+        <aside class="sidebar">
+            <p>Search filters:</p>
+            <form id="filter-form" method="get" action="">
+                <fieldset id="genre-filters">
+                </fieldset>
+
+                <fieldset id="language-filters">
+                </fieldset>
+
+                <div class="filter-form-buttons">
+                    <button type="submit">Submit</button>
+                    <button type="reset">Reset</button>
+                </div>
+            </form>
+        </aside>
+    </div>
+    <div class="central-block">
+        <div class="book-cards">
+            <ul class="book-list" id="book-list">
+
+            </ul>
+        </div>
+    </div>
+    <div class="left-block">
+        <p>Recent views:</p>
+        <!-- only an example - will be implemented later -->
+        <ul class="recent-views">
+            <li><a href="#">Book1</a></li>
+            <li><a href="#">Book2</a></li>
+        </ul>
+    </div>
+</div>
+
+<script src="static/js/script.js"></script>
+</body>
+</html>

@@ -23,6 +23,12 @@ public class GenreDAO extends BaseDAO {
         return query(sql, Collections.emptyList(), this::mapResultSetToGenre, loggerMessage);
     }
 
+    public List<String> findAllGenreNames() throws SQLException {
+        String sql = "SELECT name FROM genres ORDER BY name";
+        String loggerMessage = "Fetching all genre names.";
+        return query(sql, List.of(), rs -> rs.getString("name"), loggerMessage);
+    }
+
     public Long create(Genre genre) throws SQLException{
         String sql = "INSERT INTO genres (name) VALUES (?)";
         String loggerMessage = "Creating new genre.";

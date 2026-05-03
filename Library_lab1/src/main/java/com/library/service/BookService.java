@@ -14,6 +14,12 @@ public interface BookService {
     List<BookDTO> findByGenre(String genre) throws SQLException;
     List<BookDTO> findByLanguage(String language) throws SQLException;
     List<BookDTO> findByTitleOrAuthor(String query) throws SQLException;
+
+    /**
+     * query — назва або автор (як findByTitleOrAuthor); кілька жанрів — OR; кілька мов — OR; усе разом — AND.
+     */
+    List<BookDTO> searchBooks(String query, List<String> genres, List<String> languages) throws SQLException;
+
     Long create(BookDTO bookDTO) throws SQLException;
     Long createWithAuthors(CreateBookRequest request) throws SQLException;
     int update(BookDTO bookDTO) throws SQLException;

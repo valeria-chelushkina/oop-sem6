@@ -1,0 +1,410 @@
+*{
+  transition: 0.15s;
+}
+
+html,
+body {
+  height: 100vh;
+  font-family: "Roboto", Helvetica, sans-serif;
+  margin: 0;
+  background-color: rgb(255, 237, 255);
+}
+
+/* === header === */
+
+header {
+  height: 120px;
+  background-color: rgb(255, 214, 255);
+  max-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 30px;
+}
+
+.icon{
+  height: 130px;
+  margin-top: -50px;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* Removes the 'X' from Internet Explorer 10+ */
+input[type="search"]::-ms-clear,
+input[type="search"]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+#search-bar {
+  width: 700px;
+  font-size: 18px;
+  padding: 15px;
+  outline: 0;
+  border-radius: 8px;
+  border: none;
+}
+
+.search-bar-input{
+  position: relative;
+}
+
+.search-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+.user-sign-in button{
+  font-size: 17px;
+  border-radius: 5px;
+  border: none;
+  padding: 15px 8px;
+  width: 180px;
+  cursor: pointer;
+  margin: 10px 0px;
+  font-weight: 600;
+  background-color: white;
+}
+
+/* === main block === */
+
+.book-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 25px 15px 25px;
+  background-color: #fcfcfc;
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  transition: background-color 0.3s ease
+}
+
+.book-card:hover {
+    background-color: #f5f5f5;
+    border-color: #e0e0e0;
+}
+
+ul {
+  list-style: none;
+  padding: 0px;
+}
+
+.book-cover {
+  height: 248px;
+  width: 155px;
+}
+
+img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.main-page {
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.central-block{
+  flex: 0 0 60%;
+}
+
+.book-cards {
+  width: 100%;
+  /*background-color: white;*/
+  border-radius: 10px;
+  margin: auto;
+}
+
+.book-info {
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+  width: 100%;
+  padding: 10px 30px;
+  gap: 8px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 26px;
+  letter-spacing: -0.5px;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.title:hover, .recent-views a:hover {
+  color: rgb(118, 0, 108);
+  cursor: pointer;
+}
+
+.author {
+  font-size: 18px;
+  margin: 0;
+  color: #555;
+}
+
+.author span {
+  color: rgb(118, 0, 108);
+  font-weight: 500;
+}
+
+.status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 20px;
+}
+
+.status-row p{
+  font-size: 17px;
+}
+
+.available-copies {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.rating {
+  font-size: 16px;
+  margin: 0;
+}
+
+.additional-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tags p {
+  margin: 0;
+  font-weight: bold;
+  font-style: normal;
+  font-size: 14px;
+}
+
+.tag {
+  background-color: rgb(255, 220, 250);
+  color: rgb(118, 0, 108);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-style: normal;
+  margin: 0 !important;
+}
+
+.meta-data {
+  border-top: 1px solid rgba(255, 162, 235, 0.2);
+  padding-top: 10px;
+}
+
+.meta-data p {
+  background: none;
+  padding: 0;
+  margin: 3px 0;
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+}
+
+.add-order {
+  margin-right: 20px;
+}
+
+.add-order button, .filter-form-buttons button {
+  font-size: 17px;
+  border-radius: 5px;
+  border: none;
+  padding: 15px 8px;
+  width: 180px;
+  cursor: pointer;
+  margin: 10px 0px;
+  font-weight: 600;
+}
+
+.order {
+  background-color: rgb(162, 76, 205);
+  color: white;
+}
+
+.order:hover, .add-to-list:hover, .filter-form-buttons button:hover{
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+.order:active, .add-to-list:active, .filter-form-buttons button:active{
+  opacity: 0.95;
+}
+
+.add-to-list{
+  background-color: rgb(244, 206, 255);
+}
+
+/* === left-right blocks === */
+
+.left-block, .right-block{
+  flex: 1 1 15%;
+  text-align: center;
+  /*background-color: #fcfcfc;*/
+  margin: 20px 20px;
+  padding: 10px;
+}
+
+.left-block p, .sidebar p{
+  font-size: 19px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.recent-views li{
+  margin: 10px 5px;
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.recent-views a{
+  color: rgb(37, 37, 37);
+  text-decoration:underline;
+}
+
+/* === filter form === */
+
+#filter-form fieldset{
+  border: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  text-align: left;
+}
+
+#filter-form legend{
+  font-style: italic;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.form-control {
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+  text-align: left;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+input[type="checkbox"] {
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.05em solid currentColor;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+}
+
+.form-control + .form-control {
+  margin-top: 0.5em;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--form-control-color);
+  background-color: rgb(172, 6, 255);
+  transform-origin: bottom left;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+.filter-form-buttons{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filter-form-buttons button{
+  font-size: 15px;
+  padding: 8px;
+  background-color: rgb(210, 123, 253);
+  color: white;
+}
+
+#filter-form label span::first-letter{
+  transform: uppercase;
+}
+
+/* === preloader === */
+
+#loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 237, 255);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease-out, visibility 0.6s;
+    opacity: 1;
+    visibility: visible;
+}
+
+#loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.no-books-found{
+    text-align: center;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 20px;
+}

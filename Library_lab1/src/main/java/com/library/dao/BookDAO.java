@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class BookDAO extends BaseDAO {
     private static final String BASE_SELECT_WITH_RELATIONS =
@@ -161,6 +162,68 @@ public class BookDAO extends BaseDAO {
         String sql = BASE_SELECT_WITH_RELATIONS + "WHERE LOWER(b.language) = LOWER(?)";
         String loggerMessage = "Fetching books by language.";
         return queryBooksWithRelations(sql, List.of(language), loggerMessage);
+    }
+
+    /**
+     * Комбінований пошук: текст (назва або автор) AND жанри AND мови.
+     * Кілька жанрів — OR (достатньо одного збігу). Кілька мов — OR.
+     * Між групами «текст», «жанри», «мови» завжди AND.
+     */
+    public List<Book> searchBooks(String query, List<String> genres, List<String> languages) throws SQLException {
+        StringBuilder sql = new StringBuilder(BASE_SELECT_WITH_RELATIONS).append("WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (query != null && !query.isBlank()) {
+            sql.append(" AND (LOWER(b.title) LIKE LOWER(?) OR EXISTS (");
+            sql.append("SELECT 1 FROM book_authors ba_q JOIN authors a_q ON a_q.id = ba_q.author_id ");
+            sql.append("WHERE ba_q.book_id = b.id AND LOWER(a_q.pen_name) LIKE LOWER(?)))");
+            String p = "%" + query.trim().toLowerCase() + "%";
+            params.add(p);
+            params.add(p);
+        }
+
+        List<String> genreList = genres == null ? List.of() : genres.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+        if (!genreList.isEmpty()) {
+            sql.append(" AND EXISTS (SELECT 1 FROM book_genres bg_g JOIN genres g_g ON g_g.id = bg_g.genre_id ");
+            sql.append("WHERE bg_g.book_id = b.id AND (");
+            for (int i = 0; i < genreList.size(); i++) {
+                if (i > 0) {
+                    sql.append(" OR ");
+                }
+                sql.append("LOWER(g_g.name) LIKE LOWER(?)");
+                params.add("%" + genreList.get(i).toLowerCase() + "%");
+            }
+            sql.append("))");
+        }
+
+        List<String> langList = languages == null ? List.of() : languages.stream()
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+        if (!langList.isEmpty()) {
+            sql.append(" AND (");
+            for (int i = 0; i < langList.size(); i++) {
+                if (i > 0) {
+                    sql.append(" OR ");
+                }
+                sql.append("LOWER(b.language) = LOWER(?)");
+                params.add(langList.get(i));
+            }
+            sql.append(")");
+        }
+
+        return queryBooksWithRelations(sql.toString(), params, "Combined book search.");
+    }
+
+    public List<String> findUniqueLanguages() throws SQLException {
+        String sql = "SELECT DISTINCT language FROM books WHERE language IS NOT NULL ORDER BY language";
+        String loggerMessage = "Fetching unique languages.";
+        return query(sql, List.of(), rs -> rs.getString("language"), loggerMessage);
     }
 
     public Long create(Book book) throws SQLException {
