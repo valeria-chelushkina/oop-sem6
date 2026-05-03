@@ -18,6 +18,8 @@ import java.util.Map;
 public class BookDAO extends BaseDAO {
     private static final String BASE_SELECT_WITH_RELATIONS =
             "SELECT b.*, " +
+                    "(SELECT ROUND(AVG(br.rating)::numeric, 2) FROM book_ratings br WHERE br.book_id = b.id) AS avg_rating, " +
+                    "(SELECT COUNT(*)::int FROM book_ratings br WHERE br.book_id = b.id) AS ratings_count, " +
                     "a.id AS author_id, a.pen_name, a.biography, " +
                     "g.id AS genre_id, g.name AS genre_name " +
                     "FROM books b " +
@@ -27,6 +29,15 @@ public class BookDAO extends BaseDAO {
                     "LEFT JOIN genres g ON bg.genre_id = g.id ";
 
     private Book mapResultSetToBook(ResultSet rs) throws SQLException {
+        Object avgObj = rs.getObject("avg_rating");
+        Double averageRating = null;
+        if (avgObj instanceof Number) {
+            averageRating = ((Number) avgObj).doubleValue();
+        }
+        int ratingsCount = rs.getInt("ratings_count");
+        if (rs.wasNull()) {
+            ratingsCount = 0;
+        }
         return Book.builder()
                 .id(rs.getLong("id"))
                 .title(rs.getString("title"))
@@ -37,6 +48,8 @@ public class BookDAO extends BaseDAO {
                 .language(rs.getString("language"))
                 .pagesCount(rs.getInt("pages_count"))
                 .description(rs.getString("description"))
+                .averageRating(averageRating)
+                .ratingsCount(ratingsCount)
                 .build();
     }
 

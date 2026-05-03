@@ -21,6 +21,10 @@ public class Book {
     private String language;
     private Integer pagesCount;
     private String description;
+    /** Середня оцінка з book_ratings; null, якщо оцінок ще немає. */
+    private Double averageRating;
+    /** Кількість оцінок. */
+    private Integer ratingsCount;
     // many-to-many relation with authors and genres
     private List<Author> authors;
     private List<Genre> genres;

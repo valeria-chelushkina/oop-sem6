@@ -21,6 +21,8 @@ public class BookDTO {
     private String language;
     private Integer pagesCount;
     private String description;
+    private Double averageRating;
+    private Integer ratingsCount;
     private List<AuthorDTO> authors;
     private List<GenreDTO> genres;
 }
