@@ -20,7 +20,7 @@ public class BookDTO {
     private String coverURL;
     private String language;
     private Integer pagesCount;
-    private String genre;
     private String description;
     private List<AuthorDTO> authors;
+    private List<GenreDTO> genres;
 }

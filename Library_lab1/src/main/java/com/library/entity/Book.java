@@ -20,8 +20,8 @@ public class Book {
     private String coverURL;
     private String language;
     private Integer pagesCount;
-    private String genre;
     private String description;
-    // many-to-many relation with authors
+    // many-to-many relation with authors and genres
     private List<Author> authors;
+    private List<Genre> genres;
 }

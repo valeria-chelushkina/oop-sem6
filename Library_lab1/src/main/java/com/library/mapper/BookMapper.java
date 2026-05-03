@@ -6,7 +6,7 @@ import com.library.entity.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "default", uses = AuthorMapper.class)
+@Mapper(componentModel = "default", uses = {AuthorMapper.class, GenreMapper.class} )
 public interface BookMapper {
     BookDTO toDto(Book book);
 
@@ -14,5 +14,6 @@ public interface BookMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "authors", ignore = true)
+    @Mapping(target = "genres", ignore = true)
     Book toEntity(CreateBookRequest request);
 }

@@ -2,6 +2,7 @@ package com.library.dao;
 
 import com.library.entity.Author;
 import com.library.entity.Book;
+import com.library.entity.Genre;
 import com.library.util.DatabaseManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,6 +16,16 @@ import java.util.List;
 import java.util.Map;
 
 public class BookDAO extends BaseDAO {
+    private static final String BASE_SELECT_WITH_RELATIONS =
+            "SELECT b.*, " +
+                    "a.id AS author_id, a.pen_name, a.biography, " +
+                    "g.id AS genre_id, g.name AS genre_name " +
+                    "FROM books b " +
+                    "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
+                    "LEFT JOIN authors a ON ba.author_id = a.id " +
+                    "LEFT JOIN book_genres bg ON b.id = bg.book_id " +
+                    "LEFT JOIN genres g ON bg.genre_id = g.id ";
+
     private Book mapResultSetToBook(ResultSet rs) throws SQLException {
         return Book.builder()
                 .id(rs.getLong("id"))
@@ -25,12 +36,11 @@ public class BookDAO extends BaseDAO {
                 .coverURL(rs.getString("cover_url"))
                 .language(rs.getString("language"))
                 .pagesCount(rs.getInt("pages_count"))
-                .genre(rs.getString("genre"))
                 .description(rs.getString("description"))
                 .build();
     }
 
-    private List<Book> queryBooksWithAuthors(String sql, List<Object> params, String loggerMessage) throws SQLException {
+    private List<Book> queryBooksWithRelations(String sql, List<Object> params, String loggerMessage) throws SQLException {
         logger.info(loggerMessage);
         Map<Long, Book> booksById = new LinkedHashMap<>();
         try (Connection conn = DatabaseManager.getInstance().getConnection();
@@ -46,6 +56,7 @@ public class BookDAO extends BaseDAO {
                     if (book == null) {
                         book = mapResultSetToBook(rs);
                         book.setAuthors(new ArrayList<>());
+                        book.setGenres(new ArrayList<>());
                         booksById.put(bookId, book);
                     }
 
@@ -62,6 +73,19 @@ public class BookDAO extends BaseDAO {
                                     .build());
                         }
                     }
+
+                    Object genreIdObj = rs.getObject("genre_id");
+                    Long genreId = genreIdObj == null ? null : ((Number) genreIdObj).longValue();
+                    if (genreId != null) {
+                        boolean alreadyAdded = book.getGenres().stream()
+                                .anyMatch(g -> g.getId() != null && g.getId().equals(genreId));
+                        if (!alreadyAdded) {
+                            book.getGenres().add(Genre.builder()
+                                    .id(genreId)
+                                    .name(rs.getString("genre_name"))
+                                    .build());
+                        }
+                    }
                 }
             }
             List<Book> books = new ArrayList<>(booksById.values());
@@ -74,61 +98,56 @@ public class BookDAO extends BaseDAO {
     }
 
     public List<Book> findAll() throws SQLException {
-        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
-                "FROM books b " +
-                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
-                "LEFT JOIN authors a ON ba.author_id = a.id";
+        String sql = BASE_SELECT_WITH_RELATIONS;
         String loggerMessage = "Fetching all books from the catalogue.";
-        return queryBooksWithAuthors(sql, Collections.emptyList(), loggerMessage);
+        return queryBooksWithRelations(sql, Collections.emptyList(), loggerMessage);
     }
 
     public List<Book> findByTitle(String title) throws SQLException {
-        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
-                "FROM books b " +
-                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
-                "LEFT JOIN authors a ON ba.author_id = a.id " +
-                "WHERE LOWER(b.title) LIKE LOWER(?)";
+        String sql = BASE_SELECT_WITH_RELATIONS + "WHERE LOWER(b.title) LIKE LOWER(?)";
         String loggerMessage = "Fetching books by title.";
-        return queryBooksWithAuthors(sql, List.of("%" + title + "%"), loggerMessage);
+        return queryBooksWithRelations(sql, List.of("%" + title + "%"), loggerMessage);
     }
 
     public List<Book> findByAuthor(String author) throws SQLException {
-        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography FROM books b " +
-                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
-                "LEFT JOIN authors a ON ba.author_id = a.id " +
-                "WHERE LOWER(a.pen_name) LIKE LOWER(?)";
+        String sql = BASE_SELECT_WITH_RELATIONS +
+                "WHERE EXISTS (" +
+                "SELECT 1 FROM book_authors ba2 " +
+                "JOIN authors a2 ON a2.id = ba2.author_id " +
+                "WHERE ba2.book_id = b.id AND LOWER(a2.pen_name) LIKE LOWER(?)" +
+                ")";
         String loggerMessage = "Fetching books by author.";
-        return queryBooksWithAuthors(sql, List.of("%" + author + "%"), loggerMessage);
+        return queryBooksWithRelations(sql, List.of("%" + author + "%"), loggerMessage);
     }
 
     public List<Book> findByTitleOrAuthor(String query) throws SQLException{
-        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography FROM books b " +
-                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
-                "LEFT JOIN authors a ON ba.author_id = a.id " +
-                "WHERE LOWER(a.pen_name) LIKE LOWER(?) OR LOWER(b.title) LIKE LOWER(?)";
+        String sql = BASE_SELECT_WITH_RELATIONS +
+                "WHERE LOWER(b.title) LIKE LOWER(?) " +
+                "OR EXISTS (" +
+                "SELECT 1 FROM book_authors ba2 " +
+                "JOIN authors a2 ON a2.id = ba2.author_id " +
+                "WHERE ba2.book_id = b.id AND LOWER(a2.pen_name) LIKE LOWER(?)" +
+                ")";
         String loggerMessage = "Fetching books by author or title.";
         String searchPattern = "%" + query.toLowerCase() + "%";
-        return queryBooksWithAuthors(sql, List.of(searchPattern, searchPattern), loggerMessage);
+        return queryBooksWithRelations(sql, List.of(searchPattern, searchPattern), loggerMessage);
     }
 
     public List<Book> findByGenre(String genre) throws SQLException {
-        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
-                "FROM books b " +
-                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
-                "LEFT JOIN authors a ON ba.author_id = a.id " +
-                "WHERE LOWER(b.genre) = LOWER(?)";
+        String sql = BASE_SELECT_WITH_RELATIONS +
+                "WHERE EXISTS (" +
+                "SELECT 1 FROM book_genres bg2 " +
+                "JOIN genres g2 ON g2.id = bg2.genre_id " +
+                "WHERE bg2.book_id = b.id AND LOWER(g2.name) LIKE LOWER(?)" +
+                ")";
         String loggerMessage = "Fetching books by genre.";
-        return queryBooksWithAuthors(sql, List.of(genre), loggerMessage);
+        return queryBooksWithRelations(sql, List.of("%" + genre + "%"), loggerMessage);
     }
 
     public List<Book> findByLanguage(String language) throws SQLException {
-        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
-                "FROM books b " +
-                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
-                "LEFT JOIN authors a ON ba.author_id = a.id " +
-                "WHERE LOWER(b.language) = LOWER(?)";
+        String sql = BASE_SELECT_WITH_RELATIONS + "WHERE LOWER(b.language) = LOWER(?)";
         String loggerMessage = "Fetching books by language.";
-        return queryBooksWithAuthors(sql, List.of(language), loggerMessage);
+        return queryBooksWithRelations(sql, List.of(language), loggerMessage);
     }
 
     public Long create(Book book) throws SQLException {
@@ -138,6 +157,7 @@ public class BookDAO extends BaseDAO {
             try {
                 Long createdBookId = insertBook(conn, book);
                 linkBookAuthors(conn, createdBookId, book.getAuthors(), false);
+                linkBookGenres(conn, createdBookId, book.getGenres(), false);
 
                 conn.commit();
                 logger.info("Book created successfully with id={}", createdBookId);
@@ -159,6 +179,7 @@ public class BookDAO extends BaseDAO {
             try {
                 Long createdBookId = insertBook(conn, book);
                 linkBookAuthors(conn, createdBookId, book.getAuthors(), true);
+                linkBookGenres(conn, createdBookId, book.getGenres(), true);
 
                 conn.commit();
                 logger.info("Book with authors created successfully with id={}", createdBookId);
@@ -174,9 +195,10 @@ public class BookDAO extends BaseDAO {
     }
 
     public int update(Book book) throws SQLException {
-        String updateBookSql = "UPDATE books SET title = ?, isbn = ?, publisher = ?, publication_year = ?, cover_url = ?, language = ?, pages_count = ?, genre = ?, description = ? " +
+        String updateBookSql = "UPDATE books SET title = ?, isbn = ?, publisher = ?, publication_year = ?, cover_url = ?, language = ?, pages_count = ?, description = ? " +
                 "WHERE id = ?";
         String deleteLinksSql = "DELETE FROM book_authors WHERE book_id = ?";
+        String deleteGenreLinksSql = "DELETE FROM book_genres WHERE book_id = ?";
 
         logger.info("Updating book with id={}", book.getId());
         try (Connection conn = DatabaseManager.getInstance().getConnection()) {
@@ -191,9 +213,8 @@ public class BookDAO extends BaseDAO {
                     stmt.setString(5, book.getCoverURL());
                     stmt.setString(6, book.getLanguage());
                     stmt.setObject(7, book.getPagesCount());
-                    stmt.setString(8, book.getGenre());
-                    stmt.setString(9, book.getDescription());
-                    stmt.setLong(10, book.getId());
+                    stmt.setString(8, book.getDescription());
+                    stmt.setLong(9, book.getId());
                     affectedRows = stmt.executeUpdate();
                 }
 
@@ -201,8 +222,13 @@ public class BookDAO extends BaseDAO {
                     deleteStmt.setLong(1, book.getId());
                     deleteStmt.executeUpdate();
                 }
+                try (PreparedStatement deleteStmt = conn.prepareStatement(deleteGenreLinksSql)) {
+                    deleteStmt.setLong(1, book.getId());
+                    deleteStmt.executeUpdate();
+                }
 
                 linkBookAuthors(conn, book.getId(), book.getAuthors(), true);
+                linkBookGenres(conn, book.getId(), book.getGenres(), true);
 
                 conn.commit();
                 logger.info("Book updated successfully, affected rows={}", affectedRows);
@@ -218,8 +244,8 @@ public class BookDAO extends BaseDAO {
     }
 
     private Long insertBook(Connection conn, Book book) throws SQLException {
-        String insertBookSql = "INSERT INTO books (title, isbn, publisher, publication_year, cover_url, language, pages_count, genre, description) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertBookSql = "INSERT INTO books (title, isbn, publisher, publication_year, cover_url, language, pages_count, description) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement bookStmt = conn.prepareStatement(insertBookSql, Statement.RETURN_GENERATED_KEYS)) {
             bookStmt.setString(1, book.getTitle());
             bookStmt.setString(2, book.getIsbn());
@@ -228,8 +254,7 @@ public class BookDAO extends BaseDAO {
             bookStmt.setString(5, book.getCoverURL());
             bookStmt.setString(6, book.getLanguage());
             bookStmt.setObject(7, book.getPagesCount());
-            bookStmt.setString(8, book.getGenre());
-            bookStmt.setString(9, book.getDescription());
+            bookStmt.setString(8, book.getDescription());
             bookStmt.executeUpdate();
 
             try (ResultSet keys = bookStmt.getGeneratedKeys()) {
@@ -252,6 +277,22 @@ public class BookDAO extends BaseDAO {
                 Long authorId = resolveAuthorId(conn, author, createMissingAuthors);
                 linkStmt.setLong(1, bookId);
                 linkStmt.setLong(2, authorId);
+                linkStmt.addBatch();
+            }
+            linkStmt.executeBatch();
+        }
+    }
+
+    private void linkBookGenres(Connection conn, Long bookId, List<Genre> genres, boolean createMissingGenres) throws SQLException {
+        if (genres == null || genres.isEmpty()) {
+            return;
+        }
+        String insertBookGenreSql = "INSERT INTO book_genres (book_id, genre_id) VALUES (?, ?)";
+        try (PreparedStatement linkStmt = conn.prepareStatement(insertBookGenreSql)) {
+            for (Genre genre : genres) {
+                Long genreId = resolveGenreId(conn, genre, createMissingGenres);
+                linkStmt.setLong(1, bookId);
+                linkStmt.setLong(2, genreId);
                 linkStmt.addBatch();
             }
             linkStmt.executeBatch();
@@ -292,6 +333,40 @@ public class BookDAO extends BaseDAO {
         }
     }
 
+    private Long resolveGenreId(Connection conn, Genre genre, boolean createMissingGenres) throws SQLException {
+        if (genre == null) {
+            throw new SQLException("Genre cannot be null.");
+        }
+        if (genre.getId() != null) {
+            return genre.getId();
+        }
+        if (!createMissingGenres) {
+            throw new SQLException("Genre id is required to create book-genre link.");
+        }
+        if (genre.getName() == null || genre.getName().isBlank()) {
+            throw new SQLException("Genre name is required when genre id is missing.");
+        }
+
+        Long existingGenreId = findGenreIdByName(conn, genre.getName());
+        if (existingGenreId != null) {
+            return existingGenreId;
+        }
+        return insertGenre(conn, genre);
+    }
+
+    private Long findGenreIdByName(Connection conn, String name) throws SQLException {
+        String findSql = "SELECT id FROM genres WHERE LOWER(name) = LOWER(?)";
+        try (PreparedStatement stmt = conn.prepareStatement(findSql)) {
+            stmt.setString(1, name);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("id");
+                }
+                return null;
+            }
+        }
+    }
+
     private Long insertAuthor(Connection conn, Author author) throws SQLException {
         String insertAuthorSql = "INSERT INTO authors (pen_name, biography) VALUES (?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(insertAuthorSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -307,14 +382,24 @@ public class BookDAO extends BaseDAO {
         }
     }
 
+    private Long insertGenre(Connection conn, Genre genre) throws SQLException {
+        String insertGenreSql = "INSERT INTO genres (name) VALUES (?)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertGenreSql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, genre.getName());
+            stmt.executeUpdate();
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (!keys.next()) {
+                    throw new SQLException("Failed to create genre: no generated id returned.");
+                }
+                return keys.getLong(1);
+            }
+        }
+    }
+
     public List<Book> findById(Long id) throws SQLException {
-        String sql = "SELECT b.*, a.id AS author_id, a.pen_name, a.biography " +
-                "FROM books b " +
-                "LEFT JOIN book_authors ba ON b.id = ba.book_id " +
-                "LEFT JOIN authors a ON ba.author_id = a.id " +
-                "WHERE b.id = ?";
+        String sql = BASE_SELECT_WITH_RELATIONS + "WHERE b.id = ?";
         String loggerMessage = "Fetching book by id.";
-        return queryBooksWithAuthors(sql, List.of(id), loggerMessage);
+        return queryBooksWithRelations(sql, List.of(id), loggerMessage);
     }
 
     public int deleteById(Long id) throws SQLException {

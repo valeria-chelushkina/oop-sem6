@@ -19,8 +19,9 @@ public class CreateBookRequest {
     private String coverURL;
     private String language;
     private Integer pagesCount;
-    private String genre;
     private String description;
     private List<Long> authorIds;
     private List<CreateAuthorRequest> newAuthors;
+    private List<Long> genreIds;
+    private List<CreateGenreRequest> newGenres;
 }

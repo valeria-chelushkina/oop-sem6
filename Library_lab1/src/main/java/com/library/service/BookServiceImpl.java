@@ -4,8 +4,10 @@ import com.library.dao.BookDAO;
 import com.library.dto.BookDTO;
 import com.library.dto.CreateAuthorRequest;
 import com.library.dto.CreateBookRequest;
+import com.library.dto.CreateGenreRequest;
 import com.library.entity.Author;
 import com.library.entity.Book;
+import com.library.entity.Genre;
 import com.library.mapper.BookMapper;
 import org.mapstruct.factory.Mappers;
 
@@ -86,6 +88,7 @@ public class BookServiceImpl implements BookService {
     public Long createWithAuthors(CreateBookRequest request) throws SQLException {
         Book book = bookMapper.toEntity(request);
         book.setAuthors(collectAuthorsFromRequest(request));
+        book.setGenres(collectGenresFromRequest(request));
         return bookDAO.createWithAuthors(book);
     }
 
@@ -131,6 +134,36 @@ public class BookServiceImpl implements BookService {
         return Author.builder()
                 .penName(request.getPenName())
                 .biography(request.getBiography())
+                .build();
+    }
+
+    private List<Genre> collectGenresFromRequest(CreateBookRequest request) {
+        if (request == null) {
+            return Collections.emptyList();
+        }
+        List<Genre> genres = new ArrayList<>();
+        if (request.getGenreIds() != null) {
+            genres.addAll(
+                    request.getGenreIds().stream()
+                            .filter(Objects::nonNull)
+                            .map(id -> Genre.builder().id(id).build())
+                            .collect(Collectors.toList())
+            );
+        }
+        if (request.getNewGenres() != null) {
+            genres.addAll(
+                    request.getNewGenres().stream()
+                            .filter(Objects::nonNull)
+                            .map(this::mapCreateGenreRequestToGenre)
+                            .collect(Collectors.toList())
+            );
+        }
+        return genres;
+    }
+
+    private Genre mapCreateGenreRequestToGenre(CreateGenreRequest request) {
+        return Genre.builder()
+                .name(request.getName())
                 .build();
     }
 }
