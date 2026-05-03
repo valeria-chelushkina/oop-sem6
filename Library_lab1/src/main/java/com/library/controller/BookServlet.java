@@ -30,7 +30,7 @@ public class BookServlet extends HttpServlet {
             String author = req.getParameter("author");
             String genre = req.getParameter("genre");
             String language = req.getParameter("language");
-            String query = req.getParameter("query")
+            String query = req.getParameter("query");
 
             if (id != null && !id.isBlank()) {
                 BookDTO book = bookService.findById(Long.valueOf(id));

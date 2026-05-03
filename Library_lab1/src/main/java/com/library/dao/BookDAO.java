@@ -107,7 +107,8 @@ public class BookDAO extends BaseDAO {
                 "LEFT JOIN authors a ON ba.author_id = a.id " +
                 "WHERE LOWER(a.pen_name) LIKE LOWER(?) OR LOWER(b.title) LIKE LOWER(?)";
         String loggerMessage = "Fetching books by author or title.";
-        return queryBooksWithAuthors(sql, List.of("%" + query + "%"), loggerMessage);
+        String searchPattern = "%" + query.toLowerCase() + "%";
+        return queryBooksWithAuthors(sql, List.of(searchPattern, searchPattern), loggerMessage);
     }
 
     public List<Book> findByGenre(String genre) throws SQLException {
