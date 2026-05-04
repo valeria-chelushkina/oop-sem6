@@ -37,6 +37,18 @@ public class BookItemServiceImpl implements BookItemService {
     }
 
     @Override
+    public List<BookItemDTO> findByBookId(Long id) throws SQLException{
+        return bookItemDAO.findByBookId(id).stream()
+                .map(bookItemMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public int countNumberOfAvailableCopies(Long id) throws SQLException {
+        return bookItemDAO.countNumberOfAvailableCopies(id);
+    }
+
+    @Override
     public int countAvailable() throws SQLException {
         return bookItemDAO.countAvailableBookItems();
     }

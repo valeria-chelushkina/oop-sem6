@@ -26,12 +26,29 @@ public class BookItemServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             String id = req.getParameter("id");
+            String bookId = req.getParameter("bookId");
             String availableCount = req.getParameter("availableCount");
+
+            if ("true".equalsIgnoreCase(availableCount) && bookId != null) {
+                long count = bookItemService.countNumberOfAvailableCopies(Long.valueOf(bookId));
+                Map<String, Object> payload = new LinkedHashMap<>();
+                payload.put("bookId", bookId);
+                payload.put("availableCount", count);
+                writeJson(resp, HttpServletResponse.SC_OK, payload);
+                return;
+            }
 
             if ("true".equalsIgnoreCase(availableCount)) {
                 Map<String, Object> payload = new LinkedHashMap<>();
                 payload.put("availableCount", bookItemService.countAvailable());
                 writeJson(resp, HttpServletResponse.SC_OK, payload);
+                return;
+            }
+
+            if(bookId != null)
+            {
+                List<BookItemDTO> items = bookItemService.findByBookId(Long.valueOf(bookId));
+                writeJson(resp, HttpServletResponse.SC_OK, items);
                 return;
             }
 

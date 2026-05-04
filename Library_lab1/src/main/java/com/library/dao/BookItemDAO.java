@@ -24,9 +24,22 @@ public class BookItemDAO extends BaseDAO {
         return query(sql, Collections.emptyList(), this::mapResultSetToBookItem, loggerMessage);
     }
 
+    public int countNumberOfAvailableCopies(Long id) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM book_items WHERE book_id = ? AND UPPER(status) = 'AVAILABLE'";
+        String loggerMessage = "Counting all book items from the catalogue with book_id.";
+        return queryForInt(sql, List.of(id), loggerMessage);
+    }
+
     public int countAvailableBookItems() throws SQLException {
         String sql = "SELECT COUNT(*) FROM book_items WHERE UPPER(status) = 'AVAILABLE'";
-        return queryForInt(sql, Collections.emptyList(), "Counting all available book items from the catalogue.");
+        String loggerMessage = "Counting all available book items from the catalogue.";
+        return queryForInt(sql, Collections.emptyList(), loggerMessage);
+    }
+
+    public List<BookItem> findByBookId(Long id) throws SQLException {
+        String sql = "SELECT * FROM book_items WHERE book_id = ?";
+        String loggerMessage="Fetching all books from catalogue with book_id.";
+        return query(sql, List.of(id), this::mapResultSetToBookItem, loggerMessage);
     }
 
     public Long create(BookItem bookItem) throws SQLException {
