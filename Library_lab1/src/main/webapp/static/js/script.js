@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="book-card">
                     <a href="#">
                         <div class="book-cover">
-                            <img src="${coverSrc || 'placeholder.jpg'}" alt="${book.title}">
+                            <img src="${coverSrc || 'placeholder.jpg'}" alt="${book.title}" title="${book.title}">
                         </div>
                     </a>
                     <div class="book-info">
