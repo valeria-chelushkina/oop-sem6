@@ -188,12 +188,43 @@ a {
   font-size: 16px;
   font-weight: bold;
   margin: 0;
+  transform: translateY(3.5px);
 }
 
-.rating {
-  font-size: 16px;
-  margin: 0;
+.stars-outer {
+  display: inline-block;
+  position: relative;
+  font-size: 25px;
 }
+
+.stars-outer::before{
+  content: "\2606\2606\2606\2606\2606";
+}
+
+.stars-inner {
+  position: absolute;
+  font-size: 25px;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  content: "&starf;&starf;&starf;&starf;&starf;";
+}
+
+.stars-inner::before {
+  content: "\2605\2605\2605\2605\2605";
+  color: gold;
+}
+
+.rating-number {
+    margin: 0;
+    margin-left: 2px;
+    font-weight: 500;
+    font-size: 17px;
+    display: inline-block;
+    transform: translateY(-1.4px);
+  }
 
 .additional-info {
   display: flex;
@@ -375,7 +406,7 @@ input[type="checkbox"]:checked::before {
   color: white;
 }
 
-#filter-form label span::first-letter{
+#filter-form label span::first-letter, .tag::first-letter{
   transform: uppercase;
 }
 

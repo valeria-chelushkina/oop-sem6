@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = buildBooksApiUrl();
             const response = await fetch(url);
             if (!response.ok) {
-                console.error('API помилка:', response.status);
+                console.error('API error:', response.status);
                 renderBooks([]);
                 if (loader) {
                     loader.classList.add('hidden');
@@ -137,15 +137,66 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="book-info">
                         <a href="#"><p class="title">${book.title}</p></a>
                         <p class="author">by <span>${authorLine || 'Unknown'}</span></p>
-
+                        <div class="status-row">
+                            <div class="rating">
+                                <div class="stars-outer">
+                                    <div class="stars-inner"></div>
+                                </div>
+                                <p class="rating-number"></p>
+                            </div>
+                            <p class="available-copies"></p>
+                        </div>
+                        <div class="additional-info">
+                            <div class="tags">
+                                <p>Tags:</p>
+                            </div>
+                            <div class="meta-data">
+                                <p class="publisher">Publisher: ${book.publisher || 'None'}.</p>
+                                <p class="language">Language: ${book.language || 'Unknown'}.</p>
+                                <p class="release-year">Published in ${book.publicationYear || 'Unknown'}.</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="add-order">
                         <button class="order">Order</button>
                     </div>
                 </div>
             `;
+
+            showRating(li, book.averageRating);
+            loadBookItems(li, book.id);
+            genresForBook(li, book.genres);
             bookList.appendChild(li);
         });
+    }
+
+    function genresForBook(container, bookGenres){
+        const genreContainer = container.querySelector(".tags");
+        if(!genreContainer) {
+            return;
+        }
+
+        if (!Array.isArray(bookGenres)) {
+                console.warn("bookGenres is not an array:", bookGenres);
+                return;
+        }
+
+        const genres = bookGenres.map((g) => g && g.name ? g.name : '').filter(Boolean);
+        genres.forEach((genre) => {
+            const span = document.createElement('span');
+            span.className = 'tag';
+            span.textContent = genre;
+            genreContainer.append(span);
+        })
+    }
+
+    function showRating(container, averageRating) {
+        const starPercentage = (averageRating / 5) * 100;
+        const starPercentageRounded = `${(Math.round(starPercentage / 10) * 10)}%`;
+        const starsInner = container.querySelector('.stars-inner');
+        const ratingNum = container.querySelector('.rating-number');
+        if (starsInner) starsInner.style.width = starPercentageRounded;
+        if (ratingNum) ratingNum.innerHTML = averageRating || 0;
     }
 
     async function loadFilters() {
@@ -175,6 +226,27 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } catch (e) {
             console.warn('Error loadFilters:', e);
+        }
+    }
+
+    async function loadBookItems(container, id) {
+        try{
+            const url = '/api/book-items?availableCount=true&bookId='+id;
+            const response = await fetch(url);
+            if(!response.ok) {
+                console.warn("Couldn't load /api/book-items:", response.status);
+                    return;
+            }
+            const bookItem = await response.json();
+            const availableCopies = bookItem.availableCount ?? 0;
+
+            const copiesElement = container.querySelector(".available-copies")
+            if(copiesElement) {
+                copiesElement.innerHTML = `Available copies: ${availableCopies}`;
+            }
+        }
+        catch(e){
+            console.warn('Error loadBookItems:', e);
         }
     }
 
