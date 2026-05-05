@@ -1,87 +1,3 @@
-* {
-  transition: 0.15s;
-}
-
-html,
-body {
-  height: 100vh;
-  font-family: "Roboto", Helvetica, sans-serif;
-  margin: 0;
-  background-color: rgb(255, 237, 255);
-}
-
-/* === header === */
-
-header {
-  height: 120px;
-  background-color: rgb(255, 214, 255);
-  max-width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 30px;
-}
-
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration {
-  display: none;
-}
-
-/* Removes the 'X' from Internet Explorer 10+ */
-input[type="search"]::-ms-clear,
-input[type="search"]::-ms-reveal {
-  display: none;
-  width: 0;
-  height: 0;
-}
-
-.icon {
-  height: 130px;
-  margin-top: -50px;
-}
-
-#search-bar {
-  width: 700px;
-  font-size: 18px;
-  padding: 15px;
-  outline: 0;
-  border-radius: 8px;
-  border: none;
-}
-
-.search-bar-input {
-  position: relative;
-}
-
-.search-btn {
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  background: transparent;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.search-btn:hover {
-  transform: translateY(-50%) scale(1.1);
-}
-
-.user-sign-in button {
-  font-size: 17px;
-  border-radius: 5px;
-  border: none;
-  padding: 15px 8px;
-  width: 180px;
-  cursor: pointer;
-  margin: 10px 0px;
-  font-weight: 600;
-  background-color: white;
-}
-
 /* ===================== */
 
 .main-page {
@@ -126,12 +42,6 @@ input[type="search"]::-ms-reveal {
   width: 250px;
 }
 
-img {
-  height: 100%;
-  width: 100%;
-  object-fit: contain;
-}
-
 .book-info {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -161,31 +71,14 @@ img {
   margin: 0;
 }
 
-.tags,
-.authors {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .tags p,
 .authors p {
-  margin: 0;
-  font-weight: bold;
-  font-style: normal;
   font-size: 15px;
 }
 
 .tag,
-.author {
-  background-color: rgb(255, 220, 250);
-  color: rgb(118, 0, 108);
-  border-radius: 20px;
-  padding: 4px 12px;
+.author-name {
   font-size: 15px;
-  font-style: normal;
-  margin: 0 !important;
 }
 
 .people-read,
@@ -221,76 +114,6 @@ img {
   margin: 15px 0px;
 }
 
-.right-block button {
-  font-size: 17px;
-  border-radius: 5px;
-  border: none;
-  padding: 15px 8px;
-  width: 200px;
-  cursor: pointer;
-  margin: 0px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-#order {
-  background-color: rgb(162, 76, 205);
-  color: white;
-}
-
-.right-block button:disabled,
-.right-block button[disabled] {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-#reading-room-order {
-  background-color: rgb(244, 206, 255);
-  margin-top: 10px !important;
-}
-
-.right-block button:hover {
-  opacity: 0.85;
-}
-.right-block button:active {
-  opacity: 0.95;
-}
-
-.stars-outer {
-  display: inline-block;
-  position: relative;
-  font-size: 25px;
-}
-
-.stars-outer::before {
-  content: "\2606\2606\2606\2606\2606";
-}
-
-.stars-inner {
-  position: absolute;
-  font-size: 25px;
-  top: 0;
-  left: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 0;
-  content: "&starf;&starf;&starf;&starf;&starf;";
-}
-
-.stars-inner::before {
-  content: "\2605\2605\2605\2605\2605";
-  color: gold;
-}
-
-.rating-number {
-  margin: 0;
-  margin-left: 2px;
-  font-weight: 500;
-  font-size: 17px;
-  display: inline-block;
-  transform: translateY(-1.4px);
-}
-
 .left-block,
 .right-block {
   width: 25%;
@@ -314,9 +137,7 @@ img {
 }
 
 ul {
-  list-style: none;
   margin: 0px 50px;
-  padding: 0;
 }
 ul li {
   text-align: left;
@@ -328,9 +149,5 @@ ul li {
  }
 
  .no-books-found{
-     text-align: center;
-     font-weight: 600;
-     font-style: italic;
-     font-size: 20px;
      padding-top: 50px
  }

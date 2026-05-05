@@ -1,3 +1,5 @@
+import { genresForBook, showRating, loadBookItems} from './utils.js'
+
 document.addEventListener('DOMContentLoaded', () => {
     const bookList = document.getElementById('book-list');
     const searchBar = document.getElementById('search-bar');
@@ -159,7 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                     <div class="add-order">
-                        <button class="order">Order</button>
+                        <button id="order">Order</button>
+                        <button id="reading-room-order">Order to reading room</button>
                     </div>
                 </div>
             `;
@@ -169,35 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
             genresForBook(li, book.genres);
             bookList.appendChild(li);
         });
-    }
-
-    function genresForBook(container, bookGenres){
-        const genreContainer = container.querySelector(".tags");
-        if(!genreContainer) {
-            return;
-        }
-
-        if (!Array.isArray(bookGenres)) {
-                console.warn("bookGenres is not an array:", bookGenres);
-                return;
-        }
-
-        const genres = bookGenres.map((g) => g && g.name ? g.name : '').filter(Boolean);
-        genres.forEach((genre) => {
-            const span = document.createElement('span');
-            span.className = 'tag';
-            span.textContent = genre;
-            genreContainer.append(span);
-        })
-    }
-
-    function showRating(container, averageRating) {
-        const starPercentage = (averageRating / 5) * 100;
-        const starPercentageRounded = `${(Math.round(starPercentage / 10) * 10)}%`;
-        const starsInner = container.querySelector('.stars-inner');
-        const ratingNum = container.querySelector('.rating-number');
-        if (starsInner) starsInner.style.width = starPercentageRounded;
-        if (ratingNum) ratingNum.innerHTML = averageRating || 0;
     }
 
     async function loadFilters() {
@@ -227,27 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } catch (e) {
             console.warn('Error loadFilters:', e);
-        }
-    }
-
-    async function loadBookItems(container, id) {
-        try{
-            const url = '/api/book-items?availableCount=true&bookId='+id;
-            const response = await fetch(url);
-            if(!response.ok) {
-                console.warn("Couldn't load /api/book-items:", response.status);
-                    return;
-            }
-            const bookItem = await response.json();
-            const availableCopies = bookItem.availableCount ?? 0;
-
-            const copiesElement = container.querySelector(".available-copies")
-            if(copiesElement) {
-                copiesElement.innerHTML = `Available copies: ${availableCopies}`;
-            }
-        }
-        catch(e){
-            console.warn('Error loadBookItems:', e);
         }
     }
 

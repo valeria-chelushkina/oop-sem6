@@ -1,9 +1,10 @@
+import { genresForBook, showRating, loadBookItems} from './utils.js'
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const searchBar = document.getElementById('search-bar');
     const searchForm = document.getElementById('search-form');
     const bookContainer = document.getElementById('container')
-    const startingPath = 'http://localhost:8081';
     if (!searchBar) {
             console.error('The expected #search-bar element is missing from the markup.');
             return;
@@ -114,74 +115,9 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(descriptionBlock);
     }
 
-
-    // repeated func
-    function genresForBook(container, bookGenres){
-            const genreContainer = container.querySelector(".tags");
-            if(!genreContainer) {
-                return;
-            }
-
-            if (!Array.isArray(bookGenres)) {
-                    console.warn("bookGenres is not an array:", bookGenres);
-                    const span = document.createElement('span');
-                    span.className = 'tag';
-                    span.textContent = 'None';
-                    genreContainer.append(span);
-                    return;
-            }
-
-            const genres = bookGenres.map((g) => g && g.name ? g.name : '').filter(Boolean);
-            genres.forEach((genre) => {
-                const span = document.createElement('span');
-                span.className = 'tag';
-                span.textContent = genre;
-                genreContainer.append(span);
-            })
-    }
-
-    // repeated func
-    function showRating(container, averageRating) {
-            const starPercentage = (averageRating / 5) * 100;
-            const starPercentageRounded = `${(Math.round(starPercentage / 10) * 10)}%`;
-            const starsInner = container.querySelector('.stars-inner');
-            const ratingNum = container.querySelector('.rating-number');
-            if (starsInner) starsInner.style.width = starPercentageRounded;
-            if (ratingNum) ratingNum.innerHTML = averageRating || 0;
-    }
-
     function showNumberRated(container, ratingsCount){
         container.querySelector('.people-rated').innerHTML = `${ratingsCount} people rated`
     }
-
-
-    // repeated func
-    async function loadBookItems(container, id) {
-            try{
-                const url = '/api/book-items?availableCount=true&bookId='+id;
-                const response = await fetch(url);
-                if(!response.ok) {
-                    console.warn("Couldn't load /api/book-items:", response.status);
-                        return;
-                }
-                const bookItem = await response.json();
-                const availableCopies = bookItem.availableCount ?? 0;
-
-                const copiesElement = container.querySelector(".available-copies")
-                if(copiesElement) {
-                    copiesElement.innerHTML = `Available copies: ${availableCopies}`;
-                }
-                if(availableCopies === 0){
-                    document.getElementById('order').disabled = true;
-                    document.getElementById('reading-room-order').disabled = true;
-                    document.getElementById('order').title = "No available copies.";
-                    document.getElementById('reading-room-order').title = "No available copies.";
-                }
-            }
-            catch(e){
-                console.warn('Error loadBookItems:', e);
-            }
-        }
 
     function authorsForBook(container, bookAuthors){
 
@@ -193,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!Array.isArray(bookAuthors)) {
             console.warn("bookAuthors is not an array:", bookAuthors);
             const span = document.createElement('span');
-            span.className = 'author';
+            span.className = 'author-name';
             span.textContent = 'Unknown';
             authorContainer.append(span);
             return;

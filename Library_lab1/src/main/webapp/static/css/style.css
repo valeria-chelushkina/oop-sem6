@@ -209,7 +209,6 @@ a {
   white-space: nowrap;
   overflow: hidden;
   width: 0;
-  content: "&starf;&starf;&starf;&starf;&starf;";
 }
 
 .stars-inner::before {
@@ -233,21 +232,23 @@ a {
   margin-top: 10px;
 }
 
-.tags {
+.tags, .authors {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.tags p {
+.tags p,
+.authors p{
   margin: 0;
   font-weight: bold;
   font-style: normal;
   font-size: 14px;
 }
 
-.tag {
+.tag,
+.author-name{
   background-color: rgb(255, 220, 250);
   color: rgb(118, 0, 108);
   border-radius: 20px;
@@ -275,33 +276,47 @@ a {
   margin-right: 20px;
 }
 
-.add-order button, .filter-form-buttons button {
+.add-order button,
+.filter-form-buttons button,
+.right-block button{
   font-size: 17px;
-  border-radius: 5px;
-  border: none;
-  padding: 15px 8px;
-  width: 180px;
-  cursor: pointer;
-  margin: 10px 0px;
-  font-weight: 600;
+    border-radius: 5px;
+    border: none;
+    padding: 15px 8px;
+    width: 200px;
+    cursor: pointer;
+    margin: 0px;
+    font-weight: 600;
 }
 
-.order {
+#order {
   background-color: rgb(162, 76, 205);
   color: white;
 }
 
-.order:hover, .add-to-list:hover, .filter-form-buttons button:hover{
+#reading-room-order {
+  background-color: rgb(244, 206, 255);
+  margin-top: 10px !important;
+}
+
+.add-order button:hover,
+.filter-form-buttons button:hover,
+.right-block button:hover {
   opacity: 0.85;
   cursor: pointer;
 }
 
-.order:active, .add-to-list:active, .filter-form-buttons button:active{
+.add-order button:active, .filter-form-buttons button:active,
+.right-block button:active{
   opacity: 0.95;
 }
 
-.add-to-list{
-  background-color: rgb(244, 206, 255);
+.add-order button:disabled,
+.add-order button[disabled],
+.right-block button:disabled,
+.right-block button[disabled]{
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 /* === left-right blocks === */
@@ -397,6 +412,7 @@ input[type="checkbox"]:checked::before {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 10px;
 }
 
 .filter-form-buttons button{
