@@ -23,6 +23,7 @@ public class BookDTO {
     private String description;
     private Double averageRating;
     private Integer ratingsCount;
+    private Integer timesRead;
     private List<AuthorDTO> authors;
     private List<GenreDTO> genres;
 }

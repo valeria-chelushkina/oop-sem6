@@ -17,5 +17,6 @@ public interface BookMapper {
     @Mapping(target = "genres", ignore = true)
     @Mapping(target = "averageRating", ignore = true)
     @Mapping(target = "ratingsCount", ignore = true)
+    @Mapping(target = "timesRead", ignore = true)
     Book toEntity(CreateBookRequest request);
 }

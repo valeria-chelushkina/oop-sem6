@@ -112,7 +112,7 @@ input[type="search"]::-ms-reveal {
 }
 
 .description-text{
-    font-size: 18px;
+    font-size: 17px;
     line-height: 28px;
 }
 
@@ -193,8 +193,7 @@ img {
 .book-publisher,
 .book-publication-year,
 .book-language,
-.book-pages-count,
-.book-items-info ul > li > p {
+.book-pages-count{
   background: none;
   padding: 0;
   margin: 10px 0;
@@ -234,12 +233,18 @@ img {
   cursor: pointer;
 }
 
-.order {
+#order {
   background-color: rgb(162, 76, 205);
   color: white;
 }
 
-.reading-room-order {
+.right-block button:disabled,
+.right-block button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#reading-room-order {
   background-color: rgb(244, 206, 255);
   margin-top: 10px !important;
 }

@@ -25,13 +25,13 @@ public class BookItemDAO extends BaseDAO {
     }
 
     public int countNumberOfAvailableCopies(Long id) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM book_items WHERE book_id = ? AND UPPER(status) = 'AVAILABLE'";
+        String sql = "SELECT COUNT(*) FROM book_items WHERE book_id = ? AND (UPPER(status) = 'AVAILABLE' OR UPPER(status) = 'READING_ROOM_ONLY')";
         String loggerMessage = "Counting all book items from the catalogue with book_id.";
         return queryForInt(sql, List.of(id), loggerMessage);
     }
 
     public int countAvailableBookItems() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM book_items WHERE UPPER(status) = 'AVAILABLE'";
+        String sql = "SELECT COUNT(*) FROM book_items WHERE UPPER(status) = 'AVAILABLE' OR UPPER(status) = 'READING_ROOM_ONLY'";
         String loggerMessage = "Counting all available book items from the catalogue.";
         return queryForInt(sql, Collections.emptyList(), loggerMessage);
     }

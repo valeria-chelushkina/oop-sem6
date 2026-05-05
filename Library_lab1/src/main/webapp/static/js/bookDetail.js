@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchBar = document.getElementById('search-bar');
     const searchForm = document.getElementById('search-form');
     const bookContainer = document.getElementById('container')
+    const startingPath = 'http://localhost:8081';
     if (!searchBar) {
             console.error('The expected #search-bar element is missing from the markup.');
             return;
@@ -20,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderBook(null);
                 return;
             }
-            const url = 'http://localhost:8081/api/books?id='+id;
+            //const url = `${startingPath}/api/books?id=${id}`;
+            const url = '/api/books?id='+id;
             const response = await fetch(url);
             if(!response.ok){
                 console.error('API error:', response.status);
@@ -65,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="middle-block">
                 <h1 class="book-title">${book.title}</h1>
                 <p class="book-code">ISBN: ${book.isbn || 'None'}</p>
-                <p class="people-read">Read n times</p>
+                <p class="people-read">Read ${book.timesRead} times</p>
                 <div class="rating-div">
                     <div class="stars-outer">
                         <div class="stars-inner"></div>
@@ -81,20 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p>Tags:</p>
                     </div>
                     <div class="row-line"></div>
-                    <div class="book-publisher"><p>Publisher: ${book.publisher || 'None'}</p></div>
-                    <div class="book-publication-year"><p>Published in ${book.publicationYear || 'Unknown'}</p></div>
-                    <div class="book-language"><p>Language: ${book.language || 'Unknown'}</p></div>
-                    <div class="book-pages-count"><p>Number of pages: ${book.pagesCount || 'Unknown'}</p></div>
+                    <div class="book-publisher"><p>Publisher: ${book.publisher || 'None'}.</p></div>
+                    <div class="book-publication-year"><p>Published in ${book.publicationYear || 'Unknown'}.</p></div>
+                    <div class="book-language"><p>Language: ${book.language || 'Unknown'}.</p></div>
+                    <div class="book-pages-count"><p>Number of pages: ${book.pagesCount || 'Unknown'}.</p></div>
                 </div>
             </div>
             <div class="right-block">
-                <button class="order">Order</button>
-                <button class="reading-room-order">Order to reading room</button>
-                <p class="available-copies">Available copies: 2</p>
-                <div class="book-items-info">
-                    <ul>
-                    </ul>
-                </div>
+                <button id="order">Order</button>
+                <button id="reading-room-order">Order to reading room</button>
+                <p class="available-copies"></p>
             </div>
         `
 
@@ -102,6 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         loadBookItems(mainBlock, book.id);
         genresForBook(mainBlock, book.genres);
         authorsForBook(mainBlock, book.authors);
+        isOnlyReadingRoom(mainBlock, book.id);
+        showNumberRated(mainBlock, book.ratingsCount);
 
         container.appendChild(mainBlock);
         container.appendChild(document.createElement('hr'));
@@ -148,7 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const ratingNum = container.querySelector('.rating-number');
             if (starsInner) starsInner.style.width = starPercentageRounded;
             if (ratingNum) ratingNum.innerHTML = averageRating || 0;
-        }
+    }
+
+    function showNumberRated(container, ratingsCount){
+        container.querySelector('.people-rated').innerHTML = `${ratingsCount} people rated`
+    }
 
 
     // repeated func
@@ -166,6 +170,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const copiesElement = container.querySelector(".available-copies")
                 if(copiesElement) {
                     copiesElement.innerHTML = `Available copies: ${availableCopies}`;
+                }
+                if(availableCopies === 0){
+                    document.getElementById('order').disabled = true;
+                    document.getElementById('reading-room-order').disabled = true;
+                    document.getElementById('order').title = "No available copies.";
+                    document.getElementById('reading-room-order').title = "No available copies.";
                 }
             }
             catch(e){
@@ -196,6 +206,41 @@ document.addEventListener('DOMContentLoaded', () => {
             span.textContent = author;
             authorContainer.append(span);
         })
+    }
+
+    async function isOnlyReadingRoom(container, bookId) {
+        try{
+            const url = '/api/book-items?bookId='+bookId;
+            const response = await fetch(url);
+            if(!response.ok){
+                console.warn("Couldn't load /api/book-items:", response.status);
+                return;
+            }
+            const bookItem = await response.json();
+            if(!bookItem || !Array.isArray(bookItem)){
+                console.warn("bookItem was not found or is not an array:", bookItem);
+                return;
+            }
+            let canOrder = 0;
+            let isReadingPresent = 0;
+            bookItem.forEach((item) => {
+                if(item.status === 'READING_ROOM_ONLY'){
+                    isReadingPresent+=1;
+                }
+                if(item.status === 'AVAILABLE' || item.status ===  'ORDERED' || item.status ===  'ISSUED'){
+                    canOrder+=1;
+                }
+            })
+            if(isReadingPresent > 0 && canOrder === 0){
+                document.getElementById('order').disabled = true;
+                document.getElementById('order').title = "No available copies.";
+            }
+            console.log('isReadingPresent' + isReadingPresent);
+            console.log('canOrder ' + canOrder);
+        }
+        catch(e){
+            console.warn('Error isOnlyReadingRoom:', e);
+        }
     }
 
 
