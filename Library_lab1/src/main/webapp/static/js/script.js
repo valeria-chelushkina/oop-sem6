@@ -127,15 +127,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     : '';
             const coverSrc = book.coverURL || book.coverUrl || '';
             const li = document.createElement('li');
+            const titleLink = "/book?id=" + book.id;
             li.innerHTML = `
                 <div class="book-card">
-                    <a href="#">
+                    <a href="${titleLink}">
                         <div class="book-cover">
                             <img src="${coverSrc || 'placeholder.jpg'}" alt="${book.title}" title="${book.title}">
                         </div>
                     </a>
                     <div class="book-info">
-                        <a href="#"><p class="title">${book.title}</p></a>
+                        <a href="${titleLink}"><p class="title">${book.title}</p></a>
                         <p class="author">by <span>${authorLine || 'Unknown'}</span></p>
                         <div class="status-row">
                             <div class="rating">

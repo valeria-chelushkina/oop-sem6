@@ -1,0 +1,331 @@
+* {
+  transition: 0.15s;
+}
+
+html,
+body {
+  height: 100vh;
+  font-family: "Roboto", Helvetica, sans-serif;
+  margin: 0;
+  background-color: rgb(255, 237, 255);
+}
+
+/* === header === */
+
+header {
+  height: 120px;
+  background-color: rgb(255, 214, 255);
+  max-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 30px;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* Removes the 'X' from Internet Explorer 10+ */
+input[type="search"]::-ms-clear,
+input[type="search"]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.icon {
+  height: 130px;
+  margin-top: -50px;
+}
+
+#search-bar {
+  width: 700px;
+  font-size: 18px;
+  padding: 15px;
+  outline: 0;
+  border-radius: 8px;
+  border: none;
+}
+
+.search-bar-input {
+  position: relative;
+}
+
+.search-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+.user-sign-in button {
+  font-size: 17px;
+  border-radius: 5px;
+  border: none;
+  padding: 15px 8px;
+  width: 180px;
+  cursor: pointer;
+  margin: 10px 0px;
+  font-weight: 600;
+  background-color: white;
+}
+
+/* ===================== */
+
+.main-page {
+  max-width: 100%;
+}
+
+#container {
+  max-width: 90%;
+  margin: auto;
+  background-color: rgba(255, 255, 255, 0.562);
+  border-radius: 15px;
+  padding-bottom: 30px;
+}
+
+.main-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: auto;
+  gap: 50px;
+  margin-top: 30px;
+  padding: 20px;
+}
+
+.description-block {
+  margin: auto;
+  width: 46%;
+}
+
+.description-text{
+    font-size: 18px;
+    line-height: 28px;
+}
+
+.description-block h2{
+    font-weight: 400;
+    font-size: 28px;
+}
+
+.book-cover {
+  height: 400px;
+  width: 250px;
+}
+
+img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.book-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 7px;
+  align-items: center;
+  margin-top: 25px;
+}
+
+.row-line {
+  grid-column: 1 / -1;
+  border-bottom: 1px solid rgba(229, 162, 255, 0.464);
+  height: 0;
+}
+
+.book-info p {
+  margin: 0;
+}
+
+.book-title {
+  letter-spacing: 1.5px;
+  margin: 0 0 5px 0;
+}
+
+.book-code {
+  margin: 0;
+}
+
+.tags,
+.authors {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tags p,
+.authors p {
+  margin: 0;
+  font-weight: bold;
+  font-style: normal;
+  font-size: 15px;
+}
+
+.tag,
+.author {
+  background-color: rgb(255, 220, 250);
+  color: rgb(118, 0, 108);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 15px;
+  font-style: normal;
+  margin: 0 !important;
+}
+
+.people-read,
+.people-rated,
+.book-publisher,
+.book-publication-year,
+.book-language,
+.book-pages-count,
+.book-items-info ul > li > p {
+  background: none;
+  padding: 0;
+  margin: 10px 0;
+  font-size: 15px;
+  color: #666;
+  font-style: italic;
+  padding-left: 5px;
+}
+
+.book-publisher,
+.book-publication-year,
+.book-language,
+.book-pages-count {
+  margin: 0;
+  padding: 0;
+}
+
+.people-rated {
+  margin: 0 0 15px 0;
+}
+
+.available-copies {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 15px 0px;
+}
+
+.right-block button {
+  font-size: 17px;
+  border-radius: 5px;
+  border: none;
+  padding: 15px 8px;
+  width: 200px;
+  cursor: pointer;
+  margin: 0px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.order {
+  background-color: rgb(162, 76, 205);
+  color: white;
+}
+
+.reading-room-order {
+  background-color: rgb(244, 206, 255);
+  margin-top: 10px !important;
+}
+
+.right-block button:hover {
+  opacity: 0.85;
+}
+.right-block button:active {
+  opacity: 0.95;
+}
+
+.stars-outer {
+  display: inline-block;
+  position: relative;
+  font-size: 25px;
+}
+
+.stars-outer::before {
+  content: "\2606\2606\2606\2606\2606";
+}
+
+.stars-inner {
+  position: absolute;
+  font-size: 25px;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  content: "&starf;&starf;&starf;&starf;&starf;";
+}
+
+.stars-inner::before {
+  content: "\2605\2605\2605\2605\2605";
+  color: gold;
+}
+
+.rating-number {
+  margin: 0;
+  margin-left: 2px;
+  font-weight: 500;
+  font-size: 17px;
+  display: inline-block;
+  transform: translateY(-1.4px);
+}
+
+.left-block,
+.right-block {
+  width: 25%;
+  text-align: center;
+}
+
+.left-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+
+.middle-block {
+  text-align: left;
+  width: 50%;
+}
+
+.right-block {
+  transform: translateY(25px);
+}
+
+ul {
+  list-style: none;
+  margin: 0px 50px;
+  padding: 0;
+}
+ul li {
+  text-align: left;
+}
+ hr{
+    margin: 0px 20px;
+    border: none;
+    border: 1px solid rgba(229, 162, 255, 0.464);
+ }
+
+ .no-books-found{
+     text-align: center;
+     font-weight: 600;
+     font-style: italic;
+     font-size: 20px;
+     padding-top: 50px
+ }

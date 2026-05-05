@@ -1,0 +1,35 @@
+package com.library.controller;
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+
+@WebServlet ("/book")
+public class BookPageServlet extends HttpServlet {
+
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        if (req.getParameter("id") == null) {
+            resp.sendRedirect("/");
+            return;
+        }
+
+        try{
+            req.getRequestDispatcher("/book.html").forward(req, resp);
+        }
+        catch(ServletException e){
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\": \"Servlet error while redirecting the the book page\"}");
+        }
+    }
+}
