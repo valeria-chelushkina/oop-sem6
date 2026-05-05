@@ -1,4 +1,4 @@
-import { genresForBook, showRating, loadBookItems} from './utils.js'
+import { genresForBook, showRating, loadBookItems, isOnlyReadingRoom} from './utils.js'
 
 document.addEventListener('DOMContentLoaded', () => {
     const bookList = document.getElementById('book-list');
@@ -161,8 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                     <div class="add-order">
-                        <button id="order">Order</button>
-                        <button id="reading-room-order">Order to reading room</button>
+                        <button class="order">Order</button>
+                        <button class="reading-room-order">Order to reading room</button>
                     </div>
                 </div>
             `;
@@ -170,6 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showRating(li, book.averageRating);
             loadBookItems(li, book.id);
             genresForBook(li, book.genres);
+            isOnlyReadingRoom(li, book.id);
             bookList.appendChild(li);
         });
     }

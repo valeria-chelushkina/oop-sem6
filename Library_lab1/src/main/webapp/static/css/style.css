@@ -289,12 +289,12 @@ a {
     font-weight: 600;
 }
 
-#order {
+.order {
   background-color: rgb(162, 76, 205);
   color: white;
 }
 
-#reading-room-order {
+.reading-room-order {
   background-color: rgb(244, 206, 255);
   margin-top: 10px !important;
 }

@@ -1,4 +1,4 @@
-import { genresForBook, showRating, loadBookItems} from './utils.js'
+import { genresForBook, showRating, loadBookItems, isOnlyReadingRoom} from './utils.js'
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -91,8 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
             <div class="right-block">
-                <button id="order">Order</button>
-                <button id="reading-room-order">Order to reading room</button>
+                <button class="order">Order</button>
+                <button class="reading-room-order">Order to reading room</button>
                 <p class="available-copies"></p>
             </div>
         `
@@ -143,42 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             authorContainer.append(span);
         })
     }
-
-    async function isOnlyReadingRoom(container, bookId) {
-        try{
-            const url = '/api/book-items?bookId='+bookId;
-            const response = await fetch(url);
-            if(!response.ok){
-                console.warn("Couldn't load /api/book-items:", response.status);
-                return;
-            }
-            const bookItem = await response.json();
-            if(!bookItem || !Array.isArray(bookItem)){
-                console.warn("bookItem was not found or is not an array:", bookItem);
-                return;
-            }
-            let canOrder = 0;
-            let isReadingPresent = 0;
-            bookItem.forEach((item) => {
-                if(item.status === 'READING_ROOM_ONLY'){
-                    isReadingPresent+=1;
-                }
-                if(item.status === 'AVAILABLE' || item.status ===  'ORDERED' || item.status ===  'ISSUED'){
-                    canOrder+=1;
-                }
-            })
-            if(isReadingPresent > 0 && canOrder === 0){
-                document.getElementById('order').disabled = true;
-                document.getElementById('order').title = "No available copies.";
-            }
-            console.log('isReadingPresent' + isReadingPresent);
-            console.log('canOrder ' + canOrder);
-        }
-        catch(e){
-            console.warn('Error isOnlyReadingRoom:', e);
-        }
-    }
-
 
     if(searchForm){
     searchForm.addEventListener('submit', (e) => {
