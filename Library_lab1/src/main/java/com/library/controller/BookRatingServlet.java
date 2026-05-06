@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 /**
  * GET/POST/DELETE {@code /api/books/{bookId}/ratings}.
  * POST body: {@code { "userId": 1, "rating": 5 }}.
- * DELETE: query {@code userId} обов'язковий.
+ * DELETE: query {@code userId} mandatory.
  */
 @WebServlet("/api/books/*")
 public class BookRatingServlet extends HttpServlet {

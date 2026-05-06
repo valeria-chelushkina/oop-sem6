@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Library Admin Panel</title>
+    <link rel="stylesheet" href="static/css/style.css" />
+    <link rel="stylesheet" href="static/css/adminPanel.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css"
+            rel="stylesheet"
+    />
+</head>
+<body>
+<header>
+    <div>
+        <a href="http://localhost:8081"
+        ><img
+                class="icon"
+                src="https://ctfcf--s.chowtaifook.com/wp-content/themes/ctfcf-theme/images/title/en/library.png"
+                alt="library-icon"
+                title="library-icon"
+        /></a>
+    </div>
+    <form class="search-bar-input" id="search-form" method="get" action="">
+        <input
+                type="search"
+                id="search-bar"
+                name="query"
+                placeholder="Search..."
+                autocomplete="off"
+        />
+        <button type="submit" class="search-btn">🔎︎</button>
+    </form>
+    <div class="user-sign-in">
+        <!-- will add later -->
+        <button>Profile</button>
+    </div>
+</header>
+
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>Library Admin</h2>
+        <nav>
+            <ul>
+                <li
+                        class="nav-item active"
+                        data-target="books-section"
+                        data-name="Books"
+                >
+                    📚 Books
+                </li>
+                <li
+                        class="nav-item"
+                        data-target="authors-section"
+                        data-name="Authors"
+                >
+                    ✍️ Authors
+                </li>
+                <li
+                        class="nav-item"
+                        data-target="book-items-section"
+                        data-name="Book items"
+                >
+                    🆔 Book items
+                </li>
+                <li class="nav-item" data-target="loans-section" data-name="Loans">
+                    🤝 Loans
+                </li>
+                <li
+                        class="nav-item"
+                        data-target="genres-section"
+                        data-name="Genres"
+                >
+                    🏷️ Genres
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="content-header">
+            <h1 id="tab-title">Books management</h1>
+            <div class="header-actions">
+                <button id="open-add-form">+ Add entry</button>
+                <input type="text" id="global-search" placeholder="Quick search" />
+            </div>
+        </div>
+
+        <section id="books-section" class="card">
+            <table>
+                <thead>
+                <tr class="table-head">
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Author(s)</th>
+                    <th>ISBN</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody class="table-body"></tbody>
+            </table>
+            <div class="pagination">
+                <button class="load-more">Load more...</button>
+            </div>
+        </section>
+
+        <section id="authors-section" class="card hidden">
+            <table>
+                <thead>
+                <tr class="table-head">
+                    <th>ID</th>
+                    <th>Pen name</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody class="table-body"></tbody>
+            </table>
+            <div class="pagination">
+                <button class="load-more">Load more...</button>
+            </div>
+        </section>
+
+        <section id="genres-section" class="card hidden">
+            <table>
+                <thead>
+                <tr class="table-head">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody class="table-body"></tbody>
+            </table>
+            <div class="pagination">
+                <button class="load-more">Load more...</button>
+            </div>
+        </section>
+
+        <section id="loans-section" class="card hidden">
+            <table>
+                <thead>
+                <tr class="table-head">
+                    <th>ID</th>
+                    <th>Book item ID</th>
+                    <th>Reader ID</th>
+                    <th>Librarian ID</th>
+                    <th>Loan date</th>
+                    <th>Due date</th>
+                    <th>Reurn date</th>
+                    <th>Loan type</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody class="table-body"></tbody>
+            </table>
+            <div class="pagination">
+                <button class="load-more">Load more...</button>
+            </div>
+        </section>
+
+        <section id="book-items-section" class="card hidden">
+            <table>
+                <thead>
+                <tr class="table-head">
+                    <th>ID</th>
+                    <th>Book ID</th>
+                    <th>InventoryCode</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody class="table-body"></tbody>
+            </table>
+            <div class="pagination">
+                <button class="load-more">Load more...</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="static/js/adminPanel.js"></script>
+</div>
+</body>
+</html>

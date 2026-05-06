@@ -26,9 +26,7 @@ public class BookRatingDAO extends BaseDAO {
                 .build();
     }
 
-    /**
-     * Створює або оновлює оцінку (UNIQUE book_id + user_id).
-     */
+    // creates or updates a rating (UNIQUE book_id + user_id).
     public BookRating upsert(BookRating bookRating) throws SQLException {
         String sql = "INSERT INTO book_ratings (book_id, user_id, rating, created_at, updated_at) "
                 + "VALUES (?, ?, ?, ?, ?) "

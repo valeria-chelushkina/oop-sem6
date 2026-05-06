@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="right-block">
                 <button class="order">Order</button>
-                <button class="reading-room-order">Order to reading room</button>
+                <button class="reading-room-order" to reading room</button>
                 <p class="available-copies"></p>
             </div>
         `

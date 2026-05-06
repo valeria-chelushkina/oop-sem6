@@ -3,6 +3,7 @@ package com.library.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.library.dto.BookDTO;
+import com.library.dto.BookItemDTO;
 import com.library.dto.CreateBookRequest;
 import com.library.service.BookService;
 import com.library.service.BookServiceImpl;
@@ -65,6 +66,26 @@ public class BookServlet extends HttpServlet {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
         } catch (IllegalArgumentException e) {
             writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid request body.");
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            BookDTO request = objectMapper.readValue(req.getInputStream(), BookDTO.class);
+            int affected = bookService.update(request);
+            if (affected == 0) {
+                writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Book not found.");
+                return;
+            }
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("updated", affected);
+            payload.put("message", "Book updated successfully.");
+            writeJson(resp, HttpServletResponse.SC_OK, payload);
+        } catch (SQLException e) {
+            writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
+        } catch (IllegalArgumentException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
 

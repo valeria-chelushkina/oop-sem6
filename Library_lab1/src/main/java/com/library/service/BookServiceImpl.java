@@ -31,7 +31,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDTO> findAll() throws SQLException {
         return bookDAO.findAll().stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -40,49 +40,49 @@ public class BookServiceImpl implements BookService {
         if (books.isEmpty()) {
             return null;
         }
-        return bookMapper.toDto(books.get(0));
+        return bookMapper.toDto(books.getFirst());
     }
 
     @Override
     public List<BookDTO> findByTitle(String title) throws SQLException {
         return bookDAO.findByTitle(title).stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<BookDTO> findByAuthor(String author) throws SQLException {
         return bookDAO.findByAuthor(author).stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<BookDTO> findByGenre(String genre) throws SQLException {
         return bookDAO.findByGenre(genre).stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<BookDTO> findByLanguage(String language) throws SQLException{
         return bookDAO.findByLanguage(language).stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<BookDTO> findByTitleOrAuthor (String query) throws SQLException {
         return bookDAO.findByTitleOrAuthor(query).stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<BookDTO> searchBooks(String query, List<String> genres, List<String> languages) throws SQLException {
         return bookDAO.searchBooks(query, genres, languages).stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -123,7 +123,7 @@ public class BookServiceImpl implements BookService {
                     request.getAuthorIds().stream()
                             .filter(Objects::nonNull)
                             .map(id -> Author.builder().id(id).build())
-                            .collect(Collectors.toList())
+                            .toList()
             );
         }
         if (request.getNewAuthors() != null) {
@@ -131,7 +131,7 @@ public class BookServiceImpl implements BookService {
                     request.getNewAuthors().stream()
                             .filter(Objects::nonNull)
                             .map(this::mapCreateAuthorRequestToAuthor)
-                            .collect(Collectors.toList())
+                            .toList()
             );
         }
         return authors;
@@ -154,7 +154,7 @@ public class BookServiceImpl implements BookService {
                     request.getGenreIds().stream()
                             .filter(Objects::nonNull)
                             .map(id -> Genre.builder().id(id).build())
-                            .collect(Collectors.toList())
+                            .toList()
             );
         }
         if (request.getNewGenres() != null) {
@@ -162,7 +162,7 @@ public class BookServiceImpl implements BookService {
                     request.getNewGenres().stream()
                             .filter(Objects::nonNull)
                             .map(this::mapCreateGenreRequestToGenre)
-                            .collect(Collectors.toList())
+                            .toList()
             );
         }
         return genres;

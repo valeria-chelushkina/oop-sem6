@@ -84,6 +84,51 @@ public class LoanServlet extends HttpServlet {
         writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Unsupported endpoint.");
     }
 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+        try{
+            LoanDTO request = objectMapper.readValue(req.getInputStream(), LoanDTO.class);
+            int affected = loanService.update(request);
+            if(affected == 0){
+                writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Loan not found.");
+                return;
+            }
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("updated", affected);
+            payload.put("message", "Loan updated successfully.");
+            writeJson(resp, HttpServletResponse.SC_OK, payload);
+        }
+        catch(SQLException e){
+            writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
+        }
+        catch(IllegalArgumentException e){
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String id = req.getParameter("id");
+        if (id == null || id.isBlank()) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Query parameter 'id' is required.");
+            return;
+        }
+        try {
+            int affected = loanService.deleteById(Long.valueOf(id));
+            if (affected == 0) {
+                writeError(resp, HttpServletResponse.SC_NOT_FOUND, "Loan not found.");
+                return;
+            }
+            Map<String, Object> payload = new LinkedHashMap<>();
+            payload.put("deleted", affected);
+            writeJson(resp, HttpServletResponse.SC_OK, payload);
+        } catch (SQLException e) {
+            writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
+        } catch (NumberFormatException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid id format.");
+        }
+    }
+
     private void createLoan(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             CreateLoanRequest request = objectMapper.readValue(req.getInputStream(), CreateLoanRequest.class);
