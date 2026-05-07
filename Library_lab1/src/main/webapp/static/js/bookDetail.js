@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderBook(null);
                 return;
             }
-            //const url = `${startingPath}/api/books?id=${id}`;
             const url = '/api/books?id='+id;
             const response = await fetch(url);
             if(!response.ok){
@@ -92,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="right-block">
                 <button class="order">Order</button>
-                <button class="reading-room-order"Order to reading room</button>
+                <button class="reading-room-order">Order to reading room</button>
                 <p class="available-copies"></p>
             </div>
         `

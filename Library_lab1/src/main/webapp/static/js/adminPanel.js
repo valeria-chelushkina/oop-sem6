@@ -7,37 +7,24 @@ let currentRenderer = null;
 const tableConfigs = {
   "books-section": {
     title: "Books management",
-
     headers: ["ID", "Title", "Author(s)", "ISBN", "Management"],
-
     action: "add-book",
-
     renderer: renderBookRow,
   },
-
   "authors-section": {
     title: "Authors management",
-
     headers: ["ID", "Pen name", "Management"],
-
     action: "add-author",
-
     renderer: renderAuthorRow,
   },
-
   "book-items-section": {
     title: "Book items management",
-
     headers: ["ID", "Book ID", "Inventory code", "Status", "Management"],
-
     action: "add-book-item",
-
     renderer: renderBookItemRow,
   },
-
   "loans-section": {
     title: "Loans management",
-
     headers: [
       "ID",
       "Book item ID",
@@ -50,32 +37,24 @@ const tableConfigs = {
       "Status",
       "Management",
     ],
-
     action: "add-loan",
-
     renderer: renderLoanRow,
   },
-
   "genres-section": {
     title: "Genres management",
-
     headers: ["ID", "Name", "Management"],
-
     action: "add-genre",
-
     renderer: renderGenreRow,
   },
 };
 
 function renderTable(config) {
   const tableHead = document.querySelector(".table-head");
-
   tableHead.innerHTML = config.headers
     .map((header) => `<th>${header}</th>`)
     .join("");
 
   document.getElementById("tab-title").textContent = config.title;
-
   document.getElementById("open-add-form").dataset.action = config.action;
 }
 
@@ -83,19 +62,13 @@ function switchSection(targetId) {
   navItems.forEach((nav) =>
     nav.classList.remove("active")
   );
-
   document
     .querySelector(`[data-target="${targetId}"]`)
     .classList.add("active");
-
   const config = tableConfigs[targetId];
-
   currentRenderer = config.renderer;
-
   renderTable(config);
-
   document.querySelector(".table-body").innerHTML = "";
-
   loadData(targetId);
 }
 
@@ -218,63 +191,305 @@ const closeBtn = document.querySelectorAll(".close-btn");
 const openBtn = document.getElementById("open-add-form");
 const overlay = document.getElementById("modal-overlay");
 
-const openModal = () => {
-  overlay.classList.add("active");
-};
-
 const closeModal = () => {
   overlay.classList.remove("active");
 };
-
-// event listeners
-closeBtn.forEach((btn) => btn.addEventListener("click", closeModal));
-openBtn.addEventListener("click", openModal);
 
 // close with a background click (? maybe will remove it)
 overlay.addEventListener("click", (e) => {
   if (e.target === overlay) closeModal();
 });
 
+const modalConfigs = {
+  "add-book": {
+    title: "Add new book",
+    renderer: renderBookForm,
+  },
+  "add-author": {
+    title: "Add new author",
+    renderer: renderAuthorForm,
+  },
+  "add-book-item": {
+    title: "Add new book item",
+    renderer: renderBookItemForm,
+  },
+  "add-loan": {
+    title: "Add new loan",
+    renderer: renderLoanForm,
+  },
+  "add-genre": {
+    title: "Add new genre",
+    renderer: renderGenreForm,
+  },
+};
+
+function openModal(action) {
+  const config = modalConfigs[action];
+  if (!config) return;
+  document.getElementById("modal-title").textContent = config.title;
+  document.getElementById("admin-form").innerHTML = config.renderer();
+
+  overlay.classList.add("active");
+  initializeSelects();
+}
+
+openBtn.addEventListener("click", (e) => {
+  openModal(e.target.dataset.action);
+});
+
+closeBtn.forEach((btn) => btn.addEventListener("click", closeModal));
+
+function renderBookForm() {
+  return `
+  <div class="form-group">
+                  <label> Title:</label>
+                  <input type="text" id="book-title" required />
+                </div>
+
+                <div class="form-group">
+                  <label>Author(s)</label>
+                  <div class="input-with-action">
+                    <select name="authorIds" id="author-select" multiple>
+                    </select>
+                    <button
+                      type="button"
+                      class="btn-quick-add"
+                      onclick="openAuthorModal()"
+                      title="Create new author"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Genre(s)/Tag(s)</label>
+                  <div class="input-with-action">
+                    <select name="genreIds" id="genre-select" multiple></select>
+                    <button
+                      type="button"
+                      class="btn-quick-add"
+                      onclick="openAuthorModal()"
+                      title="Create new genre"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label> ISBN:</label>
+                  <input type="text" id="book-isbn" />
+                </div>
+
+                <div class="form-group">
+                  <label> Publisher:</label>
+                  <input type="text" id="book-publisher" />
+                </div>
+
+                <div class="form-group">
+                  <label> Publication year:</label>
+                  <input type="number" id="book-publication-year" />
+                </div>
+
+                <div class="form-group">
+                  <label> Cover:</label>
+                  <input
+                    type="file"
+                    id="book-cover"
+                    accept="image/png, image/jpeg"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label> Language:</label>
+                  <input type="text" id="book-language" />
+                </div>
+
+                <div class="form-group">
+                  <label> Number of pages:</label>
+                  <input type="number" id="book-page-number" />
+                </div>
+
+                <div class="form-group">
+                  <label> Description:</label>
+                  <textarea name="description" id="book-description"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label>Book items:</label>
+                  <div id="items-container"></div>
+                  <button
+                    type="button"
+                    id="add-copy-btn"
+                    onclick="addItemRow()"
+                  >
+                    + Add book copy
+                  </button>
+                </div>
+  `;
+}
+
+function renderAuthorForm() {
+  return `
+  <div class="form-group">
+    <label> Pen name:</label>
+    <input type="text" id="author-pen-name" required />
+  </div>
+  <div class="form-group">
+    <label> Biography:</label>
+    <textarea
+    name="biography"
+    id="author-biography"
+    ></textarea>
+  </div>
+  `;
+}
+
+function renderBookItemForm() {
+  return `
+                  <div class="form-group">
+                    <label> Book ID:</label>
+                    <input type="text" id="bookItem-book-id" required />
+                  </div>
+
+                  <div class="form-group">
+                    <label> Inventory code:</label>
+                    <input type="text" id="bookItem-inventory-code" />
+                  </div>
+
+                  <div class="form-group">
+                    <label> Status:</label>
+                    <select name="bookItem-status" id="bookItem-status">
+                      <option></option>
+                      <option value="available">AVAILABLE</option>
+                      <option value="ordered">ORDERED</option>
+                      <option value="issued">ISSUED</option>
+                      <option value="lost">LOST</option>
+                      <option value="damaged">DAMAGED</option>
+                      <option value="archived">ARCHIVED</option>
+                      <option value="reading-room-only">
+                        READING ROOM ONLY
+                      </option>
+                    </select>
+                  </div>
+  `;
+}
+
+function renderLoanForm() {
+  return `
+  <div class="form-group">
+          <label>Book item ID</label>
+          <input type="number" required min="0" />
+        </div>
+        <div class="form-group">
+          <label>Reader ID</label>
+          <input type="number" required min="0" />
+        </div>
+        <div class="form-group">
+          <label>Librarian ID</label>
+          <input type="number" min="0" />
+        </div>
+        <div class="form-group">
+                          <label>Status</label>
+                          <select name="loan-status" id="loan-status">
+                          <option></option>
+                                      <option value="ordered-loan">ORDERED</option>
+                                      <option value="issued-loan">ISSUED</option>
+                                      <option value="lost-loan">LOST</option>
+                                      <option value="damaged-loan">DAMAGED</option>
+                                      <option value="archived-loan">ARCHIVED</option>
+                                      <option value="returned-loan">
+                                        RETURNED
+                                      </option>
+                          </select>
+                        </div>
+        <div class="form-group">
+          <label>Loan type</label>
+          <select name="loan-type" id="loan-type">
+          <option></option>
+                      <option value="subscription">SUBSCRIPTION</option>
+                      <option value="reading-room">READING_ROOM</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Loan date</label>
+          <input type="datetime-local" />
+        </div>
+        <div class="form-group">
+          <label>Due date</label>
+          <input type="date">
+        </div>
+        <div class="form-group">
+          <label>Return date</label>
+          <input type="datetime-local">
+        </div>
+  `;
+}
+
+function renderGenreForm(){
+  return  `
+  <div class="form-group">
+    <label> Name:</label>
+    <input type="text" id="genre-name" required />
+  </div>
+  `
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   switchSection("books-section");
 });
 
 
-// select2 elements
-$(document).ready(function () {
-        $("#author-select").select2({
-          placeholder: "Choose authors",
-          allowClear: true,
-          width: "resolve",
-          // dropdownParent: $('#modal-overlay')
-        });
-      });
+function initializeSelects() {
+  setupSelect2("#author-select", {
+    placeholder: "Choose authors",
+    allowClear: true,
+    width: "100%",
+    dropdownParent: $(".modal-overlay"),
+  });
 
-      // function for adding a new Author (after quickAdd) - ?? maybe will change logic later
-      function addNewAuthorToSelect(id, name) {
-        const newOption = new Option(name, id, true, true);
-        $("#author-select").append(newOption).trigger("change");
-      }
+  setupSelect2("#genre-select", {
+    placeholder: "Choose genres",
+    allowClear: true,
+    width: "100%",
+    dropdownParent: $(".modal-overlay"),
+  });
 
-      $(document).ready(function () {
-        $("#genre-select").select2({
-          placeholder: "Choose genres",
-          allowClear: true,
-          width: "resolve",
-          // dropdownParent: $('#modal-overlay')
-        });
-      });
+  setupSelect2("#bookItem-status", {
+    placeholder: "Select a status",
+    allowClear: true,
+    width: "100%",
+    dropdownParent: $(".modal-overlay"),
+  });
 
-      // function for adding a new Genre (after quickAdd) - ?? maybe will change logic later
-      function addNewAuthorToSelect(id, name) {
-        const newOption = new Option(name, id, true, true);
-        $("#genre-select").append(newOption).trigger("change");
-      }
+  setupSelect2("#loan-type", {
+    placeholder: "Select a type",
+    allowClear: true,
+    width: "100%",
+    dropdownParent: $(".modal-overlay"),
+  });
 
-      $(document).ready(function () {
-        $("#bookItem-status").select2({
-          placeholder: "Select a status",
-          allowClear: true,
-          width: "resolve", // ensures it respects the parent container's width
-        });
-      });
+  setupSelect2("#loan-status", {
+    placeholder: "Select a status",
+    allowClear: true,
+    width: "100%",
+    dropdownParent: $(".modal-overlay"),
+  });
+}
+
+function setupSelect2(selector, options) {
+  const element = $(selector);
+
+  if (!element.length) return;
+
+  if (element.hasClass("select2-hidden-accessible")) {
+    element.select2("destroy");
+  }
+
+  element.select2(options);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  switchSection("books-section");
+});
