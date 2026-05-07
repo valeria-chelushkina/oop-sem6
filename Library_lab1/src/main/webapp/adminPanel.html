@@ -86,105 +86,29 @@
     <main class="main-content">
         <div class="content-header">
             <h1 id="tab-title">Books management</h1>
+
             <div class="header-actions">
                 <button id="open-add-form">+ Add entry</button>
                 <input type="text" id="global-search" placeholder="Quick search" />
             </div>
         </div>
 
-        <section id="books-section" class="card">
+        <section class="card">
             <table>
                 <thead>
-                <tr class="table-head">
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Author(s)</th>
-                    <th>ISBN</th>
-                    <th></th>
-                </tr>
+                <tr class="table-head"></tr>
                 </thead>
-                <tbody class="table-body"></tbody>
-            </table>
-            <div class="pagination">
-                <button class="load-more">Load more...</button>
-            </div>
-        </section>
 
-        <section id="authors-section" class="card hidden">
-            <table>
-                <thead>
-                <tr class="table-head">
-                    <th>ID</th>
-                    <th>Pen name</th>
-                    <th></th>
-                </tr>
-                </thead>
                 <tbody class="table-body"></tbody>
             </table>
-            <div class="pagination">
-                <button class="load-more">Load more...</button>
-            </div>
-        </section>
 
-        <section id="genres-section" class="card hidden">
-            <table>
-                <thead>
-                <tr class="table-head">
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody class="table-body"></tbody>
-            </table>
-            <div class="pagination">
-                <button class="load-more">Load more...</button>
-            </div>
-        </section>
-
-        <section id="loans-section" class="card hidden">
-            <table>
-                <thead>
-                <tr class="table-head">
-                    <th>ID</th>
-                    <th>Book item ID</th>
-                    <th>Reader ID</th>
-                    <th>Librarian ID</th>
-                    <th>Loan date</th>
-                    <th>Due date</th>
-                    <th>Reurn date</th>
-                    <th>Loan type</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody class="table-body"></tbody>
-            </table>
-            <div class="pagination">
-                <button class="load-more">Load more...</button>
-            </div>
-        </section>
-
-        <section id="book-items-section" class="card hidden">
-            <table>
-                <thead>
-                <tr class="table-head">
-                    <th>ID</th>
-                    <th>Book ID</th>
-                    <th>InventoryCode</th>
-                    <th>Status</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody class="table-body"></tbody>
-            </table>
             <div class="pagination">
                 <button class="load-more">Load more...</button>
             </div>
         </section>
     </main>
-
-    <script src="static/js/adminPanel.js"></script>
 </div>
+
+<script src="static/js/adminPanel.js"></script>
 </body>
 </html>
