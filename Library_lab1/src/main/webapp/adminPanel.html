@@ -106,8 +106,37 @@
                 <button class="load-more">Load more...</button>
             </div>
         </section>
+
+
+        <!-- modal windows -->
+        <div id="modal-overlay" class="modal-overlay">
+            <div class="modal-window">
+                <header class="modal-header">
+                    <h2 id="modal-title">Add new *</h2>
+                    <button id="close-modal-btn" class="close-btn">&times;</button>
+                </header>
+
+                <div class="modal-body">
+                    <form id="admin-form">
+                    </form>
+                </div>
+
+                <footer class="modal-footer">
+                    <button type="button" id="cancel-btn" class="close-btn">Cancel</button>
+                    <button type="submit" form="admin-form" id="save-btn">
+                        Save
+                    </button>
+                </footer>
+            </div>
+        </div>
+
+
     </main>
 </div>
+
+<!-- for Select2 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script src="static/js/adminPanel.js"></script>
 </body>

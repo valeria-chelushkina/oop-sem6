@@ -213,6 +213,68 @@ function renderActionButtons() {
   `;
 }
 
+// open-close buttons for the modal window
+const closeBtn = document.querySelectorAll(".close-btn");
+const openBtn = document.getElementById("open-add-form");
+const overlay = document.getElementById("modal-overlay");
+
+const openModal = () => {
+  overlay.classList.add("active");
+};
+
+const closeModal = () => {
+  overlay.classList.remove("active");
+};
+
+// event listeners
+closeBtn.forEach((btn) => btn.addEventListener("click", closeModal));
+openBtn.addEventListener("click", openModal);
+
+// close with a background click (? maybe will remove it)
+overlay.addEventListener("click", (e) => {
+  if (e.target === overlay) closeModal();
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   switchSection("books-section");
 });
+
+
+// select2 elements
+$(document).ready(function () {
+        $("#author-select").select2({
+          placeholder: "Choose authors",
+          allowClear: true,
+          width: "resolve",
+          // dropdownParent: $('#modal-overlay')
+        });
+      });
+
+      // function for adding a new Author (after quickAdd) - ?? maybe will change logic later
+      function addNewAuthorToSelect(id, name) {
+        const newOption = new Option(name, id, true, true);
+        $("#author-select").append(newOption).trigger("change");
+      }
+
+      $(document).ready(function () {
+        $("#genre-select").select2({
+          placeholder: "Choose genres",
+          allowClear: true,
+          width: "resolve",
+          // dropdownParent: $('#modal-overlay')
+        });
+      });
+
+      // function for adding a new Genre (after quickAdd) - ?? maybe will change logic later
+      function addNewAuthorToSelect(id, name) {
+        const newOption = new Option(name, id, true, true);
+        $("#genre-select").append(newOption).trigger("change");
+      }
+
+      $(document).ready(function () {
+        $("#bookItem-status").select2({
+          placeholder: "Select a status",
+          allowClear: true,
+          width: "resolve", // ensures it respects the parent container's width
+        });
+      });

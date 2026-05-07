@@ -12,7 +12,7 @@
 
 /* Sidebar */
 .sidebar {
-  width: 250px;
+  width: 180px;
   background: rgba(61, 0, 92, 0.584);
   color: white;
   padding: 20px;
@@ -67,7 +67,7 @@ table {
   text-align: center;
 }
 th {
-  padding: 12px;
+  padding: 9px;
   border-bottom: 2px solid #eee;
 }
 td {
@@ -141,30 +141,36 @@ td {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.active {
   opacity: 1;
-  transition: opacity 0.3s ease;
+  visibility: visible;
 }
 
 .modal-window {
   background: white;
+  max-height: 90vh;
   width: 90%;
   max-width: 800px;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  transform: translateY(0);
+  transform: translateY(-20px);
   transition: transform 0.3s ease;
 }
 
-.modal-overlay.hidden {
-  display: none;
-  opacity: 0;
+.modal-overlay.active .modal-window {
+  transform: translateY(0);
 }
 
 .modal-header {
-  padding: 5px 15px;
-  background: rgb(251, 240, 251);
-  display: flex;
+  padding: 5px 15px !important;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #ddd;
@@ -172,14 +178,16 @@ td {
 }
 
 .modal-footer {
-  padding: 5px 15px;
+  border-top: 1px solid #ddd;
+  justify-content: center;
+  gap: 20px;
+}
+
+.modal-header, .modal-footer {
+  flex-shrink: 0;
+  padding: 15px;
   background: rgb(251, 240, 251);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  max-height: 100px;
-  gap: 20px;
 }
 
 #modal-title {
@@ -191,25 +199,26 @@ td {
 }
 
 #close-modal-btn {
-  position: absolute;
-  left: 90%;
   background: none;
   border: none;
-  font-size: 2.5rem;
+  font-size: 2.5rem; /* Adjust size */
   font-weight: bold;
   color: rgb(118, 0, 108);
   cursor: pointer;
-  line-height: 1;
+  line-height: 1; /* Helps vertical alignment */
   padding: 0;
+  position: static;
+  padding-right: 20px;
 }
 
 .modal-body {
   padding: 25px;
   max-height: 70vh;
   overflow-y: auto;
+  flex: 1;
 }
 
-.form-details {
+#admin-form {
   width: 90%;
   display: grid;
   grid-template-columns: 1fr;

@@ -278,7 +278,9 @@ a {
 
 .add-order button,
 .filter-form-buttons button,
-.right-block button{
+.right-block button,
+.modal-footer button,
+#add-copy-btn{
   font-size: 17px;
     border-radius: 5px;
     border: none;
@@ -289,25 +291,41 @@ a {
     font-weight: 600;
 }
 
-.order {
+.order, #save-btn {
   background-color: rgb(162, 76, 205);
   color: white;
 }
 
-.reading-room-order {
+.reading-room-order, {
   background-color: rgb(244, 206, 255);
   margin-top: 10px !important;
 }
 
+ #cancel-btn, #add-copy-btn{
+ background-color: rgb(244, 206, 255);
+ }
+
+ #cancel-btn:hover, #add-copy-btn:hover{
+    opacity: 0.75;
+ }
+
+  #cancel-btn:active, #add-copy-btn:active{
+     opacity: 0.9;
+  }
+
 .add-order button:hover,
 .filter-form-buttons button:hover,
-.right-block button:hover {
+.right-block button:hover,
+#save-btn:hover,
+#open-add-form:hover{
   opacity: 0.85;
-  cursor: pointer;
 }
 
-.add-order button:active, .filter-form-buttons button:active,
-.right-block button:active{
+.add-order button:active,
+.filter-form-buttons button:active,
+.right-block button:active,
+#save-btn:active,
+#open-add-form:active{
   opacity: 0.95;
 }
 
