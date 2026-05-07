@@ -44,6 +44,8 @@
 </header>
 
 <div class="admin-container">
+
+    <!-- sidebar -->
     <aside class="sidebar">
         <h2>Library Admin</h2>
         <nav>
@@ -93,6 +95,7 @@
             </div>
         </div>
 
+        <!-- table with information -->
         <section class="card">
             <table>
                 <thead>
@@ -124,6 +127,42 @@
                 <footer class="modal-footer">
                     <button type="button" id="cancel-btn" class="close-btn">Cancel</button>
                     <button type="submit" form="admin-form" id="save-btn">
+                        Save
+                    </button>
+                </footer>
+            </div>
+        </div>
+
+
+        <!-- modal window for quick add (author\genre\book item) -->
+        <div
+                id="modal-quick-add"
+                class="modal-overlay"
+                style="z-index: 1100"
+        >
+            <div class="modal-window small">
+                <header class="modal-header">
+                    <h2 id="quick-modal-title">Add new author</h2>
+                    <button id="close-quick-modal-btn" class="close-btn">&times;</button>
+                </header>
+
+                <div class="modal-body">
+                    <form id="quick-admin-form">
+                        <div class="form-group">
+                            <label> Pen name:</label>
+                            <input type="text" id="author-pen-name" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label> Biography:</label>
+                            <textarea name="biography" id="author-biography"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <footer class="modal-footer">
+                    <button type="button" id="quick-cancel-btn" class="close-btn">Cancel</button>
+                    <button type="submit" form="quick-admin-form" id="quick-save-btn">
                         Save
                     </button>
                 </footer>

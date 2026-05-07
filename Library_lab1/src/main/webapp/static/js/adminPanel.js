@@ -187,18 +187,8 @@ function renderActionButtons() {
 }
 
 // open-close buttons for the modal window
-const closeBtn = document.querySelectorAll(".close-btn");
 const openBtn = document.getElementById("open-add-form");
 const overlay = document.getElementById("modal-overlay");
-
-const closeModal = () => {
-  overlay.classList.remove("active");
-};
-
-// close with a background click (? maybe will remove it)
-overlay.addEventListener("click", (e) => {
-  if (e.target === overlay) closeModal();
-});
 
 const modalConfigs = {
   "add-book": {
@@ -228,7 +218,6 @@ function openModal(action) {
   if (!config) return;
   document.getElementById("modal-title").textContent = config.title;
   document.getElementById("admin-form").innerHTML = config.renderer();
-
   overlay.classList.add("active");
   initializeSelects();
 }
@@ -237,7 +226,69 @@ openBtn.addEventListener("click", (e) => {
   openModal(e.target.dataset.action);
 });
 
-closeBtn.forEach((btn) => btn.addEventListener("click", closeModal));
+// MAIN MODAL CLOSE
+function closeModal() {
+  overlay.classList.remove("active");
+}
+
+// listens to clicks only inside main modal
+document.querySelector('#modal-overlay').addEventListener('click', (e) => {
+  if (e.target.closest('.close-btn')) {
+    closeModal();
+  }
+});
+
+// function for quick modal buttons
+function quickButtons() {
+  const quickModalConfig = {
+    "quick-add-author": {
+      title: "Add new author",
+      renderer: renderAuthorForm,
+    },
+    "quick-add-genre": {
+      title: "Add new genre",
+      renderer: renderGenreForm,
+    },
+    "quick-add-book-item": {
+      title: "Add new book item",
+      renderer: renderBookItemForm,
+    },
+  };
+
+  const quickOpenButton = document.querySelectorAll(".btn-quick-add");
+  const quickModal = document.getElementById("modal-quick-add");
+  const closeQuickBtn = quickModal.querySelectorAll(".close-btn");
+
+  function closeQuickModal() {
+    quickModal.classList.remove("active");
+    document.getElementById("modal-overlay").classList.remove("blocked");
+  }
+
+  quickModal.addEventListener("click", (e) => {
+      // if clicked inside quickModal
+      if (e.target.closest(".close-btn")) {
+        e.stopPropagation(); // sp it doesn't close accidentally
+        closeQuickModal();
+      }
+    });
+
+  document.addEventListener("click", (e) => {
+    const button = e.target.closest(".btn-quick-add");
+    if (!button) return;
+    openModalQuick(button.dataset.action);
+  });
+
+  function openModalQuick(action) {
+    const config = quickModalConfig[action];
+    if (!config) return;
+    document
+      .getElementById("modal-overlay")
+      .classList.add("blocked");
+    document.getElementById("quick-modal-title").textContent = config.title;
+    document.getElementById("quick-admin-form").innerHTML = config.renderer();
+    quickModal.classList.add("active");
+  }
+}
 
 function renderBookForm() {
   return `
@@ -254,7 +305,7 @@ function renderBookForm() {
                     <button
                       type="button"
                       class="btn-quick-add"
-                      onclick="openAuthorModal()"
+                      data-action="quick-add-author"
                       title="Create new author"
                     >
                       +
@@ -269,7 +320,7 @@ function renderBookForm() {
                     <button
                       type="button"
                       class="btn-quick-add"
-                      onclick="openAuthorModal()"
+                      data-action="quick-add-genre"
                       title="Create new genre"
                     >
                       +
@@ -322,7 +373,8 @@ function renderBookForm() {
                   <button
                     type="button"
                     id="add-copy-btn"
-                    onclick="addItemRow()"
+                    data-action="quick-add-book-item"
+                    class="btn-quick-add"
                   >
                     + Add book copy
                   </button>
@@ -436,10 +488,6 @@ function renderGenreForm(){
   `
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  switchSection("books-section");
-});
-
 
 function initializeSelects() {
   setupSelect2("#author-select", {
@@ -492,4 +540,5 @@ function setupSelect2(selector, options) {
 
 document.addEventListener("DOMContentLoaded", () => {
   switchSection("books-section");
+  quickButtons();
 });

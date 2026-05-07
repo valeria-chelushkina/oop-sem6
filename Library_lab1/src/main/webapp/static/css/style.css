@@ -291,7 +291,8 @@ a {
     font-weight: 600;
 }
 
-.order, #save-btn {
+.order, #save-btn,
+ #quick-save-btn{
   background-color: rgb(162, 76, 205);
   color: white;
 }
@@ -301,15 +302,19 @@ a {
   margin-top: 10px !important;
 }
 
- #cancel-btn, #add-copy-btn{
+ #cancel-btn, #add-copy-btn,
+ #quick-cancel-btn{
  background-color: rgb(244, 206, 255);
+ color: black;
  }
 
- #cancel-btn:hover, #add-copy-btn:hover{
+ #cancel-btn:hover, #add-copy-btn:hover,
+ #quick-cancel-btn:hover{
     opacity: 0.75;
  }
 
-  #cancel-btn:active, #add-copy-btn:active{
+  #cancel-btn:active, #add-copy-btn:active,
+  #quick-cancel-btn:active{
      opacity: 0.9;
   }
 
@@ -317,6 +322,7 @@ a {
 .filter-form-buttons button:hover,
 .right-block button:hover,
 #save-btn:hover,
+#quick-save-btn:hover,
 #open-add-form:hover{
   opacity: 0.85;
 }
@@ -325,6 +331,7 @@ a {
 .filter-form-buttons button:active,
 .right-block button:active,
 #save-btn:active,
+#quick-save-btn:active
 #open-add-form:active{
   opacity: 0.95;
 }
