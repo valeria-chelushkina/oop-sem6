@@ -4,6 +4,7 @@ public enum LoanStatus {
     ORDERED,
     ISSUED,
     RETURNED,
+    OVERDUE,
     LOST,
     DAMAGED,
     ARCHIVED

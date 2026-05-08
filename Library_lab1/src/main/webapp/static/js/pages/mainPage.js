@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             bookList.innerHTML = '';
             if (books.length === 0) {
                 bookList.innerHTML = '<p class="no-books-found">No books found</p>';
+                waitLoader(loader);
                 return;
             } else {
                 books.forEach(book => bookList.appendChild(createBookCard(book)));
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             waitLoader(loader);
         } catch (error) {
             console.error("Initialization failed:", error);
+            waitLoader(loader);
         }
     }
 

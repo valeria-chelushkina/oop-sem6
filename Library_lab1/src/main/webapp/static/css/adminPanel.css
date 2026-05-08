@@ -347,3 +347,26 @@ td {
 .table-loading.no-found{
 	color: rgb(118, 0, 108);
 }
+.admin-filter-fieldset legend{
+  font-weight: bold;
+  font-size: 17px;
+  color: rgb(118, 0, 108);
+}
+
+.admin-filter-fieldset{
+margin-bottom:15px;
+}
+
+.fieldset-content{
+display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.form-control{
+	margin: 0px !important;
+}
+
+.admin-filter-fieldset>label{
+	margin-right:15px;
+}

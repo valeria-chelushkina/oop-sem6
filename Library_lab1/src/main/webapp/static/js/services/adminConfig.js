@@ -5,7 +5,7 @@ import { AuthorApi } from '../api/authorApi.js';
 import { BookItemApi } from '../api/bookItemApi.js';
 import { LoanApi } from '../api/loanApi.js';
 import { GenreApi } from '../api/genreApi.js';
-
+import { sectionFilterConfigs } from "./adminFiltersConfig.js";
 
 export const tableConfigs = {
   "books-section": {
@@ -14,6 +14,7 @@ export const tableConfigs = {
     action: "add-book",
     renderer: renderBookRow,
     apiCall: () => BookApi.getAll(),
+    ...sectionFilterConfigs["books-section"],
   },
   "authors-section": {
     title: "Authors management",
@@ -21,6 +22,7 @@ export const tableConfigs = {
     action: "add-author",
     renderer: renderAuthorRow,
     apiCall: () => AuthorApi.getAll(),
+    ...sectionFilterConfigs["authors-section"],
   },
   "book-items-section": {
     title: "Book items management",
@@ -28,6 +30,7 @@ export const tableConfigs = {
     action: "add-book-item",
     renderer: renderBookItemRow,
     apiCall: () => BookItemApi.getAll(),
+    ...sectionFilterConfigs["book-items-section"],
   },
   "loans-section": {
     title: "Loans management",
@@ -46,6 +49,7 @@ export const tableConfigs = {
     action: "add-loan",
     renderer: renderLoanRow,
     apiCall: () => LoanApi.getAll(),
+    ...sectionFilterConfigs["loans-section"],
   },
   "genres-section": {
     title: "Genres management",
@@ -53,6 +57,7 @@ export const tableConfigs = {
     action: "add-genre",
     renderer: renderGenreRow,
     apiCall: () => GenreApi.getAll(),
+    ...sectionFilterConfigs["genres-section"],
   },
 };
 

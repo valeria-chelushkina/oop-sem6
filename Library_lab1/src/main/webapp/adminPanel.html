@@ -89,10 +89,20 @@
         <div class="content-header">
             <h1 id="tab-title">Books management</h1>
 
-            <div class="header-actions">
+            <div class="admin-controls">
+                <div class="header-actions">
                 <button id="open-add-form">+ Add entry</button>
-                <input type="text" id="global-search" placeholder="Quick search" />
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="global-search"
+                        placeholder="Quick search..."
+                    />
+                    </div>
+                </div>
+                <div id="dynamic-filters-container" class="filters-grid"></div>
             </div>
+
         </div>
 
         <!-- table with information -->
