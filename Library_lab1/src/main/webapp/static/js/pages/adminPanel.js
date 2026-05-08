@@ -1,4 +1,4 @@
-import { initializeSelects } from '../utils/adminUtils.js';
+import { initializeSelects, fillSelect } from '../utils/adminUtils.js';
 import { tableConfigs, modalConfigs, quickModalConfig } from '../services/adminConfig.js';
 import { BookItemApi } from '../api/bookItemApi.js';
 import { PaginationHelper } from '../utils/utils.js';
@@ -41,15 +41,27 @@ function renderTableHeader(config) {
 }
 
 // main modal windows logic
-function openModal(action) {
-    const config = modalConfigs[action];
-    if (!config) return;
+async function openModal(action) {
+  const config = modalConfigs[action];
+  if (!config) return;
 
-    document.getElementById("modal-title").textContent = config.title;
-    document.getElementById("admin-form").innerHTML = config.renderer();
-    overlay.classList.add("active");
+  document.getElementById("modal-title").textContent = config.title;
+  const formContainer = document.getElementById("admin-form");
+  formContainer.innerHTML = config.renderer();
 
-    initializeSelects();
+  overlay.classList.add("active");
+
+  if (action === 'add-book') {
+      try {
+          await Promise.all([
+              fillSelect('#author-select', tableConfigs["authors-section"].apiCall, 'id', 'penName'),
+              fillSelect('#genre-select', tableConfigs["genres-section"].apiCall, 'id', 'name')
+          ]);
+      } catch (err) {
+          console.error("Помилка завантаження даних у форму", err);
+      }
+  }
+  initializeSelects();
 }
 
 function closeModal() {
