@@ -344,6 +344,18 @@ async function loadData(targetId) {
     loadMoreBtn.style.display = "none";
     try{
         allData = await config.apiCall();
+        // Keep a stable order after create/update/delete.
+        // Otherwise backend may return rows in arbitrary order and edited items can "jump" to the bottom.
+        if (Array.isArray(allData)) {
+            allData.sort((a, b) => {
+                const aId = Number(a?.id);
+                const bId = Number(b?.id);
+                if (Number.isFinite(aId) && Number.isFinite(bId)) {
+                    return aId - bId;
+                }
+                return 0;
+            });
+        }
         filteredData = allData;
         tableBody.innerHTML = "";
         if (!allData || allData.length === 0) {

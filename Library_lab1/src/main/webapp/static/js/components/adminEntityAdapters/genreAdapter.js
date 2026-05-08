@@ -10,4 +10,3 @@ export function fillGenreForm(formEl, genre) {
     input.value = genre?.name ?? "";
   }
 }
-

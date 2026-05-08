@@ -94,7 +94,7 @@ export function renderAuthorForm() {
   return `
   <div class="form-group">
     <label> Pen name:</label>
-    <input type="text" id="author-pen-name" required />
+    <input type="text" name="pen-name" id="author-pen-name" required />
   </div>
   <div class="form-group">
     <label> Biography:</label>
@@ -191,7 +191,7 @@ export function renderGenreForm(){
   return  `
   <div class="form-group">
     <label> Name:</label>
-    <input type="text" id="genre-name" required />
+    <input type="text" name="name" id="genre-name" required />
   </div>
   `
 }
