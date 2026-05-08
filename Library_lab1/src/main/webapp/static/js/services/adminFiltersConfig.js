@@ -35,7 +35,7 @@ export const sectionFilterConfigs = {
     },
   },
   "book-items-section": {
-    filterTemplate: () => renderCheckboxGroup("status", BOOK_ITEM_STATUSES, "Statuses"),
+    filterTemplate: () => renderCheckboxGroup("status", BOOK_ITEM_STATUSES, "Status"),
     filterLogic: (item, query, filters) => {
       const q = query.toLowerCase();
       const statuses = filters.status || [];

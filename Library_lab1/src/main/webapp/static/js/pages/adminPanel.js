@@ -1,6 +1,7 @@
 import { initializeSelects, fillSelect } from '../utils/adminUtils.js';
 import { tableConfigs, modalConfigs, quickModalConfig } from '../services/adminConfig.js';
 import { PaginationHelper } from '../utils/utils.js';
+import { openEditForSection, saveForSection, deleteForSection } from "../services/adminCrudRegistry.js";
 
 const navItems = document.querySelectorAll(".nav-item");
 const overlay = document.getElementById("modal-overlay");
@@ -17,6 +18,7 @@ const PAGE_SIZE = 20; // limit for one portion
 
 let currentRenderer = null;
 let currentTargetId = "books-section";
+let currentModalContext = { section: null, mode: "create", id: null };
 
 function readSectionFiltersFromDom() {
     const filters = {};
@@ -163,6 +165,7 @@ async function openModal(action) {
   document.getElementById("modal-title").textContent = config.title;
   const formContainer = document.getElementById("admin-form");
   formContainer.innerHTML = config.renderer();
+  currentModalContext = { section: currentTargetId, mode: "create", id: null };
 
   overlay.classList.add("active");
 
@@ -230,6 +233,69 @@ function setupEventListeners() {
             openModalQuick(btn.dataset.action);
         }
     });
+
+    const adminForm = document.getElementById("admin-form");
+
+    adminForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await saveForSection({
+        sectionId: currentModalContext.section,
+        mode: currentModalContext.mode,
+        id: currentModalContext.id,
+        formEl: adminForm,
+      });
+      closeModal();
+      await loadData(currentTargetId);
+    });
+
+    const tableBody = document.querySelector(".table-body");
+    tableBody?.addEventListener("click", async (e) => {
+        const clickedViewUpdate = Boolean(e.target.closest(".view-update-btn"));
+        const clickedDelete = Boolean(e.target.closest(".delete-btn"));
+
+        const row = e.target.closest("tr[data-entry-id]");
+        if (!row) {
+            return;
+        }
+        const id = Number(row.dataset.entryId);
+        if (!Number.isFinite(id)) {
+            return;
+        }
+
+        // view/update
+        if (clickedViewUpdate) {
+            try {
+                await openEditForSection({
+                    sectionId: currentTargetId,
+                    id,
+                    overlayEl: overlay,
+                    titleEl: document.getElementById("modal-title"),
+                    formEl: document.getElementById("admin-form"),
+                    setModalContext: (ctx) => (currentModalContext = ctx),
+                });
+            } catch (err) {
+                console.error("Open edit failed:", err);
+                alert(err?.message || "Open edit failed.");
+            }
+            return;
+        }
+
+        // delete
+        if (clickedDelete) {
+            if (!window.confirm(`Delete entry #${id}?`)) {
+                return;
+            }
+            try {
+                await deleteForSection({ sectionId: currentTargetId, id });
+                await loadData(currentTargetId);
+            } catch (err) {
+                console.error("Delete failed:", err);
+                alert(err?.message || "Delete failed.");
+            }
+        }
+			});
+
+
 
     const loadMoreBtn = document.querySelector(".load-more");
         loadMoreBtn.addEventListener("click", () => {

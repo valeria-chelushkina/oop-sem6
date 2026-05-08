@@ -7,7 +7,7 @@ export function renderBookRow(data) {
           .join(", ")
       : "";
   return `
-      <tr>
+      <tr data-entry-id="${data.id}">
         <td scope="row">${data.id}</td>
               <td>${data.title}</td>
               <td>${authorLine || 'Unknown'}</td>
@@ -19,7 +19,7 @@ export function renderBookRow(data) {
 
 export function renderAuthorRow(data) {
   return `
-        <tr>
+        <tr data-entry-id="${data.id}">
             <td scope="row">${data.id}</td>
             <td>${data.penName}</td>
             <td>${renderActionButtons()}</td>
@@ -29,7 +29,7 @@ export function renderAuthorRow(data) {
 
 export function renderBookItemRow(data) {
   return `
-      <tr>
+      <tr data-entry-id="${data.id}">
         <td scope="row">${data.id}</td>
               <td>${data.bookId  || 'Unknown'}</td>
               <td>${data.inventoryCode  || 'Unknown'}</td>
@@ -41,7 +41,7 @@ export function renderBookItemRow(data) {
 
 export function renderLoanRow(data) {
   return `
-      <tr>
+      <tr data-entry-id="${data.id}">
         <td scope="row">${data.id}</td>
               <td>${data.bookItemId || 'Unknown'} </td>
               <td>${data.readerId || 'Unknown'}</td>
@@ -58,7 +58,7 @@ export function renderLoanRow(data) {
 
 export function renderGenreRow(data) {
   return `
-      <tr>
+      <tr data-entry-id="${data.id}">
         <td scope="row">${data.id}</td>
               <td>${data.name}</td>
               <td>${renderActionButtons()}</td>
@@ -69,8 +69,8 @@ export function renderGenreRow(data) {
 export function renderActionButtons() {
   return `
     <div class="row-entry-buttons">
-      <button class="view-update-btn">View/Update</button>
-      <button class="delete-btn">Delete</button>
+      <button type="button" class="view-update-btn">View/Update</button>
+      <button type="button" class="delete-btn">Delete</button>
     </div>
   `;
 }
