@@ -14,7 +14,7 @@ export function initializeSelects() {
     dropdownParent: $("#modal-overlay"),
   });
 
-  setupSelect2("#bookItem-status", {
+  setupSelect2("#book-item-status", {
     placeholder: "Select a status",
     allowClear: true,
     width: "100%",

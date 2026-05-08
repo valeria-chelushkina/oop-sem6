@@ -1,5 +1,6 @@
 package com.library.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.library.dto.CreateLoanRequest;
@@ -20,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/api/loans/*")
+@WebServlet(urlPatterns = {"/api/loans", "/api/loans/*"})
 public class LoanServlet extends HttpServlet {
     private final LoanService loanService = new LoanServiceImpl();
     private final LoanMapper loanMapper = Mappers.getMapper(LoanMapper.class);
@@ -97,11 +98,11 @@ public class LoanServlet extends HttpServlet {
             payload.put("updated", affected);
             payload.put("message", "Loan updated successfully.");
             writeJson(resp, HttpServletResponse.SC_OK, payload);
-        }
-        catch(SQLException e){
+        } catch (JsonProcessingException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON or date/enum values.");
+        } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
-        }
-        catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             writeError(resp, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
@@ -137,6 +138,8 @@ public class LoanServlet extends HttpServlet {
             payload.put("id", createdId);
             payload.put("message", "Loan created successfully.");
             writeJson(resp, HttpServletResponse.SC_CREATED, payload);
+        } catch (JsonProcessingException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON or date/enum values.");
         } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
         }
@@ -159,6 +162,8 @@ public class LoanServlet extends HttpServlet {
             payload.put("created", affected);
             payload.put("message", "Order created successfully.");
             writeJson(resp, HttpServletResponse.SC_CREATED, payload);
+        } catch (JsonProcessingException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON or date/enum values.");
         } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
         }

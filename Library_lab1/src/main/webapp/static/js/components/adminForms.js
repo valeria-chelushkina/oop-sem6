@@ -2,13 +2,13 @@ export function renderBookForm() {
   return `
   <div class="form-group">
                   <label> Title:</label>
-                  <input type="text" id="book-title" required />
+                  <input type="text" name="title" id="book-title" required />
                 </div>
 
                 <div class="form-group">
                   <label>Author(s)</label>
                   <div class="input-with-action">
-                    <select name="authorIds" id="author-select" multiple>
+                    <select name="author-ids" id="author-select" multiple>
                     </select>
                     <button
                       type="button"
@@ -24,7 +24,7 @@ export function renderBookForm() {
                 <div class="form-group">
                   <label>Genre(s)/Tag(s)</label>
                   <div class="input-with-action">
-                    <select name="genreIds" id="genre-select" multiple></select>
+                    <select name="genre-ids" id="genre-select" multiple></select>
                     <button
                       type="button"
                       class="btn-quick-add"
@@ -38,23 +38,24 @@ export function renderBookForm() {
 
                 <div class="form-group">
                   <label> ISBN:</label>
-                  <input type="text" id="book-isbn" />
+                  <input type="text" name="isbn" id="book-isbn" />
                 </div>
 
                 <div class="form-group">
                   <label> Publisher:</label>
-                  <input type="text" id="book-publisher" />
+                  <input type="text" name="publisher" id="book-publisher" />
                 </div>
 
                 <div class="form-group">
                   <label> Publication year:</label>
-                  <input type="number" id="book-publication-year" />
+                  <input type="number" name="publication-year" id="book-publication-year" />
                 </div>
 
                 <div class="form-group">
                   <label> Cover:</label>
                   <input
                     type="file"
+                    name="cover"
                     id="book-cover"
                     accept="image/png, image/jpeg"
                   />
@@ -62,17 +63,17 @@ export function renderBookForm() {
 
                 <div class="form-group">
                   <label> Language:</label>
-                  <input type="text" id="book-language" />
+                  <input type="text" name="language" id="book-language" />
                 </div>
 
                 <div class="form-group">
                   <label> Number of pages:</label>
-                  <input type="number" id="book-page-number" />
+                  <input type="number" name="page-number" id="book-page-number" />
                 </div>
 
                 <div class="form-group">
                   <label> Description:</label>
-                  <textarea name="description" id="book-description"></textarea>
+                  <textarea name="description" id="description"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -110,27 +111,25 @@ export function renderBookItemForm() {
   return `
                   <div class="form-group">
                     <label> Book ID:</label>
-                    <input type="text" id="bookItem-book-id" required />
+                    <input type="text" name="book-id" id="book-item-book-id" required />
                   </div>
 
                   <div class="form-group">
                     <label> Inventory code:</label>
-                    <input type="text" id="bookItem-inventory-code" />
+                    <input type="text" name="inventory-code" id="book-item-inventory-code" />
                   </div>
 
                   <div class="form-group">
                     <label> Status:</label>
-                    <select name="bookItem-status" id="bookItem-status">
+                    <select name="status" id="book-item-status">
                       <option></option>
-                      <option value="available">AVAILABLE</option>
-                      <option value="ordered">ORDERED</option>
-                      <option value="issued">ISSUED</option>
-                      <option value="lost">LOST</option>
-                      <option value="damaged">DAMAGED</option>
-                      <option value="archived">ARCHIVED</option>
-                      <option value="reading-room-only">
-                        READING ROOM ONLY
-                      </option>
+                      <option value="AVAILABLE">AVAILABLE</option>
+                      <option value="ORDERED">ORDERED</option>
+                      <option value="ISSUED">ISSUED</option>
+                      <option value="LOST">LOST</option>
+                      <option value="DAMAGED">DAMAGED</option>
+                      <option value="ARCHIVED">ARCHIVED</option>
+                      <option value="READING_ROOM_ONLY">READING ROOM ONLY</option>
                     </select>
                   </div>
   `;
@@ -138,28 +137,28 @@ export function renderBookItemForm() {
 
 export function renderLoanForm() {
   return `
-  <div class="form-group">
+        <div class="form-group">
           <label>Book item ID</label>
-          <input type="number" required min="0" />
+          <input type="number" name="book-item-id" id="book-item-id" required min="0" />
         </div>
         <div class="form-group">
           <label>Reader ID</label>
-          <input type="number" required min="0" />
+          <input type="number" name="reader-id" id="reader-id" required min="0" />
         </div>
         <div class="form-group">
           <label>Librarian ID</label>
-          <input type="number" min="0" />
+          <input type="number" name="librarian-id" id="librarian-id" min="0" />
         </div>
         <div class="form-group">
                           <label>Status</label>
-                          <select name="loan-status" id="loan-status">
+                          <select name="status" id="loan-status">
                           <option></option>
-                                      <option value="ordered-loan">ORDERED</option>
-                                      <option value="issued-loan">ISSUED</option>
-                                      <option value="lost-loan">LOST</option>
-                                      <option value="damaged-loan">DAMAGED</option>
-                                      <option value="archived-loan">ARCHIVED</option>
-                                      <option value="returned-loan">
+                                      <option value="ORDERED">ORDERED</option>
+                                      <option value="ISSUED">ISSUED</option>
+                                      <option value="LOST">LOST</option>
+                                      <option value="DAMAGED">DAMAGED</option>
+                                      <option value="ARCHIVED">ARCHIVED</option>
+                                      <option value="RETURNED">
                                         RETURNED
                                       </option>
                           </select>
@@ -168,21 +167,21 @@ export function renderLoanForm() {
           <label>Loan type</label>
           <select name="loan-type" id="loan-type">
           <option></option>
-                      <option value="subscription">SUBSCRIPTION</option>
-                      <option value="reading-room">READING_ROOM</option>
+                      <option value="SUBSCRIPTION">SUBSCRIPTION</option>
+                      <option value="READING_ROOM">READING ROOM</option>
           </select>
         </div>
         <div class="form-group">
           <label>Loan date</label>
-          <input type="datetime-local" />
+          <input name="loan-date" id="loan-date" type="datetime-local" />
         </div>
         <div class="form-group">
           <label>Due date</label>
-          <input type="date">
+          <input name="due-date" id="due-date" type="date">
         </div>
         <div class="form-group">
           <label>Return date</label>
-          <input type="datetime-local">
+          <input name="return-date" id="return-date" type="datetime-local">
         </div>
   `;
 }

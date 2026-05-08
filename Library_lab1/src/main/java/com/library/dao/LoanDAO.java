@@ -16,11 +16,13 @@ public class LoanDAO extends BaseDAO {
         Timestamp loanDateTs = rs.getTimestamp("loan_date");
         Timestamp returnDateTs = rs.getTimestamp("return_date");
         Date dueDateSql = rs.getDate("due_date");
+        Object librarianIdObj = rs.getObject("librarian_id");
+        Long librarianId = librarianIdObj == null ? null : ((Number) librarianIdObj).longValue();
         return Loan.builder()
                 .id(rs.getLong("id"))
                 .bookItemId(rs.getLong("book_item_id"))
                 .readerId(rs.getLong("reader_id"))
-                .librarianId(rs.getLong("librarian_id"))
+                .librarianId(librarianId)
                 .loanDate(loanDateTs != null ? loanDateTs.toLocalDateTime() : null)
                 .dueDate(dueDateSql != null ? dueDateSql.toLocalDate() : null)
                 .returnDate(returnDateTs != null ? returnDateTs.toLocalDateTime() : null)
@@ -67,8 +69,9 @@ public class LoanDAO extends BaseDAO {
     }
 
     public Long create(Loan loan) throws SQLException {
+        // Якщо loan_date не передано — ставимо час створення в БД (як у createOrder з NOW()).
         String sql = "INSERT INTO loans (book_item_id, reader_id, librarian_id, loan_date, due_date, return_date, loan_type, status) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, COALESCE(?, CURRENT_TIMESTAMP), ?, ?, ?, ?)";
         String loggerMessage = "Creating new loan.";
         Timestamp loanDate = loan.getLoanDate() != null ? Timestamp.valueOf(loan.getLoanDate()) : null;
         Timestamp returnDate = loan.getReturnDate() != null ? Timestamp.valueOf(loan.getReturnDate()) : null;

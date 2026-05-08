@@ -1,5 +1,6 @@
 package com.library.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.library.dto.BookItemDTO;
@@ -80,6 +81,8 @@ public class BookItemServlet extends HttpServlet {
             payload.put("id", createdId);
             payload.put("message", "Book item created successfully.");
             writeJson(resp, HttpServletResponse.SC_CREATED, payload);
+        } catch (JsonProcessingException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON or enum values (use BookItemStatus names, e.g. AVAILABLE).");
         } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
         }
@@ -98,6 +101,8 @@ public class BookItemServlet extends HttpServlet {
             payload.put("updated", affected);
             payload.put("message", "Book item updated successfully.");
             writeJson(resp, HttpServletResponse.SC_OK, payload);
+        } catch (JsonProcessingException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON or enum values (use BookItemStatus names, e.g. AVAILABLE).");
         } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
         } catch (IllegalArgumentException e) {
