@@ -128,3 +128,13 @@ export function getId(){
         const id = new URLSearchParams(window.location.search);
         return id.get('id');
     }
+
+export const PaginationHelper = {
+    getNextChunk(allData, currentCount, pageSize) {
+        return allData.slice(currentCount, currentCount + pageSize);
+    },
+
+    hasMore(allData, newTotalCount) {
+        return newTotalCount < allData.length;
+    }
+};

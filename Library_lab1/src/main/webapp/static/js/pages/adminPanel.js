@@ -1,11 +1,18 @@
 import { initializeSelects } from '../utils/adminUtils.js';
 import { tableConfigs, modalConfigs, quickModalConfig } from '../services/adminConfig.js';
 import { BookItemApi } from '../api/bookItemApi.js';
+import { PaginationHelper } from '../utils/utils.js';
 
 const navItems = document.querySelectorAll(".nav-item");
 const overlay = document.getElementById("modal-overlay");
 const quickModal = document.getElementById("modal-quick-add");
 const openBtn = document.getElementById("open-add-form");
+
+// for limiting a number of table entries (to not overload)
+let allData = [];
+let displayedCount = 0;
+const PAGE_SIZE = 20; // limit for one portion
+
 let currentRenderer = null;
 
 // navigation and section switch
@@ -96,6 +103,14 @@ function setupEventListeners() {
             openModalQuick(btn.dataset.action);
         }
     });
+
+    const loadMoreBtn = document.querySelector(".load-more");
+        loadMoreBtn.addEventListener("click", () => {
+            if (currentRenderer) {
+                renderNextChunk(currentRenderer);
+            }
+        });
+
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -111,24 +126,38 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadData(targetId) {
 	const tableBody = document.querySelector(".table-body");
     const config = tableConfigs[targetId];
+    const loadMoreBtn = document.querySelector(".load-more");
     if (!config || !config.apiCall) {
 		console.error(`No API configuration for section: ${targetId}`);
         return;
     }
+
+    displayedCount = 0;
+    allData = [];
     tableBody.innerHTML = '<tr><td colspan="100%" class="table-loading">Loading...</td></tr>';
+    loadMoreBtn.style.display = "none";
     try{
-        const data = await config.apiCall();
+        allData = await config.apiCall();
         tableBody.innerHTML = "";
-        if (!data || data.length === 0) {
+        if (!allData || allData.length === 0) {
             tableBody.innerHTML = '<tr><td colspan="100%" class="table-loading not-found">No data found</td></tr>';
             return;
         }
-        data.forEach(item => {
-            tableBody.insertAdjacentHTML("beforeend", config.renderer(item));
-        })
+        renderNextChunk(config.renderer);
     }
     catch(error){
         console.error("Failed to load data:", error);
         tableBody.innerHTML = '<tr><td colspan="100%" class="table-loading error"">Error loading data</td></tr>';
     }
     };
+
+function renderNextChunk() {
+    const tableBody = document.querySelector(".table-body");
+    const loadMoreBtn = document.querySelector(".load-more");
+    const nextChunk = PaginationHelper.getNextChunk(allData, displayedCount, PAGE_SIZE);
+    nextChunk.forEach(item => {
+        tableBody.insertAdjacentHTML("beforeend", currentRenderer(item));
+    });
+    displayedCount += nextChunk.length;
+    loadMoreBtn.style.display = PaginationHelper.hasMore(allData, displayedCount) ? "block" : "none";
+}

@@ -310,6 +310,7 @@ td {
   color: rgb(118, 0, 108);
   font-style:oblique;
   font-weight: 900;
+  display: none;
 }
 
 .row-entry-buttons button:hover,
