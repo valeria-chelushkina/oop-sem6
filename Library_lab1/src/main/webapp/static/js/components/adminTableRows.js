@@ -10,8 +10,8 @@ export function renderBookRow(data) {
       <tr>
         <td scope="row">${data.id}</td>
               <td>${data.title}</td>
-              <td>${authorLine}</td>
-              <td>${data.ISBN}</td>
+              <td>${authorLine || 'Unknown'}</td>
+              <td>${data.isbn || 'Unknown'}</td>
               <td>${renderActionButtons()}</td>
       </tr>
         `;
@@ -31,8 +31,8 @@ export function renderBookItemRow(data) {
   return `
       <tr>
         <td scope="row">${data.id}</td>
-              <td>${data.bookId}</td>
-              <td>${data.inventoryCode}</td>
+              <td>${data.bookId  || 'Unknown'}</td>
+              <td>${data.inventoryCode  || 'Unknown'}</td>
               <td>${data.status}</td>
               <td>${renderActionButtons()}</td>
       </tr>
@@ -43,12 +43,12 @@ export function renderLoanRow(data) {
   return `
       <tr>
         <td scope="row">${data.id}</td>
-              <td>${data.bookId}</td>
-              <td>${data.readerId}</td>
-              <td>${data.librarianId}</td>
+              <td>${data.bookItemId || 'Unknown'} </td>
+              <td>${data.readerId || 'Unknown'}</td>
+              <td>${data.librarianId || 'Unknown'}</td>
               <td>${data.loanDate}</td>
-              <td>${data.dueDate}</td>
-              <td>${data.returnDate}</td>
+              <td>${data.dueDate || 'Unknown'}</td>
+              <td>${data.returnDate || 'Not returned yet'}</td>
               <td>${data.loanType}</td>
               <td>${data.status}</td>
               <td>${renderActionButtons()}</td>

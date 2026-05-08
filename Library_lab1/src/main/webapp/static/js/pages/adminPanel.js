@@ -1,5 +1,6 @@
 import { initializeSelects } from '../utils/adminUtils.js';
 import { tableConfigs, modalConfigs, quickModalConfig } from '../services/adminConfig.js';
+import { BookItemApi } from '../api/bookItemApi.js';
 
 const navItems = document.querySelectorAll(".nav-item");
 const overlay = document.getElementById("modal-overlay");
@@ -30,28 +31,6 @@ function renderTableHeader(config) {
     }
     document.getElementById("tab-title").textContent = config.title;
     openBtn.dataset.action = config.action;
-}
-
-function loadData(targetId) {
-    // temporary data - will be changed
-    const fakeData = {
-        "books-section": [
-            { id: 1, title: "The Hobbit", ISBN: "123456", authors: [{ penName: "Tolkien" }] },
-        ],
-        "authors-section": [
-            { id: 1, penName: "Tolkien" },
-        ],
-    };
-
-    const data = fakeData[targetId] || [];
-    const tableBody = document.querySelector(".table-body");
-    tableBody.innerHTML = "";
-
-    data.forEach(item => {
-        if (currentRenderer) {
-            tableBody.insertAdjacentHTML("beforeend", currentRenderer(item));
-        }
-    });
 }
 
 // main modal windows logic
@@ -122,4 +101,34 @@ function setupEventListeners() {
 document.addEventListener("DOMContentLoaded", () => {
     setupEventListeners();
     switchSection("books-section"); // first section
+    async function init() {
+        const data = await BookItemApi.getAll();
+        data.forEach(d => console.log(d));
+    }
+    init();
 });
+
+async function loadData(targetId) {
+	const tableBody = document.querySelector(".table-body");
+    const config = tableConfigs[targetId];
+    if (!config || !config.apiCall) {
+		console.error(`No API configuration for section: ${targetId}`);
+        return;
+    }
+    tableBody.innerHTML = '<tr><td colspan="100%" class="table-loading">Loading...</td></tr>';
+    try{
+        const data = await config.apiCall();
+        tableBody.innerHTML = "";
+        if (!data || data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="100%" class="table-loading not-found">No data found</td></tr>';
+            return;
+        }
+        data.forEach(item => {
+            tableBody.insertAdjacentHTML("beforeend", config.renderer(item));
+        })
+    }
+    catch(error){
+        console.error("Failed to load data:", error);
+        tableBody.innerHTML = '<tr><td colspan="100%" class="table-loading error"">Error loading data</td></tr>';
+    }
+    };

@@ -3,7 +3,6 @@ package com.library.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.library.dto.BookDTO;
-import com.library.dto.BookItemDTO;
 import com.library.dto.CreateBookRequest;
 import com.library.service.BookService;
 import com.library.service.BookServiceImpl;

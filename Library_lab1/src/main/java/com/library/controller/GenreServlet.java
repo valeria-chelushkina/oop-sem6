@@ -1,8 +1,6 @@
 package com.library.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.library.dto.AuthorDTO;
-import com.library.dto.CreateAuthorRequest;
 import com.library.dto.CreateGenreRequest;
 import com.library.dto.GenreDTO;
 import com.library.service.GenreService;

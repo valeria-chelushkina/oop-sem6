@@ -331,3 +331,18 @@ td {
   filter: blur(2px);
   opacity: 0.7;
 }
+
+.table-loading{
+	font-size: 19px;
+    padding: 25px;
+    font-weight: 700;
+    font-style: italic;
+}
+
+.table-loading.error{
+	color: red;
+}
+
+.table-loading.no-found{
+	color: rgb(118, 0, 108);
+}
