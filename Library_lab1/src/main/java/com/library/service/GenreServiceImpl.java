@@ -1,6 +1,7 @@
 package com.library.service;
 
 import com.library.dao.GenreDAO;
+import com.library.dto.CreateGenreRequest;
 import com.library.dto.GenreDTO;
 import com.library.entity.Genre;
 import com.library.mapper.GenreMapper;
@@ -38,6 +39,11 @@ public class GenreServiceImpl implements GenreService{
     @Override
     public Long create(GenreDTO genreDTO) throws SQLException {
         return genreDAO.create(genreMapper.toEntity(genreDTO));
+    }
+
+    @Override
+    public Long create(CreateGenreRequest request) throws SQLException {
+        return genreDAO.create(genreMapper.toEntity(request));
     }
 
     @Override

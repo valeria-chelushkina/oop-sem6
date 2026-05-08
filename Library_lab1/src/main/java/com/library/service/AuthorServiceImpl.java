@@ -2,6 +2,7 @@ package com.library.service;
 
 import com.library.dao.AuthorDAO;
 import com.library.dto.AuthorDTO;
+import com.library.dto.CreateAuthorRequest;
 import com.library.entity.Author;
 import com.library.mapper.AuthorMapper;
 import org.mapstruct.factory.Mappers;
@@ -38,6 +39,11 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Long create(AuthorDTO authorDTO) throws SQLException {
         return authorDAO.create(authorMapper.toEntity(authorDTO));
+    }
+
+    @Override
+    public Long create(CreateAuthorRequest request) throws SQLException {
+        return authorDAO.create(authorMapper.toEntity(request));
     }
 
     @Override
