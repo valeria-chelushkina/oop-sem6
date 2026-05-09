@@ -1,4 +1,4 @@
-import { initializeSelects, fillSelect } from '../utils/adminUtils.js';
+import { initializeSelects, fillSelect, appendAndSelect } from '../utils/adminUtils.js';
 import { tableConfigs, modalConfigs, quickModalConfig } from '../services/adminConfig.js';
 import { PaginationHelper } from '../utils/utils.js';
 import { openEditForSection, saveForSection, deleteForSection } from "../services/adminCrudRegistry.js";
@@ -19,6 +19,7 @@ const PAGE_SIZE = 20; // limit for one portion
 let currentRenderer = null;
 let currentTargetId = "books-section";
 let currentModalContext = { section: null, mode: "create", id: null };
+let currentQuickModalSection = null;
 
 function readSectionFiltersFromDom() {
     const filters = {};
@@ -190,7 +191,7 @@ function closeModal() {
 function openModalQuick(action) {
     const config = quickModalConfig[action];
     if (!config) return;
-
+	currentQuickModalSection=config.section;
     overlay.classList.add("blocked");
     document.getElementById("quick-modal-title").textContent = config.title;
     document.getElementById("quick-admin-form").innerHTML = config.renderer();
@@ -233,6 +234,21 @@ function setupEventListeners() {
             openModalQuick(btn.dataset.action);
         }
     });
+
+
+    const quickAdminForm = document.getElementById("quick-admin-form");
+
+    quickAdminForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        await saveForSection({
+        sectionId: currentQuickModalSection,
+        mode: "create",
+        id: null,
+        formEl: quickAdminForm,
+        });
+        closeQuickModal();
+    })
+
 
     const adminForm = document.getElementById("admin-form");
 

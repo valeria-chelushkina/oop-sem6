@@ -88,13 +88,16 @@ export const quickModalConfig = {
     "quick-add-author": {
       title: "Add new author",
       renderer: renderAuthorForm,
+      section: "authors-section",
     },
     "quick-add-genre": {
       title: "Add new genre",
       renderer: renderGenreForm,
+      section: "genres-section"
     },
     "quick-add-book-item": {
       title: "Add new book item",
       renderer: renderBookItemForm,
+      section: "book-items-section",
     },
   };

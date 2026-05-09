@@ -7,6 +7,7 @@ import { BookApi } from '../api/bookApi.js';
 
 import { openEditModal, saveEntity, deleteEntity } from './adminCrudService.js';
 import { getFormData, fillFormWithData, getLoanPayloadFromForm, fillBookForm, getBookPayload } from '../utils/adminCrudUtils.js';
+import { appendAndSelect } from '../utils/adminUtils.js';
 
 export const adminCrudRegistry = {
 	"genres-section": {
@@ -27,6 +28,9 @@ export const adminCrudRegistry = {
             if (!payload?.name) throw new Error("Genre name is required");
         },
         },
+        appendSelect: (data) => {
+            appendAndSelect('[name="genre-ids"]', data, 'name');
+        }
     },
 	"authors-section": {
         modalKey: "add-author",
@@ -46,6 +50,9 @@ export const adminCrudRegistry = {
             if (!payload?.penName) throw new Error("Author pen name is required");
         },
         },
+        appendSelect: (data) => {
+                    appendAndSelect('[name="author-ids"]', data, 'penName');
+                }
     },
 	"book-items-section": {
         modalKey: "add-book-item",
@@ -66,6 +73,7 @@ export const adminCrudRegistry = {
             if(!payload.status) throw new Error("Status is required");
         },
         },
+        appendSelect: () => null,
     },
 	"loans-section": {
         modalKey: "add-loan",
@@ -88,6 +96,7 @@ export const adminCrudRegistry = {
             if(!payload?.loanType) throw new Error("Type is required");
         },
         },
+        appendSelect: () => null,
     },
 	"books-section": {
         modalKey: "add-book",
@@ -108,6 +117,7 @@ export const adminCrudRegistry = {
             if(!payload?.pagesCount) throw new Error("Page number is required");
         },
         },
+        appendSelect: () => null,
     }
 }
 
@@ -141,7 +151,8 @@ export async function openEditForSection({ sectionId, id, overlayEl, titleEl, fo
 export async function saveForSection({ sectionId, mode, id, formEl }) {
   const crud = getCrudForSection(sectionId);
   if (!crud) throw new Error("No section found.");
-  return saveEntity({
+  const payload = crud.form.getPayloadFromForm(formEl);
+  const responseData = await saveEntity({
     mode,
     id,
     formEl,
@@ -150,6 +161,11 @@ export async function saveForSection({ sectionId, mode, id, formEl }) {
     apiCreate: crud.api.create,
     apiUpdate: crud.api.update,
   });
+  const finalData = { ...payload, ...responseData };
+  if (crud.appendSelect && typeof crud.appendSelect === "function") {
+      crud.appendSelect(finalData);
+    }
+  return finalData;
 }
 
 export async function deleteForSection({ sectionId, id }) {
