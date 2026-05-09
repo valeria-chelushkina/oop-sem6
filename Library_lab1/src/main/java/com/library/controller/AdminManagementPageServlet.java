@@ -11,26 +11,19 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet ("/book/*")
-public class BookPageServlet extends HttpServlet {
+@WebServlet ("/management")
+public class AdminManagementPageServlet extends HttpServlet {
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String pathInfo = req.getPathInfo();
-
-        if (pathInfo == null || pathInfo.equals("/")) {
-            resp.sendRedirect("/");
-            return;
-        }
-
         try{
-            req.getRequestDispatcher("/book.html").forward(req, resp);
+            req.getRequestDispatcher("/adminManagement.html").forward(req, resp);
         }
         catch(ServletException e){
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("{\"error\": \"Servlet error while redirecting the book page\"}");
+            resp.getWriter().write("{\"error\": \"Servlet error while redirecting the admin management page\"}");
         }
     }
 }

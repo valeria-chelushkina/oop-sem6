@@ -8,7 +8,7 @@ export const BookApi = {
             return await response.json();
     },
     async getById(id) {
-        const response = await fetch(`${API_URL}?id=${id}`);
+        const response = await fetch(`${API_URL}/${id}`);
         if (!response.ok) throw new Error(`Failed to fetch books by id: ${response.status}`);
         const data = await response.json();
         return Array.isArray(data) ? data[0] : data;
@@ -40,7 +40,7 @@ export const BookApi = {
         return await response.json();
     },
     async delete(id) {
-        const response = await fetch(`${API_URL}?id=${id}`, {
+        const response = await fetch(`${API_URL}/${id}`, {
             method: 'DELETE'
         });
         return response.ok;

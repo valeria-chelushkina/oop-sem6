@@ -123,10 +123,10 @@ export function showNumberRated(container, ratingsCount){
         container.querySelector('.people-rated').innerHTML = `${ratingsCount} people rated`
     }
 
-export function getId(){
-        const id = new URLSearchParams(window.location.search);
-        return id.get('id');
-    }
+export function getBookIdFromUrl() {
+    const pathSegments = window.location.pathname.split('/');
+    return pathSegments[pathSegments.length - 1];
+}
 
 export const PaginationHelper = {
     getNextChunk(allData, currentCount, pageSize) {

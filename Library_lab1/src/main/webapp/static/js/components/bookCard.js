@@ -5,7 +5,7 @@ export function createBookCard(book){
             ? book.authors.map(a => a?.penName || '').filter(Boolean).join(', ')
             : 'Unknown';
 
-        const titleLink = `/book?id=${book.id}`;
+        const titleLink = `/book/${book.id}`;
         const li = document.createElement('li');
         const div = document.createElement('div');
         div.className = 'book-card';
