@@ -137,4 +137,4 @@ export const PaginationHelper = {
     hasMore(allData, newTotalCount) {
         return newTotalCount < allData.length;
     }
-};
+}

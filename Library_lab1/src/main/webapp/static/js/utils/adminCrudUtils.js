@@ -61,7 +61,9 @@ export const getBookPayload = (formEl) => {
     const payload = {};
     payload.title = isEmpty('title', formData);
     payload.isbn = isEmpty('isbn', formData);
-    payload.description = isEmpty('description', formData);
+    // Отримуємо сирий текст з textarea і перетворюємо на параграфи
+        const rawDescription = formData.get('description');
+        payload.description = textToParagraphs(rawDescription);
 	payload.publisher = isEmpty('publisher', formData);
     payload.publisher = isEmpty('publisher', formData);
     const pubYear = formData.get('publication-year');
@@ -88,6 +90,11 @@ export const fillBookForm = (formEl, book) => {
         }
     });
 
+    // Окремо обробляємо description: перетворюємо <p> назад у переноси рядків
+        if (formEl.elements['description']) {
+            formEl.elements['description'].value = paragraphsToText(book.description ?? "");
+        }
+
     const previewImg = formEl.querySelector('.cover-preview');
     if (previewImg) previewImg.src = book.coverURL || "";
 
@@ -105,4 +112,25 @@ export const fillBookForm = (formEl, book) => {
 function isEmpty(name, formData){
 	const elem = formData.get(name)?.trim();
 	return elem === '' ? null : elem;
+}
+
+
+export function textToParagraphs(text) {
+    if (!text || typeof text !== 'string') return null;
+
+    return text
+        .trim()
+        .split(/\r?\n+/)              // Розбиває по одному або декільком переносам рядка
+        .map(line => line.trim())     // Прибирає зайві пробіли по боках
+        .filter(line => line !== '')  // Видаляє порожні рядки
+        .map(line => `<p>${line}</p>`) // Обгортає в теги
+        .join('');                    // З'єднує (можна без \n для економії місця в БД)
+}
+
+export function paragraphsToText(html) {
+    if (!html) return '';
+    return html
+        .replace(/<\/p><p>/g, '\n\n') // Замінює розриви між параграфами на два переноси
+        .replace(/<p>|<\/p>/g, '')   // Видаляє теги, що залишилися
+        .trim();
 }
