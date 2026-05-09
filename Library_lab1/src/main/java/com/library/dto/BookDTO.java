@@ -26,4 +26,6 @@ public class BookDTO {
     private Integer timesRead;
     private List<AuthorDTO> authors;
     private List<GenreDTO> genres;
+    private List<Long> authorIds;
+    private List<Long> genreIds;
 }

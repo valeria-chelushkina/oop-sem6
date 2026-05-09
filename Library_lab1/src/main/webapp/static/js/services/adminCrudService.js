@@ -45,12 +45,17 @@ export async function saveEntity({
   apiUpdate,
 }) {
   const payload = getPayloadFromForm(formEl);
+
   if (typeof validate === "function") {
     validate(payload);
   }
+
   if (mode === "update") {
-    return await apiUpdate({ id, ...payload });
+    // Force the ID into the payload to ensure it's not overwritten by an 'undefined' key
+    const updateData = { ...payload, id: Number(id) };
+    return await apiUpdate(updateData);
   }
+
   return await apiCreate(payload);
 }
 

@@ -104,7 +104,20 @@ public class BookServiceImpl implements BookService {
         if (bookDTO == null || bookDTO.getId() == null) {
             throw new IllegalArgumentException("Book id is required for update.");
         }
-        return bookDAO.update(bookMapper.toEntity(bookDTO));
+        Book book = bookMapper.toEntity(bookDTO);
+        if (bookDTO.getAuthorIds() != null) {
+            book.setAuthors(bookDTO.getAuthorIds().stream()
+                    .filter(Objects::nonNull)
+                    .map(id -> Author.builder().id(id).build())
+                    .collect(Collectors.toList()));
+        }
+        if (bookDTO.getGenreIds() != null) {
+            book.setGenres(bookDTO.getGenreIds().stream()
+                    .filter(Objects::nonNull)
+                    .map(id -> Genre.builder().id(id).build())
+                    .collect(Collectors.toList()));
+        }
+        return bookDAO.update(book);
     }
 
     @Override

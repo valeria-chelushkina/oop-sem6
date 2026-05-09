@@ -62,6 +62,7 @@ public class BookServlet extends HttpServlet {
             payload.put("message", "Book created successfully.");
             writeJson(resp, HttpServletResponse.SC_CREATED, payload);
         } catch (SQLException e) {
+            e.printStackTrace(); // Виведе помилку в консоль IDE
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
         } catch (IllegalArgumentException e) {
             writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid request body.");
@@ -81,6 +82,8 @@ public class BookServlet extends HttpServlet {
             payload.put("updated", affected);
             payload.put("message", "Book updated successfully.");
             writeJson(resp, HttpServletResponse.SC_OK, payload);
+        } catch (com.fasterxml.jackson.databind.JsonMappingException e) {
+            writeError(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid request body: " + e.getMessage());
         } catch (SQLException e) {
             writeError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Database error.");
         } catch (IllegalArgumentException e) {

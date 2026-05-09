@@ -183,6 +183,7 @@ async function openModal(action) {
 }
 
 function closeModal() {
+console.log(currentModalContext.id);
     overlay.classList.remove("active");
 }
 
@@ -244,6 +245,7 @@ function setupEventListeners() {
         id: currentModalContext.id,
         formEl: adminForm,
       });
+      console.log(currentModalContext.id);
       closeModal();
       await loadData(currentTargetId);
     });
