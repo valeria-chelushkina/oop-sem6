@@ -14,7 +14,7 @@ export function createBookDetailsCard(book, container){
     mainBlock.innerHTML = `
         <div class="left-block">
             <div class="book-cover">
-                <img src="${book.coverURL || 'placeholder.jpg'}" alt="${book.title}" title="${book.title}">
+                <img src="${book.coverURL || 'static/img/placeholder.png'}" alt="${book.title}" title="${book.title}">
             </div>
         </div>
         <div class="middle-block">

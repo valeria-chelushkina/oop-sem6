@@ -12,7 +12,7 @@ export function createBookCard(book){
         div.innerHTML = `
                 <a href="${titleLink}">
                     <div class="book-cover">
-                        <img src="${book.coverURL || 'placeholder.jpg'}" alt="${book.title}" title="${book.title}">
+                        <img src="${book.coverURL || 'static/img/placeholder.png'}" alt="${book.title}" title="${book.title}">
                     </div>
                 </a>
 				<div class="book-info">

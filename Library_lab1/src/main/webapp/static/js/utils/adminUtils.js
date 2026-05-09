@@ -50,16 +50,17 @@ function setupSelect2(selector, options) {
 
 // function for filling select with API data
 export async function fillSelect(selector, apiCall, valueProp, textProp) {
-    const select = document.querySelector(selector);
-    if (!select) return;
-
+    const $select = $(selector);
+    if (!$select.length) return;
     try {
         const data = await apiCall();
-        select.innerHTML = data.map(item =>
+        const optionsHtml = data.map(item =>
             `<option value="${item[valueProp]}">${item[textProp]}</option>`
         ).join('');
-        if ($(select).data('select2')) {
-            $(select).trigger('change');
+
+        $select.html(optionsHtml);
+        if ($select.data('select2')) {
+            $select.trigger('change');
         }
     } catch (e) {
         console.error("Select fill error " + selector, e);

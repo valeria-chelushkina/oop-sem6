@@ -89,7 +89,6 @@ export const adminCrudRegistry = {
         },
         },
     },
-    // doesnt work now
 	"books-section": {
         modalKey: "add-book",
         titles: {
@@ -106,6 +105,7 @@ export const adminCrudRegistry = {
             getPayloadFromForm: getBookPayload,
             validate(payload) {
             if(!payload?.title) throw new Error("Title is required");
+            if(!payload?.pagesCount) throw new Error("Page number is required");
         },
         },
     }
@@ -123,7 +123,7 @@ export function getModalRendererFor(crud) {
 
 export async function openEditForSection({ sectionId, id, overlayEl, titleEl, formEl, setModalContext }) {
   const crud = getCrudForSection(sectionId);
-  if (!crud) throw new Error("CRUD not implemented for this section");
+  if (!crud) throw new Error("No section found.");
   return openEditModal({
     id,
     apiGetById: crud.api.getById,
@@ -140,7 +140,7 @@ export async function openEditForSection({ sectionId, id, overlayEl, titleEl, fo
 
 export async function saveForSection({ sectionId, mode, id, formEl }) {
   const crud = getCrudForSection(sectionId);
-  if (!crud) throw new Error("CRUD not implemented for this section");
+  if (!crud) throw new Error("No section found.");
   return saveEntity({
     mode,
     id,
@@ -154,6 +154,6 @@ export async function saveForSection({ sectionId, mode, id, formEl }) {
 
 export async function deleteForSection({ sectionId, id }) {
   const crud = getCrudForSection(sectionId);
-  if (!crud) throw new Error("CRUD not implemented for this section");
+  if (!crud) throw new Error("No section found.");
   return deleteEntity({ id, apiDelete: crud.api.delete });
   }

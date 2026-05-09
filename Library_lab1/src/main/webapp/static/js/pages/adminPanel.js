@@ -183,7 +183,6 @@ async function openModal(action) {
 }
 
 function closeModal() {
-console.log(currentModalContext.id);
     overlay.classList.remove("active");
 }
 
@@ -245,7 +244,6 @@ function setupEventListeners() {
         id: currentModalContext.id,
         formEl: adminForm,
       });
-      console.log(currentModalContext.id);
       closeModal();
       await loadData(currentTargetId);
     });
@@ -346,8 +344,7 @@ async function loadData(targetId) {
     loadMoreBtn.style.display = "none";
     try{
         allData = await config.apiCall();
-        // Keep a stable order after create/update/delete.
-        // Otherwise backend may return rows in arbitrary order and edited items can "jump" to the bottom.
+
         if (Array.isArray(allData)) {
             allData.sort((a, b) => {
                 const aId = Number(a?.id);

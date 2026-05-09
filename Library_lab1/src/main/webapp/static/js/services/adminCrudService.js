@@ -1,3 +1,7 @@
+import { initializeSelects, fillSelect } from '../utils/adminUtils.js';
+import { AuthorApi } from '../api/authorApi.js';
+import { GenreApi } from '../api/genreApi.js';
+
 /**
  * Generic CRUD helpers for Admin Panel modals.
  * These functions are entity-agnostic; pass adapters and api functions as arguments.
@@ -25,9 +29,17 @@ export async function openEditModal({
   }
   if (formEl) {
     formEl.innerHTML = renderFormHtml();
+    if (modalContext.section === "books-section") {
+        await Promise.all([
+            fillSelect('[name="author-ids"]', () => AuthorApi.getAll(), 'id', 'penName'),
+            fillSelect('[name="genre-ids"]', () => GenreApi.getAll(), 'id', 'name')
+        ]);
+    }
     if (typeof fillForm === "function") {
       fillForm(formEl, entity);
     }
+
+  initializeSelects();
   }
   if (typeof setModalContext === "function" && modalContext) {
     setModalContext({ ...modalContext, mode: "update", id: entity.id });
@@ -51,7 +63,6 @@ export async function saveEntity({
   }
 
   if (mode === "update") {
-    // Force the ID into the payload to ensure it's not overwritten by an 'undefined' key
     const updateData = { ...payload, id: Number(id) };
     return await apiUpdate(updateData);
   }
@@ -62,4 +73,3 @@ export async function saveEntity({
 export async function deleteEntity({ id, apiDelete }) {
   return await apiDelete(id);
 }
-

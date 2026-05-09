@@ -59,56 +59,50 @@ export const fillFormWithData = (formEl, data) => {
 export const getBookPayload = (formEl) => {
     const formData = new FormData(formEl);
     const payload = {};
-
-    payload.title = formData.get('title')?.trim();
-        payload.isbn = formData.get('isbn')?.trim();
-        payload.description = formData.get('description')?.trim();
-        payload.publisher = formData.get('publisher')?.trim();
-
-        const pubYear = formData.get('publication-year');
-        payload.publicationYear = (pubYear && pubYear !== '') ? parseInt(pubYear) : null;
-
-        payload.language = formData.get('language')?.trim();
-
-        const pages = formData.get('pages-count');
-        payload.pagesCount = (pages && pages !== '') ? parseInt(pages) : null;
-
-        // Map authors and genres as IDs for the backend to process
-        payload.authorIds = formData.getAll('author-ids').map(id => Number(id)).filter(id => !isNaN(id));
-        payload.genreIds = formData.getAll('genre-ids').map(id => Number(id)).filter(id => !isNaN(id));
-
-        // Cover handling (simplified to existing URL if present)
-        const coverURL = formData.get('coverURL');
-        if (typeof coverURL === 'string' && coverURL.trim() !== '') {
-            payload.coverURL = coverURL.trim();
-        }
-
-        return payload;
+    payload.title = isEmpty('title', formData);
+    payload.isbn = isEmpty('isbn', formData);
+    payload.description = isEmpty('description', formData);
+	payload.publisher = isEmpty('publisher', formData);
+    payload.publisher = isEmpty('publisher', formData);
+    const pubYear = formData.get('publication-year');
+    payload.publicationYear = (pubYear && pubYear !== '') ? parseInt(pubYear) : null;
+    payload.language = isEmpty('language', formData);
+    const pages = formData.get('pages-count');
+    payload.pagesCount = (pages && pages !== '') ? parseInt(pages) : null;
+    payload.authorIds = formData.getAll('author-ids').map(id => Number(id)).filter(id => !isNaN(id));
+    payload.genreIds = formData.getAll('genre-ids').map(id => Number(id)).filter(id => !isNaN(id));
+    const coverURL = formData.get('coverURL');
+    if (typeof coverURL === 'string' && coverURL.trim() !== '') {
+        payload.coverURL = coverURL.trim();
+    }
+    return payload;
 };
 
 export const fillBookForm = (formEl, book) => {
     if (!formEl || !book) return;
 
-    if (formEl.elements['title']) formEl.elements['title'].value = book.title ?? "";
-        if (formEl.elements['isbn']) formEl.elements['isbn'].value = book.isbn ?? "";
-        if (formEl.elements['publisher']) formEl.elements['publisher'].value = book.publisher ?? "";
-        if (formEl.elements['publication-year']) formEl.elements['publication-year'].value = book.publicationYear ?? "";
-        if (formEl.elements['language']) formEl.elements['language'].value = book.language ?? "";
-        if (formEl.elements['pages-count']) formEl.elements['pages-count'].value = book.pagesCount ?? "";
-        if (formEl.elements['description']) formEl.elements['description'].value = book.description ?? "";
+    const fields = ['title', 'isbn', 'publisher', 'publication-year', 'language', 'pages-count', 'coverURL', 'description'];
+    fields.forEach(fieldName => {
+        if (formEl.elements[fieldName]) {
+            formEl.elements[fieldName].value = book[toCamel(fieldName)] ?? "";
+        }
+    });
 
-        const previewImg = formEl.querySelector('.cover-preview');
-        if (previewImg) previewImg.src = book.coverURL || "";
+    const previewImg = formEl.querySelector('.cover-preview');
+    if (previewImg) previewImg.src = book.coverURL || "";
 
-    const setMultipleSelect = (name, values) => {
-        const select = formEl.elements[name];
-        if (!select) return;
+	const setMultipleSelect = (name, values) => {
+        const $select = $(formEl).find(`[name="${name}"]`)
+        if (!$select.length) return;
         const idList = values?.map(v => String(v.id || v)) ?? [];
-        Array.from(select.options).forEach(opt => {
-            opt.selected = idList.includes(opt.value);
-        });
+        $select.val(idList).trigger('change');
     };
 
     setMultipleSelect('author-ids', book.authors);
     setMultipleSelect('genre-ids', book.genres);
 };
+
+function isEmpty(name, formData){
+	const elem = formData.get(name)?.trim();
+	return elem === '' ? null : elem;
+}

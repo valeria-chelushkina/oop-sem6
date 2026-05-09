@@ -1,6 +1,5 @@
 export function renderBookForm() {
   return `
-  <input type="hidden" name="id">
   <div class="form-group">
                   <label> Title:</label>
                   <input type="text" name="title" id="book-title" required />
@@ -49,18 +48,16 @@ export function renderBookForm() {
 
                 <div class="form-group">
                   <label> Publication year:</label>
-                  <input type="number" name="publication-year" id="book-publication-year" />
+                  <input type="number" name="publication-year" id="book-publication-year" min="0"/>
                 </div>
 
                 <div class="form-group">
-                  <label style="display: inline-block;"> Cover:</label>
+                  <label style="display: inline-block;"> Cover URL:</label>
                   <img src="" class="cover-preview" style="width: 30px; display: inline-block; height: auto !important; margin-left: 10px;" />
                   <input
-                    type="file"
+                    type="text"
                     name="coverURL"
-                    id="book-cover"
-                    accept="image/png, image/jpeg"
-                    style="display: inline-block;"
+                    id="book-cover-url"
                   />
                 </div>
 
@@ -71,7 +68,7 @@ export function renderBookForm() {
 
                 <div class="form-group">
                   <label> Number of pages:</label>
-                  <input type="number" name="pages-count" id="book-page-number" />
+                  <input type="number" name="pages-count" id="book-page-number" min="0"/>
                 </div>
 
                 <div class="form-group">
@@ -140,7 +137,6 @@ export function renderBookItemForm() {
 
 export function renderLoanForm() {
   return `
-  <input type="hidden" name="id">
         <div class="form-group">
           <label>Book item ID</label>
           <input type="number" name="book-item-id" id="book-item-id" required min="0" />
