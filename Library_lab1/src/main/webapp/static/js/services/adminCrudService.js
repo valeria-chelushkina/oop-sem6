@@ -38,8 +38,8 @@ export async function openEditModal({
     if (typeof fillForm === "function") {
       fillForm(formEl, entity);
     }
-
-  initializeSelects();
+  const window = formEl.id === "admin-form" ? "#modal-overlay" : "#modal-quick-add";
+  initializeSelects(window);
   }
   if (typeof setModalContext === "function" && modalContext) {
     setModalContext({ ...modalContext, mode: "update", id: entity.id });

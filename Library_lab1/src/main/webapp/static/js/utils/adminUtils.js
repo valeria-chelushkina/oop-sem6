@@ -1,4 +1,4 @@
-export function initializeSelects() {
+export function initializeSelects( window ) {
   setupSelect2("#author-select", {
     placeholder: "Choose authors",
     allowClear: true,
@@ -18,7 +18,7 @@ export function initializeSelects() {
     placeholder: "Select a status",
     allowClear: true,
     width: "100%",
-    dropdownParent: $("#modal-overlay"),
+    dropdownParent: $(window),
   });
 
   setupSelect2("#loan-type", {
@@ -67,37 +67,18 @@ export async function fillSelect(selector, apiCall, valueProp, textProp) {
     }
 }
 
-/**
- * Додає новий елемент у Select2 і вибирає його
- */
 export function appendAndSelect(selector, newItem, textProp) {
     const $select = $(selector);
     if (!$select.length) return;
-
-    // ДЕБАГ: Перевірте в консолі, чи приходить сюди текст
-    console.log("Adding to select:", newItem, "Text property:", textProp, "Value:", newItem[textProp]);
-
-    // Якщо раптом newItem[textProp] порожній, ставимо запасне значення
     const text = newItem[textProp] || `New Item (ID: ${newItem.id})`;
     const id = newItem.id;
-
-    // Створюємо опцію: new Option(text, id, defaultSelected, selected)
-    // Важливо: ставимо false, false, а вибір робимо через .val()
     const newOption = new Option(text, id, false, false);
-
-    // Додаємо в DOM
     $select.append(newOption);
-
-    // Отримуємо поточний масив значень (для multiple select)
     let currentValues = $select.val() || [];
     if (!Array.isArray(currentValues)) currentValues = [currentValues];
-
-    // Додаємо новий ID, якщо його ще немає
     const idStr = String(id);
     if (!currentValues.includes(idStr)) {
         currentValues.push(idStr);
     }
-
-    // Оновлюємо значення та примусово синхронізуємо Select2
     $select.val(currentValues).trigger('change');
 }

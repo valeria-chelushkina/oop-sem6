@@ -71,7 +71,6 @@ export async function loadBookItems(container, bookId) {
         }
 
         if (availableCopies === 0) {
-            // Додано крапки перед назвами класів
             const order = container.querySelector('.order');
             const readingRoom = container.querySelector('.reading-room-order');
 

@@ -19,7 +19,7 @@ const PAGE_SIZE = 20; // limit for one portion
 let currentRenderer = null;
 let currentTargetId = "books-section";
 let currentModalContext = { section: null, mode: "create", id: null };
-let currentQuickModalSection = null;
+let currentQuickModalContext = { section: null, id: null };
 
 function readSectionFiltersFromDom() {
     const filters = {};
@@ -179,8 +179,12 @@ async function openModal(action) {
       } catch (err) {
           console.error("Error loading data to the form", err);
       }
+      if(currentModalContext.mode === "create"){
+        const bookItemCreate = formContainer.querySelector(".form-group:last-child");
+        bookItemCreate.style.display = "none";
+      }
   }
-  initializeSelects();
+  initializeSelects("#modal-overlay");
 }
 
 function closeModal() {
@@ -190,14 +194,20 @@ function closeModal() {
 // quick modal windows logic
 function openModalQuick(action) {
     const config = quickModalConfig[action];
+    const quickAdminForm = document.getElementById("quick-admin-form");
     if (!config) return;
-	currentQuickModalSection=config.section;
+	currentQuickModalContext.section=config.section;
     overlay.classList.add("blocked");
     document.getElementById("quick-modal-title").textContent = config.title;
-    document.getElementById("quick-admin-form").innerHTML = config.renderer();
+    quickAdminForm.innerHTML = config.renderer();
+	if(currentQuickModalContext.section === "book-items-section"){
+         const bookIdInput = quickAdminForm.querySelector(".form-group");
+         bookIdInput.style.display = "none";
+         bookIdInput.querySelector('#book-item-book-id').required = false;
+    }
     quickModal.classList.add("active");
 
-    initializeSelects();
+    initializeSelects("#modal-quick-add");
 }
 
 function closeQuickModal() {
@@ -235,23 +245,9 @@ function setupEventListeners() {
         }
     });
 
-
-    const quickAdminForm = document.getElementById("quick-admin-form");
-
-    quickAdminForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        await saveForSection({
-        sectionId: currentQuickModalSection,
-        mode: "create",
-        id: null,
-        formEl: quickAdminForm,
-        });
-        closeQuickModal();
-    })
-
-
     const adminForm = document.getElementById("admin-form");
 
+	// create in quick form (in books-section)
     adminForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       await saveForSection({
@@ -263,6 +259,23 @@ function setupEventListeners() {
       closeModal();
       await loadData(currentTargetId);
     });
+
+    const quickAdminForm = document.getElementById("quick-admin-form");
+
+    quickAdminForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if(currentQuickModalContext.section === 'book-items-section') {
+            const bookIdValue = quickAdminForm.querySelector('#book-item-book-id');
+            bookIdValue.value = currentQuickModalContext.id;
+        }
+        await saveForSection({
+            sectionId: currentQuickModalContext.section,
+            mode: "create",
+            id: null,
+            formEl: quickAdminForm,
+        });
+        closeQuickModal();
+    })
 
     const tableBody = document.querySelector(".table-body");
     tableBody?.addEventListener("click", async (e) => {
@@ -277,6 +290,7 @@ function setupEventListeners() {
         if (!Number.isFinite(id)) {
             return;
         }
+        currentQuickModalContext.id = id;
 
         // view/update
         if (clickedViewUpdate) {
