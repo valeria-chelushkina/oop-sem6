@@ -38,14 +38,14 @@ public class AuthFilter implements Filter {
         }
 
         // allow public files to pass through
-        if(path.startsWith("/static/") || path.equals("/index.html") || path.equals("/") || path.equals("/login")) {
+        if(path.startsWith("/static/") || path.equals("/index.html") || path.equals("/") || path.equals("/login") || path.equals("/api/auth/status")) {
             chain.doFilter(request, response);
             return;
         }
 
         String method = req.getMethod();
         if("GET".equalsIgnoreCase(method)) {
-            if(path.startsWith("/api/books") || path.startsWith("/api/authors") || path.startsWith("/api/genres") || path.startsWith("/api/filter") ) {
+            if(path.startsWith("/api/books") || path.startsWith("/api/authors") || path.startsWith("/api/genres") || path.startsWith("/api/filter") || path.startsWith("/api/book-items") ) {
                 chain.doFilter(request, response);
                 return;
             }

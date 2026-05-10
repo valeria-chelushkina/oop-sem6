@@ -70,16 +70,27 @@ input[type="search"]::-ms-reveal {
   transform: translateY(-50%) scale(1.1);
 }
 
-.user-sign-in button{
-  font-size: 17px;
+.sign-in-btn {
+  font-size: 18px;
   border-radius: 5px;
-  border: none;
   padding: 15px 8px;
   width: 180px;
   cursor: pointer;
   margin: 10px 0px;
   font-weight: 600;
   background-color: white;
+  display: block;
+  text-align: center;
+  color: black;
+}
+
+.sign-in-btn:hover {
+  background-color: rgb(210, 123, 253);
+  color: white;
+}
+
+.sign-in-btn:active {
+  opacity: 0.7;
 }
 
 /* === main block === */
@@ -479,4 +490,108 @@ input[type="checkbox"]:checked::before {
     font-weight: 600;
     font-style: italic;
     font-size: 20px;
+}
+
+.profile-menu {
+  position: relative;
+  font-size: 18px;
+  border-radius: 5px;
+  width: 180px;
+  height: 26px;
+  cursor: pointer;
+  padding: 12px 18px;
+  margin: 10px;
+  font-weight: 500;
+  background-color: rgb(224, 162, 255);
+  text-align: center;
+  color: white;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-menu p {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drop-down-menu {
+  position: absolute;
+  color: white;
+  background-color: rgb(224, 162, 255);
+  top: 100%;
+  left: 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  pointer-events: none;
+  padding: 5px 0;
+}
+
+.profile-menu:hover .drop-down-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.drop-down-menu:hover{
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+.drop-down-menu hr {
+  width: 90%;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.drop-down-menu div {
+  padding: 16px 20px;
+  transition: background-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.drop-down-menu div:hover {
+  background-color: rgb(241, 213, 255);
+  color: rgb(53, 53, 53);
+  border-radius: 5px;
+}
+
+.drop-down-menu div:active {
+  background-color: rgba(241, 213, 255, 0.547);
+  transform: scale(0.98);
+}
+
+.drop-down-meny a{
+	color: white !important;
+	text-decoration: none !important;
+}
+
+.drop-down-meny a:hover{
+	color: rgb(53, 53, 53) !important;
+}
+
+.drop-down-menu a,
+.drop-down-menu a:visited,
+.drop-down-menu a:hover,
+.drop-down-menu a:active {
+  color: inherit !important;
+  text-decoration: none !important;
+  outline: none;
 }
