@@ -1,0 +1,11 @@
+{
+  "realm": "LibrarySystem",
+  "auth-server-url": "http://localhost:8180/",
+  "ssl-required": "external",
+  "resource": "library-app",
+  "credentials": {
+    "secret": "pJY4uFTonxz7rb4QlLOdw6wnFg4eF5pa"
+  },
+  "confidential-port": 0,
+  "redirect-uri": "http://localhost:8081/auth/callback"
+}

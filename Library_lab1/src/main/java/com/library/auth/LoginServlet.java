@@ -1,0 +1,38 @@
+package com.library.auth;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        String randomState = StateGenerator.generateState();
+        // save state to session for verification later
+        req.getSession().setAttribute("oauth_state", randomState);
+
+        File jsonFile = new File("resources/keycloak.json");
+        KeycloakConfig config = objectMapper.readValue(jsonFile, KeycloakConfig.class);
+
+        String authUrl = config.getAuthUrl() + "?" +
+                "client_id=" + URLEncoder.encode(config.clientId, StandardCharsets.UTF_8) +
+                "&response_type=code" +
+                "&scope=" + URLEncoder.encode("openid profile email", StandardCharsets.UTF_8) +
+                "&redirect_uri=" + URLEncoder.encode(config.redirectUri, StandardCharsets.UTF_8) +
+                "&state=" + randomState;
+
+        resp.sendRedirect(authUrl);
+    }
+}

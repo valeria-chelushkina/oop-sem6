@@ -20,7 +20,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:6.3.0")
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
 
-    // PostgreSQL JDBC Driver
+    // lombok
     compileOnly 'org.projectlombok:lombok:1.18.38'
     annotationProcessor 'org.projectlombok:lombok:1.18.38'
 
@@ -35,6 +35,9 @@ dependencies {
     // mapstruct
     implementation 'org.mapstruct:mapstruct:1.6.3'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+    // keycloak
+    implementation(platform("org.keycloak:keycloak-dependencies-server-min:26.6.1"))
 }
 
 test {
