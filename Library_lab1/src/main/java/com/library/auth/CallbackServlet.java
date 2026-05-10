@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,12 +74,8 @@ public class CallbackServlet extends HttpServlet {
 
             // parse JSON response
             Map<String, Object> tokenResponse = objectMapper.readValue(response.body(), Map.class);
-            System.out.println(tokenResponse);
             String accessToken = (String) tokenResponse.get("access_token");
-
-            // establish local session
-            // will extract user info from access_token later
-            req.getSession().setAttribute("access_token", accessToken);
+            String refreshToken = (String) tokenResponse.get("refresh_token");
 
             // redirect to main page
             resp.sendRedirect(req.getContextPath() + "/");
@@ -127,8 +124,11 @@ public class CallbackServlet extends HttpServlet {
                 userService.update(user);
             }
 
-            req.getSession().setAttribute("user", user);
-            req.getSession().setAttribute("access_token", accessToken);
+            // establish local session
+            HttpSession session = req.getSession();
+            session.setAttribute("user", user);
+            session.setAttribute("access_token", accessToken);
+            session.setAttribute("refresh_token", refreshToken);
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
