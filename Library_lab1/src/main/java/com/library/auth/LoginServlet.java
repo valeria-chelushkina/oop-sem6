@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -23,8 +24,12 @@ public class LoginServlet extends HttpServlet {
         // save state to session for verification later
         req.getSession().setAttribute("oauth_state", randomState);
 
-        File jsonFile = new File("resources/keycloak.json");
-        KeycloakConfig config = objectMapper.readValue(jsonFile, KeycloakConfig.class);
+        InputStream is = getClass().getClassLoader().getResourceAsStream("keycloak.json");
+
+        if (is == null) {
+            throw new RuntimeException("keycloak.json not found in classpath!");
+        }
+        KeycloakConfig config = objectMapper.readValue(is, KeycloakConfig.class);
 
         String authUrl = config.getAuthUrl() + "?" +
                 "client_id=" + URLEncoder.encode(config.clientId, StandardCharsets.UTF_8) +

@@ -15,9 +15,7 @@ import java.time.LocalDateTime;
 public class CreateUserRequest {
     private String firstName;
     private String lastName;
-    private String taxId;
     private String email;
-    private String passwordHash;
     private UserRole role;
     private LocalDateTime registrationDate;
 }

@@ -33,7 +33,16 @@ public class UserServiceImpl implements UserService {
         if (users.isEmpty()) {
             return null;
         }
-        return userMapper.toDto(users.get(0));
+        return userMapper.toDto(users.getFirst());
+    }
+
+    @Override
+    public UserDTO findByEmail(String email) throws SQLException {
+        List<User> users = userDAO.findByEmail(email);
+        if (users.isEmpty()) {
+            return null;
+        }
+        return userMapper.toDto(users.getFirst());
     }
 
     @Override

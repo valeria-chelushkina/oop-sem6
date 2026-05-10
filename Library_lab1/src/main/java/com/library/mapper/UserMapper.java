@@ -10,7 +10,6 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     UserDTO toDto(User user);
 
-    @Mapping(target = "passwordHash", ignore = true)
     User toEntity(UserDTO dto);
 
     @Mapping(target = "id", ignore = true)

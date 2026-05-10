@@ -14,9 +14,7 @@ public class UserDAO extends BaseDAO {
                 .id(rs.getLong("id"))
                 .firstName(rs.getString("first_name"))
                 .lastName(rs.getString("last_name"))
-                .taxId(rs.getString("tax_id"))
                 .email(rs.getString("email"))
-                .passwordHash(rs.getString("password_hash"))
                 .role(UserRole.valueOf(rs.getString("role")))
                 .registrationDate(rs.getTimestamp("registration_date").toLocalDateTime())
                 .build();
@@ -29,17 +27,15 @@ public class UserDAO extends BaseDAO {
     }
 
     public Long create(User user) throws SQLException {
-        String sql = "INSERT INTO users (first_name, last_name, tax_id, email, password_hash, role, registration_date) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (first_name, last_name, email, role, registration_date) " +
+                "VALUES (?, ?, ?, ?, ?)";
         String loggerMessage = "Creating new user.";
         return insertAndReturnId(
                 sql,
                 Arrays.asList(
                         user.getFirstName(),
                         user.getLastName(),
-                        user.getTaxId(),
                         user.getEmail(),
-                        user.getPasswordHash(),
                         user.getRole() != null ? user.getRole().name() : null,
                         user.getRegistrationDate()
                 ),
@@ -48,7 +44,7 @@ public class UserDAO extends BaseDAO {
     }
 
     public int update(User user) throws SQLException {
-        String sql = "UPDATE users SET first_name = ?, last_name = ?, tax_id = ?, email = ?, password_hash = ?, role = ?, registration_date = ? " +
+        String sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role = ?, registration_date = ? " +
                 "WHERE id = ?";
         String loggerMessage = "Updating user by id.";
         return update(
@@ -56,15 +52,19 @@ public class UserDAO extends BaseDAO {
                 Arrays.asList(
                         user.getFirstName(),
                         user.getLastName(),
-                        user.getTaxId(),
                         user.getEmail(),
-                        user.getPasswordHash(),
                         user.getRole() != null ? user.getRole().name() : null,
                         user.getRegistrationDate(),
                         user.getId()
                 ),
                 loggerMessage
         );
+    }
+
+    public List<User> findByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        String loggerMessage = "Fetching user by email.";
+        return query(sql, List.of(email), this::mapResultSetToUser, loggerMessage);
     }
 
     public List<User> findById(Long id) throws SQLException {

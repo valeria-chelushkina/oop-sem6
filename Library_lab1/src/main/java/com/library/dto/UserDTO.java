@@ -16,7 +16,6 @@ public class UserDTO {
     private Long id;
     private String firstName;
     private String lastName;
-    private String taxId;
     private String email;
     private UserRole role;
     private LocalDateTime registrationDate;
