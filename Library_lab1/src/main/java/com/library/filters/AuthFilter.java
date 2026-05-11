@@ -20,7 +20,7 @@ import java.util.Base64;
 import java.util.Map;
 
 @WebFilter(urlPatterns = {"/api/*", "/adminManagement.html",
-        "/book.html", "/management", "/profile.html", "/profile", "/book/*"})
+        "/book.html", "/management", "/profile.html", "/profile", "/book/*", "/orders", "/orders.html"})
 public class AuthFilter implements Filter {
 
     ObjectMapper objectMapper = new ObjectMapper();

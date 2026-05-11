@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/profile.css" />
+    <link rel="stylesheet" href="/static/css/adminManagement.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+    />
+    <title id="page-title">Orders</title>
+    <style>
+        .action-btn {
+            padding: 4px 8px;
+            margin: 2px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            color: white;
+        }
+        .issue-btn { background-color: #28a745; }
+        .return-btn { background-color: #007bff; }
+        .delete-btn { background-color: #dc3545; }
+        .action-btn:hover { opacity: 0.8; }
+        
+        /* Modal tweaks for Issue */
+        #issue-modal-body .form-group { margin-bottom: 15px; }
+        #issue-modal-body label { display: block; margin-bottom: 5px; font-weight: bold; }
+        #issue-modal-body input, #issue-modal-body select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body class="orders-page">
+<header>
+    <div>
+        <a href="/"
+        ><img
+                class="icon"
+                src="https://ctfcf--s.chowtaifook.com/wp-content/themes/ctfcf-theme/images/title/en/library.png"
+                alt="library-icon"
+                title="library-icon"
+        /></a>
+    </div>
+    <form class="search-bar-input" id="search-form" method="get" action="">
+        <input
+                type="search"
+                id="search-bar"
+                name="query"
+                placeholder="Search..."
+                autocomplete="off"
+        />
+        <button type="submit" class="search-btn">🔎︎</button>
+    </form>
+    <div id="auth-container"></div>
+</header>
+
+<div class="main-container">
+    <aside class="sidebar-user">
+        <nav>
+            <ul id="options-list">
+                <li class="profile-nav-item" id="nav-personal-data">
+                    <a href="/profile" id="profile-personal-page">Personal data</a>
+                </li>
+                <li class="profile-nav-item">
+                    <a href="/orders" class="active" id="nav-orders-text">Orders</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="profile-content main-content">
+        <div class="content-header">
+            <h1 id="tab-title">Orders</h1>
+
+            <div class="admin-controls">
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input
+                                type="text"
+                                id="global-search"
+                                placeholder="Quick search..."
+                        />
+                    </div>
+                </div>
+                <div id="dynamic-filters-container" class="filters-grid"></div>
+            </div>
+        </div>
+
+        <!-- table with information -->
+        <section class="card">
+            <table>
+                <thead>
+                <tr class="table-head"></tr>
+                </thead>
+
+                <tbody class="table-body"></tbody>
+            </table>
+
+            <div class="pagination">
+                <button class="load-more">Load more...</button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal for Issuing/Returning -->
+<div id="action-modal" class="modal-overlay">
+    <div class="modal-window">
+        <header class="modal-header">
+            <h2 id="action-modal-title">Action</h2>
+            <button id="close-action-modal" class="close-btn">&times;</button>
+        </header>
+        <div class="modal-body" id="action-modal-body">
+            <!-- Dynamic content -->
+        </div>
+        <footer class="modal-footer">
+            <button type="button" id="action-cancel-btn" class="close-btn">Cancel</button>
+            <button type="button" id="action-submit-btn" class="save-changes-btn">Confirm</button>
+        </footer>
+    </div>
+</div>
+
+<script type="module" src="/static/js/pages/orders.js"></script>
+<script type="module" src="/static/js/utils/header.js"></script>
+</body>
+</html>

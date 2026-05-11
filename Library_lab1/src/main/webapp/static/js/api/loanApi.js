@@ -1,4 +1,3 @@
-// will probably change it later?
 const API_URL = '/api/loans';
 
 export const LoanApi = {

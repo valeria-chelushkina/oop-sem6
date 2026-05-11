@@ -20,7 +20,7 @@ async function updateHeader() {
                     <div class="drop-down-menu">
                         <a href="/profile"><div>Profile</div></a>
                         <hr>
-                        <a href='#'><div>Orders</div></a>
+                        <a href='/orders'><div>Orders</div></a>
                         <hr>
                         ${managementPanel}
                         <a href="/logout"><div>Log out</div></a>

@@ -292,7 +292,9 @@ a {
 .right-block button,
 .modal-footer button,
 #add-copy-btn,
-#save-changes-btn{
+#save-changes-btn,
+#action-cancel-btn,
+#action-submit-btn{
   font-size: 17px;
     border-radius: 5px;
     border: none;
@@ -309,7 +311,8 @@ a {
 
 .order, #save-btn,
  #quick-save-btn,
- #save-changes-btn{
+ #save-changes-btn,
+ #action-submit-btn{
   background-color: rgb(162, 76, 205);
   color: white;
 }
@@ -320,18 +323,21 @@ a {
 }
 
  #cancel-btn, #add-copy-btn,
- #quick-cancel-btn{
+ #quick-cancel-btn,
+ #action-cancel-btn{
  background-color: rgb(244, 206, 255);
  color: black;
  }
 
  #cancel-btn:hover, #add-copy-btn:hover,
- #quick-cancel-btn:hover{
+ #quick-cancel-btn:hover,
+ #action-cancel-btn{
     opacity: 0.75;
  }
 
   #cancel-btn:active, #add-copy-btn:active,
-  #quick-cancel-btn:active{
+  #quick-cancel-btn:active,
+  #action-cancel-btn{
      opacity: 0.9;
   }
 
@@ -341,7 +347,8 @@ a {
 #save-btn:hover,
 #quick-save-btn:hover,
 #open-add-form:hover,
-#save-changes-btn:hover{
+#save-changes-btn:hover,
+#action-submit-btn{
   opacity: 0.85;
 }
 
@@ -351,7 +358,8 @@ a {
 #save-btn:active,
 #quick-save-btn:active
 #open-add-form:active,
-#save-changes-btn:active{
+#save-changes-btn:active,
+#action-submit-btn{
   opacity: 0.95;
 }
 

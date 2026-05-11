@@ -1,11 +1,11 @@
 /* Sidebar */
-.sidebar {
+.sidebar-user {
     margin-left: 50px;
   width: 180px;
   padding: 20px;
 }
 
-.sidebar ul {
+.sidebar-user ul {
   list-style: none;
   padding: 0;
 }
@@ -23,7 +23,7 @@
   height: calc(100vh - 145px);
 }
 
-.sidebar a {
+.sidebar-user a {
   font-size: 18px;
   border-radius: 5px;
   padding: 12px;
@@ -33,21 +33,21 @@
   font-weight: 600;
 }
 
-.sidebar li {
+.sidebar-user li {
   padding: 15px;
   margin-bottom: 15px;
 }
 
-.sidebar a:hover,
-.sidebar a.active {
+.sidebar-user a:hover,
+.sidebar-user a.active {
   background-color: rgb(195, 74, 255);
   color: white;
 }
 
-.sidebar a,
-.sidebar a:visited,
-.sidebar a:hover,
-.sidebar a:active {
+.sidebar-user a,
+.sidebar-user a:visited,
+.sidebar-user a:hover,
+.sidebar-user a:active {
   text-decoration: none !important;
   outline: none;
 }
