@@ -18,7 +18,7 @@ async function updateHeader() {
 				<div class="profile-menu">
                     <p>${auth.firstName} ${auth.lastName}</p>
                     <div class="drop-down-menu">
-                        <a href="/profile.html"><div>Profile</div></a>
+                        <a href="/profile/${auth.id}"><div>Profile</div></a>
                         <hr>
                         <a href='#'><div>Orders</div></a>
                         <hr>

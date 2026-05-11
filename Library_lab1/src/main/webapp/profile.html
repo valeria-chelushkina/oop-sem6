@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="static/css/style.css" />
-    <link rel="stylesheet" href="static/css/profile.css" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/profile.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -40,12 +40,11 @@
 <div class="main-container">
     <aside class="sidebar">
         <nav>
-            <ul>
+            <ul id="options-list">
                 <li class="profile-nav-item">
-                    <a href="profile.html" class="active">Personal data</a>
+                    <a href="/" class="active" id="profile-personal-page">Personal data</a>
                 </li>
                 <li class="profile-nav-item"><a href="#">Orders</a></li>
-                <li class="profile-nav-item"><a href="#">Management</a></li> <!-- will control it in js -->
             </ul>
         </nav>
     </aside>
@@ -53,7 +52,7 @@
     <main class="profile-content">
         <h1>Profile data</h1>
 
-        <div class="profile-data-card">
+        <div id="profile-data-card">
             <div>
                 <label> First name: </label>
                 <input type="text" id="user-first-name" />
@@ -75,6 +74,7 @@
     </main>
 </div>
 
+<script type="module" src="/static/js/pages/profile.js"></script>
 <script type="module" src="/static/js/utils/header.js"></script>
 </body>
 </html>

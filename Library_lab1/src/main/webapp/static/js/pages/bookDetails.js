@@ -3,8 +3,6 @@ import { BookApi } from '../api/bookApi.js';
 import { createBookDetailsCard } from '../components/bookDetailsCard.js';
 
 document.addEventListener('DOMContentLoaded', async => {
-	const searchBar = document.getElementById('search-bar');
-    const searchForm = document.getElementById('search-form');
     const bookContainer = document.getElementById('container')
 
 	async function init() {
