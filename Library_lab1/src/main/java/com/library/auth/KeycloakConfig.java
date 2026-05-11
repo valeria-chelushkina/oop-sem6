@@ -41,4 +41,9 @@ public class KeycloakConfig {
         return String.format("%srealms/%s/protocol/openid-connect/token",
                 getBaseUrl(), realm);
     }
+
+    public String getLogoutUrl() {
+        return String.format("%srealms/%s/protocol/openid-connect/logout",
+                getBaseUrl(), realm);
+    }
 }

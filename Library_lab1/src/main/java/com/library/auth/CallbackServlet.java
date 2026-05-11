@@ -77,9 +77,6 @@ public class CallbackServlet extends HttpServlet {
             String accessToken = (String) tokenResponse.get("access_token");
             String refreshToken = (String) tokenResponse.get("refresh_token");
 
-            // redirect to main page
-            resp.sendRedirect(req.getContextPath() + "/");
-
             // get user info from from ID token
             String idToken = (String) tokenResponse.get("id_token");
             Map<String, Object> idClaims = decodeJwtPayload(idToken);
@@ -129,6 +126,10 @@ public class CallbackServlet extends HttpServlet {
             session.setAttribute("user", user);
             session.setAttribute("access_token", accessToken);
             session.setAttribute("refresh_token", refreshToken);
+            session.setAttribute("id_token", idToken);
+
+            // redirect to main page
+            resp.sendRedirect(req.getContextPath() + "/");
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

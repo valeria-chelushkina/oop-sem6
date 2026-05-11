@@ -11,18 +11,18 @@ async function updateHeader() {
 			}
 			else{
 				roleTitle = 'Management panel';
-				roleRef="/management" //temporary
+				roleRef="/management"
 			}
 			// # - are temporary
 			authContainer.innerHTML = `
 				<div class="profile-menu">
                     <p>${auth.firstName} ${auth.lastName}</p>
                     <div class="drop-down-menu">
-                        <div><a href="#">Profile</a></div
+                        <a href="#"><div>Profile</div></a>
                         <hr>
-                        <div><a href=${roleRef}>${roleTitle}</a></div>
+                        <a href=${roleRef}><div>${roleTitle}</div></a>
                         <hr>
-                        <div><a href="#">Log out</a></div>
+                        <a href="/logout"><div>Log out</div></a>
                     </div>
                 </div>
 			`;

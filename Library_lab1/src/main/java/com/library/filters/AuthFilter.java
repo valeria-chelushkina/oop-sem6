@@ -32,6 +32,12 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
+
+        // Set Cache-Control headers to prevent caching of protected pages
+        resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+        resp.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+        resp.setDateHeader("Expires", 0); // Proxies.
+
         String path = req.getServletPath();
         if (path.endsWith("/") && path.length() > 1) {
             path = path.substring(0, path.length() - 1);
