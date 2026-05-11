@@ -236,6 +236,26 @@ a {
     transform: translateY(-1.4px);
   }
 
+.stars-interactive {
+    display: inline-flex;
+    cursor: pointer;
+    font-size: 30px;
+    color: #ccc;
+}
+
+.stars-interactive .star {
+    transition: color 0.1s;
+}
+
+.stars-interactive .star::before {
+    content: "\2605";
+}
+
+.stars-interactive .star.hovered,
+.stars-interactive .star.selected {
+    color: gold;
+}
+
 .additional-info {
   display: flex;
   flex-direction: column;
@@ -610,4 +630,19 @@ input[type="checkbox"]:checked::before {
   color: inherit !important;
   text-decoration: none !important;
   outline: none;
+}
+
+.remove-rating-btn {
+    background: none;
+    border: none;
+    color: #888;
+    text-decoration: underline;
+    font-size: 14px !important;
+    cursor: pointer;
+    padding: 0 !important;
+    display: none;
+}
+
+.remove-rating-btn:hover {
+    color: #dc3545 !important;
 }

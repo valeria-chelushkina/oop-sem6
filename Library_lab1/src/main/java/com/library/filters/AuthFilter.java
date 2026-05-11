@@ -20,7 +20,7 @@ import java.util.Base64;
 import java.util.Map;
 
 @WebFilter(urlPatterns = {"/api/*", "/adminManagement.html",
-        "/book.html", "/management", "/profile.html", "/profile", "/book/*", "/orders", "/orders.html"})
+        "/book.html", "/management", "/profile.html", "/profile", "/orders", "/orders.html"})
 public class AuthFilter implements Filter {
 
     ObjectMapper objectMapper = new ObjectMapper();
@@ -44,7 +44,7 @@ public class AuthFilter implements Filter {
         }
 
         // allow public files to pass through
-        if(path.startsWith("/static/") || path.equals("/index.html") || path.equals("/") || path.equals("/login") || path.equals("/api/auth/status")) {
+        if(path.startsWith("/static/") || path.equals("/index.html") || path.equals("/") || path.equals("/login") || path.equals("/api/auth/status") || path.equals("/book.html")) {
             chain.doFilter(request, response);
             return;
         }

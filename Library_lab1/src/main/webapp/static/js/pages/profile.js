@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		if(saveBtn) {
 			saveBtn.addEventListener('click', () => {
 				updateUser(user);
-				location.reload();
+				window.location.reload();
 			})
 		}
 

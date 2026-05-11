@@ -46,6 +46,17 @@ export function createBookDetailsCard(book, container){
             <button class="order">Order</button>
             <button class="reading-room-order">Order to reading room</button>
             <p class="available-copies"></p>
+            <div class="interactive-rating-section" style="margin-top: 20px;">
+                <p style="font-weight: bold; margin-bottom: 5px;">Rate this book:</p>
+                <div class="stars-interactive" id="stars-interactive">
+                    <span class="star" data-value="1"></span>
+                    <span class="star" data-value="2"></span>
+                    <span class="star" data-value="3"></span>
+                    <span class="star" data-value="4"></span>
+                    <span class="star" data-value="5"></span>
+                </div>
+                <button id="remove-rating" class="remove-rating-btn">Remove my rating</button>
+            </div>
         </div>
     `;
 
