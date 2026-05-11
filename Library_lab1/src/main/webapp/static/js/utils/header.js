@@ -6,25 +6,23 @@ async function updateHeader() {
 		const auth = await response.json();
 		const authContainer = document.getElementById('auth-container');
 		if(auth.authenticated) {
-			let roleTitle ='';
-			let roleRef = '';
-			if(auth.role === 'READER') {
-				roleTitle = 'Orders';
-				roleRef='#' //temporary
-			}
-			else{
-				roleTitle = 'Management panel';
-				roleRef="/management"
+			let managementPanel = '';
+			if(auth.role === 'LIBRARIAN') {
+				managementPanel = `
+					<a href='/management'><div>Management panel</div></a>
+					<hr>
+				`
 			}
 			// # - are temporary
 			authContainer.innerHTML = `
 				<div class="profile-menu">
                     <p>${auth.firstName} ${auth.lastName}</p>
                     <div class="drop-down-menu">
-                        <a href="#"><div>Profile</div></a>
+                        <a href="/profile.html"><div>Profile</div></a>
                         <hr>
-                        <a href=${roleRef}><div>${roleTitle}</div></a>
+                        <a href='#'><div>Orders</div></a>
                         <hr>
+                        ${managementPanel}
                         <a href="/logout"><div>Log out</div></a>
                     </div>
                 </div>

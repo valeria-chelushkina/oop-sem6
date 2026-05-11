@@ -1,0 +1,78 @@
+/* Sidebar */
+.sidebar {
+    margin-left: 50px;
+  width: 180px;
+  padding: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.profile-content {
+  flex: 1;
+  padding: 85px;
+  padding-top: 10px;
+  overflow-y: auto;
+}
+
+.main-container {
+  margin-top: 25px;
+  display: flex;
+  height: calc(100vh - 145px);
+}
+
+.sidebar a {
+  font-size: 18px;
+  border-radius: 5px;
+  padding: 12px;
+  border-radius: 5px;
+  color: rgb(195, 74, 255);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.sidebar li {
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background-color: rgb(195, 74, 255);
+  color: white;
+}
+
+.sidebar a,
+.sidebar a:visited,
+.sidebar a:hover,
+.sidebar a:active {
+  text-decoration: none !important;
+  outline: none;
+}
+
+
+.profile-data-card{
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.profile-data-card input{
+    width: 50%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  align-items: center;
+}
+
+.profile-content label{
+    display: inline-block;
+    width: 120px;
+    font-size: 17px;
+}
