@@ -1,5 +1,3 @@
-import { BookItemApi } from '../api/bookItemApi.js';
-
 export function genresForBook(container, bookGenres){
     const genreContainer = container.querySelector(".tags");
     if(!genreContainer) {
@@ -56,58 +54,6 @@ export function showRating(container, averageRating) {
     const ratingNum = container.querySelector('.rating-number');
     if (starsInner) starsInner.style.width = starPercentageRounded;
     if (ratingNum) ratingNum.innerHTML = averageRating || 0;
-}
-
-export async function loadBookItems(container, bookId) {
-    try {
-        const bookItems = await BookItemApi.getByBookId(bookId);
-        if (!bookItems) return;
-
-        const availableCopies = bookItems.filter(item => (item.status === 'AVAILABLE' || item.status === 'READING_ROOM_ONLY')).length;
-        const copiesElement = container.querySelector(".available-copies");
-
-        if (copiesElement) {
-            copiesElement.innerHTML = `Available copies: ${availableCopies}`;
-        }
-
-        if (availableCopies === 0) {
-            const order = container.querySelector('.order');
-            const readingRoom = container.querySelector('.reading-room-order');
-
-            if (order) order.disabled = true;
-            if (readingRoom) readingRoom.disabled = true;
-        }
-    } catch (e) {
-        console.error("Load book items error:", e);
-    }
-}
-
-export async function isOnlyReadingRoom(container, bookId) {
-	try{
-	const bookItem = await BookItemApi.getByBookId(bookId);
-            if(!bookItem || !Array.isArray(bookItem)){
-                console.warn("bookItem was not found or is not an array:", bookItem);
-                return;
-            }
-            let canOrder = 0;
-            let isReadingPresent = 0;
-            bookItem.forEach((item) => {
-                if(item.status === 'READING_ROOM_ONLY'){
-                    isReadingPresent+=1;
-                }
-                if(item.status === 'AVAILABLE' || item.status ===  'ORDERED' || item.status ===  'ISSUED'){
-                    canOrder+=1;
-                }
-            });
-            const orderBtn = container.querySelector('.order');
-            if(orderBtn && isReadingPresent > 0 && canOrder === 0){
-                orderBtn.disabled = true;
-                orderBtn.title = "No available copies.";
-            }
-	} catch(e){
-		 console.error("Load book items error:", e);
-	}
-
 }
 
 export function waitLoader(loader){

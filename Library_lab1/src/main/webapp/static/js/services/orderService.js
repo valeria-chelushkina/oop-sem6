@@ -65,10 +65,20 @@ export const OrderService = {
     async updateButtonStates(container, bookId, readerId) {
         const orderBtn = container.querySelector('.order');
         const rrBtn = container.querySelector('.reading-room-order');
+        const copiesElement = container.querySelector(".available-copies");
         
-        if (!orderBtn && !rrBtn) return;
+        if (!orderBtn && !rrBtn && !copiesElement) return;
 
         try {
+            // get availability to show copies count
+            const availableItems = await BookApi.getAvailableItems(bookId);
+            const totalAvailable = availableItems.length;
+
+            if (copiesElement) {
+                copiesElement.innerHTML = `Available copies: ${totalAvailable}`;
+            }
+
+            // if user is logged in, check for active loans
             if (readerId) {
                 const activeLoans = await LoanApi.checkActiveLoan(bookId, readerId);
                 if (activeLoans && activeLoans.length > 0) {
@@ -84,16 +94,32 @@ export const OrderService = {
                 }
             }
 
-            // check availability
-            const availableItems = await BookApi.getAvailableItems(bookId);
-            if (!availableItems || availableItems.length === 0) {
-                [orderBtn, rrBtn].forEach(btn => {
-                    if (btn) {
-                        btn.disabled = true;
-                        btn.textContent = 'Unavailable';
-                    }
-                });
+            // handle buttons
+            const hasAvailable = availableItems.some(i => i.status === 'AVAILABLE');
+            const hasReadingRoom = availableItems.some(i => i.status === 'READING_ROOM_ONLY');
+
+            if (orderBtn) {
+                if (!hasAvailable) {
+                    orderBtn.disabled = true;
+                    orderBtn.textContent = 'Unavailable';
+                    orderBtn.title = 'No copies available for subscription';
+                } else {
+                    orderBtn.disabled = false;
+                    orderBtn.textContent = 'Order';
+                }
             }
+
+            if (rrBtn) {
+                if (!hasAvailable && !hasReadingRoom) {
+                    rrBtn.disabled = true;
+                    rrBtn.textContent = 'Unavailable';
+                    rrBtn.title = 'No copies available for reading room';
+                } else {
+                    rrBtn.disabled = false;
+                    rrBtn.textContent = 'Order to reading room';
+                }
+            }
+
         } catch (error) {
             console.error("Failed to update button states:", error);
         }

@@ -1,4 +1,4 @@
-import { showRating, loadBookItems, genresForBook, isOnlyReadingRoom } from '../utils/utils.js';
+import { showRating, genresForBook } from '../utils/utils.js';
 
 export function createBookCard(book){
 	const authorLine = Array.isArray(book.authors)
@@ -46,8 +46,6 @@ export function createBookCard(book){
         li.appendChild(div);
 
         showRating(li, book.averageRating);
-        loadBookItems(li, book.id);
         genresForBook(li, book.genres);
-        isOnlyReadingRoom(li, book.id);
         return li;
 }

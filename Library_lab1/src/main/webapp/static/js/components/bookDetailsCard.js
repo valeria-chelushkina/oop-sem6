@@ -1,4 +1,4 @@
-import { showRating, loadBookItems, genresForBook, isOnlyReadingRoom, showNumberRated, authorsForBook } from '../utils/utils.js';
+import { showRating, genresForBook, showNumberRated, authorsForBook } from '../utils/utils.js';
 
 export function createBookDetailsCard(book, container){
 
@@ -50,10 +50,8 @@ export function createBookDetailsCard(book, container){
     `;
 
     showRating(mainBlock, book.averageRating);
-    loadBookItems(mainBlock, book.id);
     genresForBook(mainBlock, book.genres);
     authorsForBook(mainBlock, book.authors);
-    isOnlyReadingRoom(mainBlock, book.id);
     showNumberRated(mainBlock, book.ratingsCount);
 
     container.appendChild(mainBlock);
