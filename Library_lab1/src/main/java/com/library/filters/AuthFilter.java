@@ -20,7 +20,7 @@ import java.util.Base64;
 import java.util.Map;
 
 @WebFilter(urlPatterns = {"/api/*", "/adminManagement.html",
-        "/book.html", "/management"})
+        "/book.html", "/management", "/profile.html", "/profile", "/book/*"})
 public class AuthFilter implements Filter {
 
     ObjectMapper objectMapper = new ObjectMapper();
@@ -33,10 +33,10 @@ public class AuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
-        // Set Cache-Control headers to prevent caching of protected pages
-        resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-        resp.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-        resp.setDateHeader("Expires", 0); // Proxies.
+        // set Cache-Control headers to prevent caching of protected pages
+        resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        resp.setHeader("Pragma", "no-cache");
+        resp.setDateHeader("Expires", 0);
 
         String path = req.getServletPath();
         if (path.endsWith("/") && path.length() > 1) {
@@ -81,7 +81,7 @@ public class AuthFilter implements Filter {
 
         // logic for guests (not logged in)
         if (user == null) {
-            if (path.startsWith("/api/")) {
+            if (path.startsWith("/api/") || path.startsWith("/profile")) {
                 resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             } else {
                 resp.sendRedirect(req.getContextPath() + "/login");

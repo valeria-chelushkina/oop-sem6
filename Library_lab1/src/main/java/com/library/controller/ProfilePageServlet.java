@@ -11,19 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/profile/*")
+@WebServlet("/profile")
 public class ProfilePageServlet extends HttpServlet {
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String pathInfo = req.getPathInfo();
-
-        if (pathInfo == null || pathInfo.equals("/")) {
-            resp.sendRedirect("/");
-            return;
-        }
 
         try{
             req.getRequestDispatcher("/profile.html").forward(req, resp);

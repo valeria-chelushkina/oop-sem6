@@ -292,7 +292,7 @@ a {
 .right-block button,
 .modal-footer button,
 #add-copy-btn,
-.save-changes-btn{
+#save-changes-btn{
   font-size: 17px;
     border-radius: 5px;
     border: none;
@@ -303,13 +303,13 @@ a {
     font-weight: 600;
 }
 
-.save-changes-btn{
+#save-changes-btn{
 	margin-left: 125px;
 }
 
 .order, #save-btn,
  #quick-save-btn,
- .save-changes-btn{
+ #save-changes-btn{
   background-color: rgb(162, 76, 205);
   color: white;
 }
@@ -341,7 +341,7 @@ a {
 #save-btn:hover,
 #quick-save-btn:hover,
 #open-add-form:hover,
-.save-changes-btn:hover{
+#save-changes-btn:hover{
   opacity: 0.85;
 }
 
@@ -351,7 +351,7 @@ a {
 #save-btn:active,
 #quick-save-btn:active
 #open-add-form:active,
-.save-changes-btn:active{
+#save-changes-btn:active{
   opacity: 0.95;
 }
 
