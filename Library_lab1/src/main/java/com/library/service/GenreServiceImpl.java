@@ -33,7 +33,7 @@ public class GenreServiceImpl implements GenreService{
         if (genres.isEmpty()) {
             return null;
         }
-        return genreMapper.toDto(genres.get(0));
+        return genreMapper.toDto(genres.getFirst());
     }
 
     @Override

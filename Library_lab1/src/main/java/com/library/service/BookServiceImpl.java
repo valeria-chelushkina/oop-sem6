@@ -44,41 +44,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDTO> findByTitle(String title) throws SQLException {
-        return bookDAO.findByTitle(title).stream()
-                .map(bookMapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public List<BookDTO> findByAuthor(String author) throws SQLException {
-        return bookDAO.findByAuthor(author).stream()
-                .map(bookMapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public List<BookDTO> findByGenre(String genre) throws SQLException {
-        return bookDAO.findByGenre(genre).stream()
-                .map(bookMapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public List<BookDTO> findByLanguage(String language) throws SQLException{
-        return bookDAO.findByLanguage(language).stream()
-                .map(bookMapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public List<BookDTO> findByTitleOrAuthor (String query) throws SQLException {
-        return bookDAO.findByTitleOrAuthor(query).stream()
-                .map(bookMapper::toDto)
-                .toList();
-    }
-
-    @Override
     public List<BookDTO> searchBooks(String query, List<String> genres, List<String> languages) throws SQLException {
         return bookDAO.searchBooks(query, genres, languages).stream()
                 .map(bookMapper::toDto)

@@ -1,11 +1,15 @@
 package com.library.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.library.dto.UserDTO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,22 +19,26 @@ import java.nio.charset.StandardCharsets;
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
 
+    private static final Logger logger = LogManager.getLogger(LogoutServlet.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
+        logger.info("Received logout request");
         HttpSession session = req.getSession(false);
         String idToken = null;
 
         if(session != null){
             idToken = (String) session.getAttribute("id_token");
+            UserDTO user = (UserDTO) session.getAttribute("user");
+            String email = (user != null) ? user.getEmail() : "unknown";
             session.invalidate();
-            System.out.println("Finished the local session.");
+            logger.info("Local session invalidated for user: {}", email);
         }
 
         InputStream is = getClass().getClassLoader().getResourceAsStream("keycloak.json");
         if (is == null) {
+            logger.error("keycloak.json not found in classpath!");
             resp.sendRedirect(req.getContextPath() + "/");
             return;
         }
@@ -48,6 +56,7 @@ public class LogoutServlet extends HttpServlet {
             logoutUrl += "&id_token_hint=" + URLEncoder.encode(idToken, StandardCharsets.UTF_8);
         }
 
+        logger.debug("Redirecting to Keycloak logout: {}", logoutUrl);
         resp.sendRedirect(logoutUrl);
     }
 }

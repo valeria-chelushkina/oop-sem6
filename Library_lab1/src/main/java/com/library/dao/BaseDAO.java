@@ -21,7 +21,7 @@ public abstract class BaseDAO {
     }
 
     protected <T> List<T> query(String sql, List<Object> params, RowMapper<T> mapper, String logMessage) throws SQLException {
-        logger.info(logMessage);
+        logger.debug(logMessage);
         List<T> result = new ArrayList<>();
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -31,7 +31,7 @@ public abstract class BaseDAO {
                     result.add(mapper.map(rs));
                 }
             }
-            logger.info("Fetched {} record(s)", result.size());
+            logger.debug("Fetched {} record(s)", result.size());
             return result;
         } catch (SQLException e) {
             logger.error("Query failed", e);
@@ -40,12 +40,12 @@ public abstract class BaseDAO {
     }
 
     protected int update(String sql, List<Object> params, String logMessage) throws SQLException {
-        logger.info(logMessage);
+        logger.debug(logMessage);
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             bindParams(stmt, params);
             int affectedRows = stmt.executeUpdate();
-            logger.info("Affected rows: {}", affectedRows);
+            logger.debug("Affected rows: {}", affectedRows);
             return affectedRows;
         } catch (SQLException e) {
             logger.error("Update failed", e);
@@ -54,7 +54,7 @@ public abstract class BaseDAO {
     }
 
     protected Long insertAndReturnId(String sql, List<Object> params, String logMessage) throws SQLException {
-        logger.info(logMessage);
+        logger.debug(logMessage);
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             bindParams(stmt, params);
@@ -62,7 +62,7 @@ public abstract class BaseDAO {
             try (ResultSet keys = stmt.getGeneratedKeys()) {
                 if (keys.next()) {
                     Long id = keys.getLong(1);
-                    logger.info("Created record with id={}", id);
+                    logger.debug("Created record with id={}", id);
                     return id;
                 }
                 throw new SQLException("Insert succeeded but no generated id was returned.");
@@ -74,14 +74,14 @@ public abstract class BaseDAO {
     }
 
     protected int queryForInt(String sql, List<Object> params, String logMessage) throws SQLException {
-        logger.info(logMessage);
+        logger.debug(logMessage);
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             bindParams(stmt, params);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     int value = rs.getInt(1);
-                    logger.info("Query returned value: {}", value);
+                    logger.debug("Query returned value: {}", value);
                     return value;
                 }
                 return 0;

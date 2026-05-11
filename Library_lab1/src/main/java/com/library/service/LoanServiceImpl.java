@@ -42,7 +42,7 @@ public class LoanServiceImpl implements LoanService {
         if (loans.isEmpty()) {
             return null;
         }
-        return loanMapper.toDto(loans.get(0));
+        return loanMapper.toDto(loans.getFirst());
     }
 
     @Override
@@ -102,7 +102,7 @@ public class LoanServiceImpl implements LoanService {
     public int issueLoan(Long loanId, Long librarianId) throws SQLException {
         List<Loan> loans = loanDAO.findById(loanId);
         if (loans.isEmpty()) return 0;
-        Loan loan = loans.get(0);
+        Loan loan = loans.getFirst();
 
         int affected = loanDAO.issueLoan(loanId, librarianId);
         if (affected > 0) {
@@ -115,7 +115,7 @@ public class LoanServiceImpl implements LoanService {
     public int returnLoan(Long loanId) throws SQLException {
         List<Loan> loans = loanDAO.findById(loanId);
         if (loans.isEmpty()) return 0;
-        Loan loan = loans.get(0);
+        Loan loan = loans.getFirst();
 
         int affected = loanDAO.returnLoan(loanId);
         if (affected > 0) {
@@ -155,7 +155,7 @@ public class LoanServiceImpl implements LoanService {
     public int deleteById(Long id) throws SQLException {
         List<Loan> loans = loanDAO.findById(id);
         if (!loans.isEmpty()) {
-            Loan loan = loans.get(0);
+            Loan loan = loans.getFirst();
             if (loan.getStatus() == LoanStatus.ORDERED) {
                 BookItemStatus targetStatus = (loan.getLoanType() == LoanType.READING_ROOM) ? 
                         BookItemStatus.READING_ROOM_ONLY : BookItemStatus.AVAILABLE;
@@ -168,7 +168,7 @@ public class LoanServiceImpl implements LoanService {
     private void updateBookItemStatus(Long bookItemId, BookItemStatus status) throws SQLException {
         List<BookItem> items = bookItemDAO.findById(bookItemId);
         if (!items.isEmpty()) {
-            BookItem item = items.get(0);
+            BookItem item = items.getFirst();
             item.setStatus(status);
             bookItemDAO.update(item);
         }

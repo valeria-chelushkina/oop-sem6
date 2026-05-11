@@ -10,6 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -23,6 +26,7 @@ import java.util.Map;
         "/book.html", "/management", "/profile.html", "/profile", "/orders", "/orders.html"})
 public class AuthFilter implements Filter {
 
+    private static final Logger logger = LogManager.getLogger(AuthFilter.class);
     ObjectMapper objectMapper = new ObjectMapper();
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
@@ -43,8 +47,11 @@ public class AuthFilter implements Filter {
             path = path.substring(0, path.length() - 1);
         }
 
+        logger.trace("Filtering request for path: {}", path);
+
         // allow public files to pass through
         if(path.startsWith("/static/") || path.equals("/index.html") || path.equals("/") || path.equals("/login") || path.equals("/api/auth/status") || path.equals("/book.html")) {
+            logger.trace("Path is public, passing through");
             chain.doFilter(request, response);
             return;
         }
@@ -52,6 +59,7 @@ public class AuthFilter implements Filter {
         String method = req.getMethod();
         if("GET".equalsIgnoreCase(method)) {
             if(path.startsWith("/api/books") || path.startsWith("/api/authors") || path.startsWith("/api/genres") || path.startsWith("/api/filter") || path.startsWith("/api/book-items") ) {
+                logger.trace("Public GET API path, passing through");
                 chain.doFilter(request, response);
                 return;
             }
@@ -63,16 +71,19 @@ public class AuthFilter implements Filter {
         if(session != null) {
             String accessToken = (String) session.getAttribute("access_token");
             if(accessToken != null && isTokenExpired(accessToken)) {
+                logger.info("Access token expired, attempting refresh");
                 String refreshToken = (String) session.getAttribute("refresh_token");
                 if(refreshToken != null) {
                     // try to refresh
                     boolean success = refreshTokens(req, refreshToken);
                     if(!success) {
+                        logger.warn("Token refresh failed, invalidating session");
                         // refresh failed
                         session.invalidate();
                         resp.sendRedirect(req.getContextPath() + "/login");
                         return;
                     }
+                    logger.info("Tokens refreshed successfully");
                 }
             }
         }
@@ -81,6 +92,7 @@ public class AuthFilter implements Filter {
 
         // logic for guests (not logged in)
         if (user == null) {
+            logger.warn("Unauthorized access attempt to protected path: {}", path);
             if (path.startsWith("/api/") || path.startsWith("/profile")) {
                 resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             } else {
@@ -93,6 +105,7 @@ public class AuthFilter implements Filter {
         // only librarians can see and get to admin-related info
         if (path.startsWith("/management") || path.startsWith("/adminManagement.html") || path.startsWith("/api/admin")) {
             if (user.getRole() != UserRole.LIBRARIAN) {
+                logger.warn("Forbidden access attempt to admin path: {} by user: {}", path, user.getEmail());
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Librarians only!");
                 return;
             }
@@ -113,6 +126,7 @@ public class AuthFilter implements Filter {
             //refresh 30 seconds before ot expires
             return (exp - 30) < now;
         } catch (Exception e) {
+           logger.error("Error checking token expiration", e);
            return true; // assume it's expired
         }
     }
@@ -140,10 +154,13 @@ public class AuthFilter implements Filter {
                 session.setAttribute("refresh_token", res.get("refresh_token"));
                 return true;
             }
+            logger.error("Token refresh request failed with status: {}", response.statusCode());
         } catch (InterruptedException e) {
+            logger.error("Token refresh process interrupted", e);
             Thread.currentThread().interrupt();
             throw new RuntimeException("Token refresh interrupted", e);
         } catch (Exception e) {
+            logger.error("Exception during token refresh", e);
             throw new RuntimeException("Failed to refresh token", e);
         }
         return false;

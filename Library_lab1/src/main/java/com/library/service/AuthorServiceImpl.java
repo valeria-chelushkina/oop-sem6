@@ -33,7 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
         if (authors.isEmpty()) {
             return null;
         }
-        return authorMapper.toDto(authors.get(0));
+        return authorMapper.toDto(authors.getFirst());
     }
 
     @Override

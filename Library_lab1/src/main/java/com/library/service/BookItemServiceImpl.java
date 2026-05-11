@@ -33,7 +33,7 @@ public class BookItemServiceImpl implements BookItemService {
         if (bookItems.isEmpty()) {
             return null;
         }
-        return bookItemMapper.toDto(bookItems.get(0));
+        return bookItemMapper.toDto(bookItems.getFirst());
     }
 
     @Override

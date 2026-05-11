@@ -60,7 +60,7 @@ public class BookDAO extends BaseDAO {
     }
 
     private List<Book> queryBooksWithRelations(String sql, List<Object> params, String loggerMessage) throws SQLException {
-        logger.info(loggerMessage);
+        logger.debug(loggerMessage);
         Map<Long, Book> booksById = new LinkedHashMap<>();
         try (Connection conn = DatabaseManager.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -108,7 +108,7 @@ public class BookDAO extends BaseDAO {
                 }
             }
             List<Book> books = new ArrayList<>(booksById.values());
-            logger.info("Fetched {} book records", books.size());
+            logger.debug("Fetched {} book records", books.size());
             return books;
         } catch (SQLException e) {
             logger.error("Failed to fetch books with authors from database", e);
@@ -117,62 +117,12 @@ public class BookDAO extends BaseDAO {
     }
 
     public List<Book> findAll() throws SQLException {
-        String sql = BASE_SELECT_WITH_RELATIONS;
         String loggerMessage = "Fetching all books from the catalogue.";
-        return queryBooksWithRelations(sql, Collections.emptyList(), loggerMessage);
-    }
-
-    public List<Book> findByTitle(String title) throws SQLException {
-        String sql = BASE_SELECT_WITH_RELATIONS + "WHERE LOWER(b.title) LIKE LOWER(?)";
-        String loggerMessage = "Fetching books by title.";
-        return queryBooksWithRelations(sql, List.of("%" + title + "%"), loggerMessage);
-    }
-
-    public List<Book> findByAuthor(String author) throws SQLException {
-        String sql = BASE_SELECT_WITH_RELATIONS +
-                "WHERE EXISTS (" +
-                "SELECT 1 FROM book_authors ba2 " +
-                "JOIN authors a2 ON a2.id = ba2.author_id " +
-                "WHERE ba2.book_id = b.id AND LOWER(a2.pen_name) LIKE LOWER(?)" +
-                ")";
-        String loggerMessage = "Fetching books by author.";
-        return queryBooksWithRelations(sql, List.of("%" + author + "%"), loggerMessage);
-    }
-
-    public List<Book> findByTitleOrAuthor(String query) throws SQLException{
-        String sql = BASE_SELECT_WITH_RELATIONS +
-                "WHERE LOWER(b.title) LIKE LOWER(?) " +
-                "OR EXISTS (" +
-                "SELECT 1 FROM book_authors ba2 " +
-                "JOIN authors a2 ON a2.id = ba2.author_id " +
-                "WHERE ba2.book_id = b.id AND LOWER(a2.pen_name) LIKE LOWER(?)" +
-                ")";
-        String loggerMessage = "Fetching books by author or title.";
-        String searchPattern = "%" + query.toLowerCase() + "%";
-        return queryBooksWithRelations(sql, List.of(searchPattern, searchPattern), loggerMessage);
-    }
-
-    public List<Book> findByGenre(String genre) throws SQLException {
-        String sql = BASE_SELECT_WITH_RELATIONS +
-                "WHERE EXISTS (" +
-                "SELECT 1 FROM book_genres bg2 " +
-                "JOIN genres g2 ON g2.id = bg2.genre_id " +
-                "WHERE bg2.book_id = b.id AND LOWER(g2.name) LIKE LOWER(?)" +
-                ")";
-        String loggerMessage = "Fetching books by genre.";
-        return queryBooksWithRelations(sql, List.of("%" + genre + "%"), loggerMessage);
-    }
-
-    public List<Book> findByLanguage(String language) throws SQLException {
-        String sql = BASE_SELECT_WITH_RELATIONS + "WHERE LOWER(b.language) = LOWER(?)";
-        String loggerMessage = "Fetching books by language.";
-        return queryBooksWithRelations(sql, List.of(language), loggerMessage);
+        return queryBooksWithRelations(BASE_SELECT_WITH_RELATIONS, Collections.emptyList(), loggerMessage);
     }
 
     /**
-     * Комбінований пошук: текст (назва або автор) AND жанри AND мови.
-     * Кілька жанрів — OR (достатньо одного збігу). Кілька мов — OR.
-     * Між групами «текст», «жанри», «мови» завжди AND.
+     * combined query for search
      */
     public List<Book> searchBooks(String query, List<String> genres, List<String> languages) throws SQLException {
         StringBuilder sql = new StringBuilder(BASE_SELECT_WITH_RELATIONS).append("WHERE 1=1");
@@ -232,7 +182,7 @@ public class BookDAO extends BaseDAO {
     }
 
     public Long create(Book book) throws SQLException {
-        logger.info("Creating new book with title='{}'", book.getTitle());
+        logger.debug("Creating new book with title='{}'", book.getTitle());
         try (Connection conn = DatabaseManager.getInstance().getConnection()) {
             conn.setAutoCommit(false);
             try {
@@ -241,7 +191,7 @@ public class BookDAO extends BaseDAO {
                 linkBookGenres(conn, createdBookId, book.getGenres(), false);
 
                 conn.commit();
-                logger.info("Book created successfully with id={}", createdBookId);
+                logger.debug("Book created successfully with id={}", createdBookId);
                 return createdBookId;
             } catch (SQLException e) {
                 conn.rollback();
@@ -254,7 +204,7 @@ public class BookDAO extends BaseDAO {
     }
 
     public Long createWithAuthors(Book book) throws SQLException {
-        logger.info("Creating new book with author upsert, title='{}'", book.getTitle());
+        logger.debug("Creating new book with author upsert, title='{}'", book.getTitle());
         try (Connection conn = DatabaseManager.getInstance().getConnection()) {
             conn.setAutoCommit(false);
             try {
@@ -263,7 +213,7 @@ public class BookDAO extends BaseDAO {
                 linkBookGenres(conn, createdBookId, book.getGenres(), true);
 
                 conn.commit();
-                logger.info("Book with authors created successfully with id={}", createdBookId);
+                logger.debug("Book with authors created successfully with id={}", createdBookId);
                 return createdBookId;
             } catch (SQLException e) {
                 conn.rollback();
@@ -281,7 +231,7 @@ public class BookDAO extends BaseDAO {
         String deleteLinksSql = "DELETE FROM book_authors WHERE book_id = ?";
         String deleteGenreLinksSql = "DELETE FROM book_genres WHERE book_id = ?";
 
-        logger.info("Updating book with id={}", book.getId());
+        logger.debug("Updating book with id={}", book.getId());
         try (Connection conn = DatabaseManager.getInstance().getConnection()) {
             conn.setAutoCommit(false);
             try {
@@ -312,7 +262,7 @@ public class BookDAO extends BaseDAO {
                 linkBookGenres(conn, book.getId(), book.getGenres(), true);
 
                 conn.commit();
-                logger.info("Book updated successfully, affected rows={}", affectedRows);
+                logger.debug("Book updated successfully, affected rows={}", affectedRows);
                 return affectedRows;
             } catch (SQLException e) {
                 conn.rollback();
