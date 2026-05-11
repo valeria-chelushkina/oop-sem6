@@ -29,6 +29,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public List<LoanDTO> findAll() throws SQLException {
+        checkOverdueLoans();
         return loanDAO.findAll().stream()
                 .map(loanMapper::toDto)
                 .collect(Collectors.toList());
@@ -36,6 +37,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public LoanDTO findById(Long id) throws SQLException {
+        checkOverdueLoans();
         List<Loan> loans = loanDAO.findById(id);
         if (loans.isEmpty()) {
             return null;
@@ -45,6 +47,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public List<LoanDTO> findActiveLoans() throws SQLException {
+        checkOverdueLoans();
         return loanDAO.findActiveLoans().stream()
                 .map(loanMapper::toDto)
                 .collect(Collectors.toList());
@@ -52,6 +55,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public List<LoanDTO> findOrderedByReader(Long readerId) throws SQLException {
+        checkOverdueLoans();
         return loanDAO.findOrderByReader(readerId).stream()
                 .map(loanMapper::toDto)
                 .collect(Collectors.toList());
@@ -59,9 +63,21 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public List<LoanDTO> findActiveByBookAndReader(Long bookId, Long readerId) throws SQLException {
+        checkOverdueLoans();
         return loanDAO.findActiveByBookAndReader(bookId, readerId).stream()
                 .map(loanMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    private void checkOverdueLoans() throws SQLException {
+        List<Loan> activeLoans = loanDAO.findActiveLoans();
+        java.time.LocalDate today = java.time.LocalDate.now();
+        for (Loan loan : activeLoans) {
+            if (loan.getStatus() == LoanStatus.ISSUED && loan.getDueDate() != null && loan.getDueDate().isBefore(today)) {
+                loan.setStatus(LoanStatus.OVERDUE);
+                loanDAO.update(loan);
+            }
+        }
     }
 
     @Override

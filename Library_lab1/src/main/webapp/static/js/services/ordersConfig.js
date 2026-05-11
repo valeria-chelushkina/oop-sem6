@@ -1,5 +1,6 @@
 import { LoanApi } from '../api/loanApi.js';
 import { sectionFilterConfigs } from './adminFiltersConfig.js';
+import { renderCheckboxGroup, LOAN_TYPES, renderLoanDateRange } from '../components/adminFilterTemplates.js';
 
 const LOAN_STATUSES = {
     ORDERED: 'ORDERED',
@@ -9,6 +10,8 @@ const LOAN_STATUSES = {
     DAMAGED: 'DAMAGED',
     OVERDUE: 'OVERDUE'
 };
+
+const LIBRARIAN_LOAN_STATUSES = ["ORDERED", "ISSUED", "OVERDUE"];
 
 export function getOrdersConfig(isLibrarian) {
     if (isLibrarian) {
@@ -22,7 +25,7 @@ export function getOrdersConfig(isLibrarian) {
                         <button class="action-btn issue-btn" data-id="${item.id}">Issue</button>
                         <button class="action-btn delete-btn" data-id="${item.id}">Cancel</button>
                     `;
-                } else if (item.status === LOAN_STATUSES.ISSUED) {
+                } else if (item.status === LOAN_STATUSES.ISSUED || item.status === LOAN_STATUSES.OVERDUE) {
                     actions = `<button class="action-btn return-btn" data-id="${item.id}">Return</button>`;
                 }
 
@@ -41,10 +44,19 @@ export function getOrdersConfig(isLibrarian) {
             },
             apiCall: async () => {
                 const allLoans = await LoanApi.getAll();
-                // Ongoing: Ordered or Issued
-                return allLoans.filter(l => l.status === LOAN_STATUSES.ORDERED || l.status === LOAN_STATUSES.ISSUED);
+                return allLoans.filter(l => 
+                    l.status === LOAN_STATUSES.ORDERED || 
+                    l.status === LOAN_STATUSES.ISSUED || 
+                    l.status === LOAN_STATUSES.OVERDUE
+                );
             },
-            ...sectionFilterConfigs["loans-section"]
+            ...sectionFilterConfigs["loans-section"],
+            filterTemplate: () => `
+                ${renderCheckboxGroup("loanType", LOAN_TYPES, "Loan type")}
+                ${renderCheckboxGroup("loanStatus", LIBRARIAN_LOAN_STATUSES, "Status")}
+                ${renderLoanDateRange("loanDate", "Loan date")}
+                ${renderLoanDateRange("dueDate", "Due date")}
+            `
         };
     } else {
         return {
