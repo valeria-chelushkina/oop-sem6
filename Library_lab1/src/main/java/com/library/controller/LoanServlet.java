@@ -81,6 +81,12 @@ public class LoanServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles specialized loan actions.
+     * POST /api/loans/order - Creates a new user order.
+     * POST /api/loans/issue/{id}?librarianId=X - Librarian issues the book.
+     * POST /api/loans/return/{id} - Librarian processes the return.
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String path = req.getPathInfo();

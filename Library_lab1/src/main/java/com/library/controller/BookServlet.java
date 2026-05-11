@@ -91,6 +91,11 @@ public class BookServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles book creation and rating submissions.
+     * POST /api/books - Creates a new book (Librarian only).
+     * POST /api/books/{id}/ratings - Submits/updates a user rating (1-5).
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();

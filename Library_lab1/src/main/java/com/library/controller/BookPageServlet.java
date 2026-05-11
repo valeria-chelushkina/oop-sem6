@@ -17,7 +17,6 @@ import java.io.IOException;
 @WebServlet ("/book/*")
 public class BookPageServlet extends HttpServlet {
     private static final Logger logger = LogManager.getLogger(BookPageServlet.class);
-    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

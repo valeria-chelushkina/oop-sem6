@@ -11,6 +11,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * DAO for managing Loan records (orders and issued books).
+ * Provides methods for tracking active loans and filtering by reader or book item.
+ */
 public class LoanDAO extends BaseDAO {
     private Loan mapResultSetToLoan(ResultSet rs) throws SQLException {
         Timestamp loanDateTs = rs.getTimestamp("loan_date");

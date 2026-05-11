@@ -22,6 +22,14 @@ import java.net.http.HttpResponse;
 import java.util.Base64;
 import java.util.Map;
 
+/**
+ * Primary Security Filter for the application.
+ * Responsibilities:
+ * 1. Manages OAuth2 token lifecycle (checks expiration and performs background refreshes).
+ * 2. Enforces authentication for protected HTML pages and API endpoints.
+ * 3. Handles Role-Based Access Control (RBAC), restricting management paths to LIBRARIANS.
+ * 4. Implements Cache-Control headers to prevent leaking sensitive data via browser history.
+ */
 @WebFilter(urlPatterns = {"/api/*", "/adminManagement.html",
         "/book.html", "/management", "/profile.html", "/profile", "/orders", "/orders.html"})
 public class AuthFilter implements Filter {

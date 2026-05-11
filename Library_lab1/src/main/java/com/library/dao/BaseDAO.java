@@ -12,6 +12,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Base Data Access Object providing common database interaction methods.
+ * Encapsulates connection management, parameter binding, and logging for all inherited DAOs.
+ * All successful operations are logged at DEBUG level to minimize noise.
+ */
 public abstract class BaseDAO {
     protected final Logger logger = LogManager.getLogger(getClass());
 

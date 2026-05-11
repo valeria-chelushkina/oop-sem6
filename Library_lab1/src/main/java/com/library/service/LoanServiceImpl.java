@@ -165,6 +165,11 @@ public class LoanServiceImpl implements LoanService {
         return loanDAO.deleteById(id);
     }
 
+    /**
+     * Synchronizes the status of a BookItem with its corresponding Loan.
+     * Also handles reverting items to their base status (AVAILABLE or READING_ROOM_ONLY) 
+     * based on the loan type when returned.
+     */
     private void updateBookItemStatus(Long bookItemId, BookItemStatus status) throws SQLException {
         List<BookItem> items = bookItemDAO.findById(bookItemId);
         if (!items.isEmpty()) {
@@ -174,4 +179,3 @@ public class LoanServiceImpl implements LoanService {
         }
     }
 }
-

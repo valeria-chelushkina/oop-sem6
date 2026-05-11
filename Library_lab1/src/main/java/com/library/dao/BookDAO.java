@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * DAO for managing Book entities and their many-to-many relationships with Authors and Genres.
+ * Handles complex combined searches and transactional creation of books with their relations.
+ */
 public class BookDAO extends BaseDAO {
     private static final String BASE_SELECT_WITH_RELATIONS =
             "SELECT b.*, " +
