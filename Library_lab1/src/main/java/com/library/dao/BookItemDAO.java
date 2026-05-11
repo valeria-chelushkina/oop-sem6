@@ -42,6 +42,12 @@ public class BookItemDAO extends BaseDAO {
         return query(sql, List.of(id), this::mapResultSetToBookItem, loggerMessage);
     }
 
+    public List<BookItem> findAvailableByBookId(Long id) throws SQLException {
+        String sql = "SELECT * FROM book_items WHERE book_id = ? AND status IN ('AVAILABLE', 'READING_ROOM_ONLY')";
+        String loggerMessage = "Fetching available book items by book_id.";
+        return query(sql, List.of(id), this::mapResultSetToBookItem, loggerMessage);
+    }
+
     public Long create(BookItem bookItem) throws SQLException {
         String sql = "INSERT INTO book_items (book_id, inventory_code, status) VALUES (?, ?, ?)";
         String loggerMessage = "Creating new book item.";

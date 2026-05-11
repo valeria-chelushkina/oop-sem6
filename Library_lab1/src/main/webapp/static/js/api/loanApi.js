@@ -13,6 +13,11 @@ export const LoanApi = {
         const data = await response.json();
         return Array.isArray(data) ? data[0] : data;
     },
+    async checkActiveLoan(bookId, readerId) {
+        const response = await fetch(`${API_URL}?bookId=${bookId}&readerId=${readerId}`);
+        if (!response.ok) throw new Error(`Failed to check active loan: ${response.status}`);
+        return await response.json();
+    },
 	async create(payload) {
         const response = await fetch(API_URL, {
             method: 'POST',

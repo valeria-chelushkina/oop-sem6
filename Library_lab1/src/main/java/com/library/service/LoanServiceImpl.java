@@ -52,6 +52,13 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
+    public List<LoanDTO> findActiveByBookAndReader(Long bookId, Long readerId) throws SQLException {
+        return loanDAO.findActiveByBookAndReader(bookId, readerId).stream()
+                .map(loanMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public int createOrder(Long bookItemId, Long readerId, LoanType loanType, Date dueDate) throws SQLException {
         return loanDAO.createOrder(bookItemId, readerId, loanType, dueDate);
     }

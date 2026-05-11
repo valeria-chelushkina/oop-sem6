@@ -6,10 +6,7 @@ import com.library.dto.BookDTO;
 import com.library.dto.BookRatingDTO;
 import com.library.dto.CreateBookRequest;
 import com.library.dto.RateBookRequest;
-import com.library.service.BookRatingService;
-import com.library.service.BookRatingServiceImpl;
-import com.library.service.BookService;
-import com.library.service.BookServiceImpl;
+import com.library.service.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,10 +25,12 @@ import java.util.regex.Pattern;
 public class BookServlet extends HttpServlet {
     private final BookService bookService = new BookServiceImpl();
     private final BookRatingService bookRatingService = new BookRatingServiceImpl();
+    private final BookItemService bookItemService = new BookItemServiceImpl();
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     private static final Pattern ID_PATTERN = Pattern.compile("^/(\\d+)/?$");
     private static final Pattern RATINGS_PATTERN = Pattern.compile("^/(\\d+)/ratings/?$");
+    private static final Pattern AVAILABLE_ITEMS_PATTERN = Pattern.compile("^/(\\d+)/available-items/?$");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -46,6 +45,13 @@ public class BookServlet extends HttpServlet {
                         collectRepeatedParams(req, "language")
                 );
                 writeJson(resp, HttpServletResponse.SC_OK, books);
+                return;
+            }
+
+            Matcher availableItemsMatcher = AVAILABLE_ITEMS_PATTERN.matcher(pathInfo);
+            if (availableItemsMatcher.matches()) {
+                Long bookId = Long.valueOf(availableItemsMatcher.group(1));
+                writeJson(resp, HttpServletResponse.SC_OK, bookItemService.findAvailableByBookId(bookId));
                 return;
             }
 

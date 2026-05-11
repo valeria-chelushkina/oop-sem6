@@ -105,6 +105,33 @@ async function handleAction(e) {
 
     if (btn.classList.contains("issue-btn")) {
         const today = new Date().toISOString().split('T')[0];
+        
+        if (loan.loanType === 'READING_ROOM') {
+            if (confirm("Issue this book to Reading Room? (Due date will be set to today)")) {
+                try {
+                    const now = new Date();
+                    const formattedNow = now.getFullYear() + '-' + 
+                        String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                        String(now.getDate()).padStart(2, '0') + ' ' + 
+                        String(now.getHours()).padStart(2, '0') + ':' + 
+                        String(now.getMinutes()).padStart(2, '0');
+
+                    const updatedLoan = { 
+                        ...loan, 
+                        status: 'ISSUED', 
+                        dueDate: today,
+                        librarianId: currentAuth.id,
+                        loanDate: formattedNow
+                    };
+                    await LoanApi.update(updatedLoan);
+                    await reloadData();
+                } catch (err) {
+                    alert("Failed to issue order: " + err.message);
+                }
+            }
+            return;
+        }
+
         const defaultDue = new Date();
         defaultDue.setDate(defaultDue.getDate() + 14);
         const defaultDueStr = defaultDue.toISOString().split('T')[0];
@@ -132,7 +159,7 @@ async function handleAction(e) {
                     status: 'ISSUED', 
                     dueDate: dueDate,
                     librarianId: currentAuth.id,
-                    loanDate: formattedNow // Backend expects yyyy-MM-dd HH:mm
+                    loanDate: formattedNow
                 };
                 await LoanApi.update(updatedLoan);
                 closeModal();

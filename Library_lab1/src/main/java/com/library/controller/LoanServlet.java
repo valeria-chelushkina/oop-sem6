@@ -33,6 +33,7 @@ public class LoanServlet extends HttpServlet {
             String id = req.getParameter("id");
             String active = req.getParameter("active");
             String readerId = req.getParameter("readerId");
+            String bookId = req.getParameter("bookId");
 
             if (id != null && !id.isBlank()) {
                 LoanDTO loan = loanService.findById(Long.valueOf(id));
@@ -45,6 +46,11 @@ public class LoanServlet extends HttpServlet {
             }
 
             if (readerId != null && !readerId.isBlank()) {
+                if (bookId != null && !bookId.isBlank()) {
+                    List<LoanDTO> activeByBook = loanService.findActiveByBookAndReader(Long.valueOf(bookId), Long.valueOf(readerId));
+                    writeJson(resp, HttpServletResponse.SC_OK, activeByBook);
+                    return;
+                }
                 List<LoanDTO> orderedLoans = loanService.findOrderedByReader(Long.valueOf(readerId));
                 writeJson(resp, HttpServletResponse.SC_OK, orderedLoans);
                 return;

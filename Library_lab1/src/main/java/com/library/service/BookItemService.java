@@ -10,6 +10,7 @@ public interface BookItemService {
     List<BookItemDTO> findAll() throws SQLException;
     BookItemDTO findById(Long id) throws SQLException;
     List<BookItemDTO> findByBookId(Long id) throws SQLException;
+    List<BookItemDTO> findAvailableByBookId(Long id) throws SQLException;
     int countNumberOfAvailableCopies(Long id) throws SQLException;
     int countAvailable() throws SQLException;
     Long create(CreateBookItemRequest request) throws SQLException;

@@ -13,6 +13,11 @@ export const BookApi = {
         const data = await response.json();
         return Array.isArray(data) ? data[0] : data;
     },
+    async getAvailableItems(id) {
+        const response = await fetch(`${API_URL}/${id}/available-items`);
+        if (!response.ok) throw new Error(`Failed to fetch available items: ${response.status}`);
+        return await response.json();
+    },
 	async create(payload) {
         const response = await fetch(API_URL, {
             method: 'POST',

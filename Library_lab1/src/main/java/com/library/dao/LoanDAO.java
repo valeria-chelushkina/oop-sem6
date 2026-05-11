@@ -127,4 +127,12 @@ public class LoanDAO extends BaseDAO {
         String loggerMessage = "Deleting loan by id.";
         return update(sql, List.of(id), loggerMessage);
     }
+
+    public List<Loan> findActiveByBookAndReader(Long bookId, Long readerId) throws SQLException {
+        String sql = "SELECT l.* FROM loans l " +
+                "JOIN book_items bi ON l.book_item_id = bi.id " +
+                "WHERE bi.book_id = ? AND l.reader_id = ? AND l.status IN ('ORDERED', 'ISSUED')";
+        String loggerMessage = "Checking if reader already has an active loan for this book.";
+        return query(sql, Arrays.asList(bookId, readerId), this::mapResultSetToLoan, loggerMessage);
+    }
 }

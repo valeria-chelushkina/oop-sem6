@@ -12,6 +12,7 @@ public interface LoanService {
     LoanDTO findById(Long id) throws SQLException;
     List<LoanDTO> findActiveLoans() throws SQLException;
     List<LoanDTO> findOrderedByReader(Long readerId) throws SQLException;
+    List<LoanDTO> findActiveByBookAndReader(Long bookId, Long readerId) throws SQLException;
     int createOrder(Long bookItemId, Long readerId, LoanType loanType, Date dueDate) throws SQLException;
     Long create(LoanDTO loanDTO) throws SQLException;
     int issueLoan(Long loanId, Long librarianId) throws SQLException;
