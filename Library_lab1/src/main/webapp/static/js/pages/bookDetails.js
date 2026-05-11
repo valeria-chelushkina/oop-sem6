@@ -24,12 +24,5 @@ document.addEventListener('DOMContentLoaded', async => {
 
 	}
 
-	// event listener
-	searchForm.addEventListener('submit', (e) => {
-	e.preventDefault();
-        const params = UrlService.getParamsFromForm(searchBar);
-        UrlService.navigateWithParams(params);
-    });
-
 	init();
 })

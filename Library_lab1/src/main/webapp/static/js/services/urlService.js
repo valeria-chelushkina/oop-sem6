@@ -49,7 +49,7 @@ export const UrlService = {
 
     navigateWithParams(params) {
         const qs = params.toString();
-        const path = window.location.pathname;
+        const path = '/';
         window.location.assign(qs ? `${path}?${qs}` : path);
     }
 };

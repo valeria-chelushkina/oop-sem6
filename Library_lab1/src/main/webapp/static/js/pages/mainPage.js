@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const bookList = document.getElementById('book-list');
     const searchBar = document.getElementById('search-bar');
     const filterForm = document.getElementById('filter-form');
-    const searchForm = document.getElementById('search-form');
     const loader = document.getElementById('loader');
 
     async function init() {
@@ -45,15 +44,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             waitLoader(loader);
         }
     }
-
-    // event listeners
-    [searchForm, filterForm].forEach(form => {
-        form?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const params = UrlService.getParamsFromForm(searchBar, filterForm);
-            UrlService.navigateWithParams(params);
-        });
-    });
 
     init();
 });

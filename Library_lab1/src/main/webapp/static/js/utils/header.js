@@ -1,3 +1,6 @@
+import { UrlService } from '../services/urlService.js';
+
+
 async function updateHeader() {
 		const response = await fetch('/api/auth/status');
 		const auth = await response.json();
@@ -34,4 +37,20 @@ async function updateHeader() {
 		}
 	};
 
-document.addEventListener('DOMContentLoaded', updateHeader);
+function searchFunction() {
+	const searchBar = document.getElementById('search-bar');
+	const searchForm = document.getElementById('search-form');
+    const filterForm = document.getElementById('filter-form');
+	[searchForm, filterForm].forEach(form => {
+        form?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const params = UrlService.getParamsFromForm(searchBar, filterForm);
+            UrlService.navigateWithParams(params);
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+	updateHeader();
+	searchFunction();
+});
